@@ -49,4 +49,63 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+
+    // STATIC FUNCTIONS
+
+    // Get all members
+    public static function members(){
+        return self::where('is_member','1');
+    }
+
+    // Get affiliate members
+    public static function affiliate_members(){
+        return self::where('is_knust_affiliate','1')->where('is_member','1');
+    }
+
+    // non affiliate members
+    public static function non_affiliate_members(){
+        return self::where('is_knust_affiliate','0')->where('is_member','1');
+    }
+
+    // Get all non_members
+    public static function non_members(){
+        return self::where('is_member','0');
+    }
+
+    // Geta all Alumni
+    public static function alumni(){
+        return self::where('is_alumni','1');
+    } 
+
+    // Get Alumni Members
+    public static function alumni_members(){
+        return self::where('is_alumni','1')->where('is_member','1');
+    }
+
+    // Get students
+    public static function students(){
+        return self::where('status','student');
+    }
+
+    // Get affiliate students
+    public static function affiliate_students(){
+        return self::where('is_knust_affiliate','1')->where('status','student');
+    }
+
+    // Get non affiliate students
+    public static function non_affiliate_students(){
+        return self::where('is_knust_affiliate','0')->where('status','student');
+    }  
+
+
+
+
+
+    // Get non students members
+    public static function workers_members(){
+        return self::where('status','Worker/Ns');
+    }
+
 }

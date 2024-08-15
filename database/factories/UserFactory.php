@@ -25,7 +25,7 @@ class UserFactory extends Factory
     {
         return [
             'firstname' => fake()->firstname(),
-            'othername' => rand(0,1) == 1 ? : fake()->firstname(),
+            'othername' => rand(0,1) == 0 ? null : fake()->firstname(),
             'lastname' => fake()->lastname(),
             'gender' => rand(0,1) == 1 ? "m" : "f", 
             'email' => fake()->unique()->safeEmail(),
@@ -70,7 +70,6 @@ class UserFactory extends Factory
                 'is_knust_affiliate' => '1',
                 'is_alumni' => '1',
                 'status' => 'Worker/Ns',
-
             ];
         });
     }
