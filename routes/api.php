@@ -1,10 +1,12 @@
 <?php
 
 use App\Models\User;
+use App\Models\Residence;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\V1\UserController;
 use App\Http\Controllers\Api\V1\LoginController;
+use App\Http\Controllers\Api\V1\ResidenceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,29 @@ use App\Http\Controllers\Api\V1\LoginController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// RESIDENCE
+    // Get residences
+    Route::middleware('auth:sanctum')->get('/residences', function () {
+        $residences = Residence::with('zone')->orderByDesc('name')->get();
+        return response()->json($residences);
+    });
+
+    // Store Residence
+    Route::post('/residence', [ResidenceController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update Residence
+    Route::put('/residence/{residence}', [ResidenceController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete Residence
+    Route::delete('/residence/{residence}', [ResidenceController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+    
 
 // USER
     // GET USER

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Zone;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Residence extends Model
 {
@@ -18,4 +19,9 @@ class Residence extends Model
         'location',
 
     ];
+
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class);
+    }
 }
