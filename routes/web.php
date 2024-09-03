@@ -20,6 +20,13 @@ Route::get('/', function () {
 
 // Hello route
 Route::get('/hello', function () {
-   
+    return User::find(2)->roles()->count();
+    return getAcademicYearId();
+    
+    // return App\Models\User::all()->update(['is_active'=>1]);
+    return App\Models\UserResidence::all();
+    return App\Models\User::workers_members()->get()->pluck('is_worker');
+    // return App\Models\User::query()->update(['is_active' => 1]);
+
     return "Hello Sir";
 });

@@ -24,14 +24,19 @@ return new class extends Migration
 
             $table->boolean('is_special')->default(0);
 
+            $table->boolean('allows_question')->default(0);
+
             $table->string('description')->nullable();
 
             $table->date('start_date');
 
             $table->date('end_date')->nullable();
 
-            $table->string('venue')->nullable();
+            $table->time('start_time')->nullable();
+            
+            $table->time('end_time')->nullable();
 
+            $table->string('venue')->nullable();
 
             $table->text('location')->nullable();
 

@@ -12,8 +12,13 @@ class UserController extends Controller
     //
     // Get all users
     public function index(){
-        $users = User::orderByDesc('status')->get();
+        $users = User::orderByDesc('firstname')->get();
         return response()->json($users);
+    }
+
+    // Show User
+    public function show(Request $request, User $user){
+        return response()->json($user);
     }
     
     // Register New User
@@ -24,10 +29,10 @@ class UserController extends Controller
             'othername' => 'nullable',
             'gender' => 'required',
             'is_member'=> 'required',
+            'is_alumni'=> 'required',
+            'phone' => 'required',
             'email' => 'required|email|unique:users',
-            'is_alumni' => 'required',
             'is_knust_affiliate' => 'required',
-            'status' => 'required',
             'dob'  => 'required',
             'password' => 'required',
           
@@ -39,6 +44,7 @@ class UserController extends Controller
                 'status' => 'failure'
             ], 422);
         }
+
         $user = User::create($request->all());
 
         return response()->json($user);
@@ -50,5 +56,14 @@ class UserController extends Controller
         $user->update($request->all());
         return response()->json($user);
     }
+
+    // Update User Account
+    public function user_account(User $user, Request $request){
+        $user->is_active = $request->input('is_active');
+        $user->save();
+        return response()->json($user);
+    }
+
+
 
 }

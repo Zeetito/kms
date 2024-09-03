@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Semester;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Semester extends Model
 {
@@ -16,4 +17,11 @@ class Semester extends Model
         'end_date',
         'is_active',
     ];
+
+
+    // STATIC FUCNTION
+    // Get active semester
+    public static function active_semester(){
+        return Semester::where('is_active',1)->first();
+    }
 }

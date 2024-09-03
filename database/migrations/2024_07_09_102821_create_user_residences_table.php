@@ -25,6 +25,8 @@ return new class extends Migration
                     ->onDelete('set null');
 
             $table->string('floor')->nullable();
+
+            $table->string('room')->nullable();
             
             $table->string('block')->nullable();
             

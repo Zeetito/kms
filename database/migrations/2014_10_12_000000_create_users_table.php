@@ -19,9 +19,12 @@ return new class extends Migration
             $table->char('gender', 1);
             $table->boolean('is_member');
             $table->string('email')->unique();
-            $table->boolean('is_alumni');
+            $table->boolean('is_alumni')->default(0);
+            $table->boolean('is_student');
+            $table->integer('is_worker')->default(0);
             $table->boolean('is_knust_affiliate');
-            $table->string('status');
+            // $table->string('status');
+            $table->integer('is_active')->default(0); // 0->inactive , 1 ->active, 2->deactivated
             $table->date('dob')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
