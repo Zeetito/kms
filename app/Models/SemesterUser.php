@@ -7,7 +7,7 @@ use App\Models\Semester;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class UserSemester extends Model
+class SemesterUser extends Model
 {
     use HasFactory;
 
@@ -16,13 +16,15 @@ class UserSemester extends Model
         'semester_id',
     ];
 
-    public function user()
-    {
+    // RELATIONSHIPS
+
+    // User
+    public function user(){
         return $this->belongsTo(User::class);
     }
 
-    public function semester()
-    {
+    // Semester
+    public function semester(){
         return $this->belongsTo(Semester::class);
     }
 }

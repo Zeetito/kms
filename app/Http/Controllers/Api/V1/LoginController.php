@@ -32,7 +32,20 @@ class LoginController extends Controller
             // Get the authenticated user
             $user = Auth::user();
 
-            // Generate a token (assuming you are using Laravel Passport or Sanctum)
+            // Check if the user's account is active
+            if ($user->is_active == 0) {
+                return response()->json([
+                    'message' => 'Account Under Review. You would be contacted to confirm your identity.Thank You',
+                    'status' => 'failure'
+                ], 401);
+            }elseif($user->is_active == 2){
+                return response()->json([
+                    'message' => 'Account Deactivated. Kindly contact the Administrator.',
+                    'status' => 'failure'
+                ], 401);
+            }
+
+            // Generprate a token (assuming you are using Laravel Passport or Sanctum)
             $token = $user->createToken('API Token')->plainTextToken;
 
             return response()->json([

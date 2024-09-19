@@ -1,8 +1,8 @@
-### ACCOUNT
+### RECORD
 
 ## Table Attributes
 - id
-- type (expenditure,budget,income,counting)
+- type (financial, text, counting)
 - createable_type
 - createable_id
 - user_id

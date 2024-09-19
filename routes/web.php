@@ -20,6 +20,7 @@ Route::get('/', function () {
 
 // Hello route
 Route::get('/hello', function () {
+    return User::ministry_members();
     return User::find(2)->roles()->count();
     return getAcademicYearId();
     

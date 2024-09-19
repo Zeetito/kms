@@ -41,13 +41,16 @@ return new class extends Migration
 
 
             $table->timestamps();
+                    
+            // unique constraint
+            $table->unique(['user_id', 'academic_year_id']);
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+public function down(): void
     {
         Schema::dropIfExists('user_residences');
     }

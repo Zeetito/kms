@@ -7,10 +7,12 @@ use App\Models\Role;
 use App\Models\Semester;
 use App\Models\UserRole;
 use App\Models\Residence;
-use App\Models\UserSemester;
+use App\Models\SemesterUser;
+// use App\Models\UserSemester;
 use Illuminate\Http\Request;
 use App\Models\UserResidence;
 use Laravel\Sanctum\HasApiTokens;
+use App\Http\Resources\UserResource;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -35,7 +37,7 @@ class User extends Authenticatable
         'is_worker',
         'is_student',
         'is_knust_affiliate',
-        'password',
+        'password'
     ];
 
     /**
@@ -66,7 +68,23 @@ class User extends Authenticatable
         'fullname',
         'role',
         'role_level',
+        'semester_id',
+        // 'zone_id'
     ];
+
+    // Override the toArray method
+    public function toArray()
+    {
+        // Use UserResource to transform the model's array
+        return (new UserResource($this))->resolve();
+    }
+
+    // Override the toJson method
+    public function toJson($options = 0)
+    {
+        // Use UserResource to transform the model's JSON representation
+        return (new UserResource($this))->toJson($options);
+    }
 
     // CUSTOM ATTRIBUTES
         // Get Status of user
@@ -126,6 +144,18 @@ class User extends Authenticatable
             }
         }
 
+        // Get User Semester Id
+        public function getSemesterIdAttribute()
+        {
+            return $this->user_semester()->id;
+        }
+
+        // Get zoneId Atttribute
+        public function getZoneIdAttribute()
+        {
+            return $this->zone() ? $this->zone()->id : null;
+        }
+
 
     // RELATIONSHIPS
 
@@ -139,9 +169,9 @@ class User extends Authenticatable
         return Role::whereIn('id',$this->user_roles->pluck('role_id'));
     }
 
-    // User Semester
-    public function user_semester(){
-        return $this->hasOne(UserSemester::class);
+    // // User Semester
+    public function semester_user(){
+        return $this->hasOne(SemesterUser::class);
     }
 
     // User Residences
@@ -152,15 +182,27 @@ class User extends Authenticatable
     // Get related residence
     public function residence()
     {
-        // $id = $this->user_residences->sortByDesc('created_at')->first()->residence_id;
+       
+        return $this->user_residences->first() ? $this->user_residences->first()->residence : null;
+    }
 
-        // return Residence::find($id);
-
-        return $this->belongsTo(Residence::class, UserResidence::class, 'user_id', 'residence_id');
+    // Get zone
+    public function zone()
+    {
+        return $this->residence() ? $this->residence()->zone : null;
     }
 
     // FUNCTION
+    // User Semester - Current semester of user
+    public function user_semester(){
+        $instance = SemesterUser::where('user_id',$this->id)->first();
 
+        if($instance){
+            return $instance->semester;
+        }else{
+            return Semester::getActiveSemester();
+        }
+    }
 
     // STATIC FUNCTIONS
 

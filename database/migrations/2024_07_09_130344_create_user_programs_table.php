@@ -16,15 +16,18 @@ return new class extends Migration
             
             $table->foreignId('user_id');
 
-            $table->foreignId('program_id');
+            $table->foreignId('program_id')->nullable()->constrained()->onDelete('set null');
 
-            $table->string('customer_name');
+            $table->string('custom_name')->nullable();
 
-            $table->integer('year');
+            $table->integer('year')->nullable();
 
             $table->foreignId('academic_year_id');
 
             $table->timestamps();
+
+             // unique constraint
+             $table->unique(['user_id', 'academic_year_id']);
         });
     }
 

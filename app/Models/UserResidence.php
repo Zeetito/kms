@@ -5,8 +5,11 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Residence;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Scopes\AcademicYearScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[ScopedBy([AcademicYearScope::class])]
 class UserResidence extends Model
 {
     use HasFactory;

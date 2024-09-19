@@ -2,15 +2,29 @@
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Zone;
+use App\Models\Record;
+use App\Models\Program;
 use App\Models\Residence;
+use App\Models\MeetingType;
 use Illuminate\Http\Request;
 use App\Models\UserResidence;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\api\V1\UserController;
+use App\Http\Controllers\Api\V1\ZoneController;
 use App\Http\Controllers\Api\V1\LoginController;
+use App\Http\Controllers\Api\V1\RecordController;
+use App\Http\Controllers\Api\V1\MeetingController;
+use App\Http\Controllers\Api\V1\ProgramController;
 use App\Http\Controllers\Api\V1\ResidenceController;
+use App\Http\Controllers\Api\V1\OfficiatorController;
+use App\Http\Controllers\Api\V1\RecordItemController;
+use App\Http\Controllers\Api\V1\MeetingTypeController;
+use App\Http\Controllers\Api\V1\UserProgramController;
+use App\Http\Controllers\Api\V1\SemesterUserController;
 use App\Http\Controllers\Api\V1\UserResidenceController;
+use App\Http\Controllers\Api\V1\OfficiatingRoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,14 +41,44 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// ROLES
-    // Get all roles
-    Route::middleware('auth:sanctum')->get('/roles', function () {
-        $roles = Role::all();
-        return response()->json($roles);
-    });
+// SEMESTER USER
+    // Index
+    Route::get('/semester_users', [SemesterUserController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
 
-    // Get Users for a particular Role
+    // Store or Update
+    Route::post('/semester_users', [SemesterUserController::class, 'storeOrUpdate'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/semester_users', [SemesterUserController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+
+    
+
+// ROLES
+    // Index
+    Route::get('/roles', [RoleController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show 
+    Route::get('/roles/{role}', [RoleController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store
+    Route::post('/roles', [RoleController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+
+    // USER
+    // Index
     Route::get('/role/{role}/users', [RoleController::class, 'users'])
     ->middleware('auth:sanctum')
     ;
@@ -45,6 +89,127 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return response()->json($users);
     });
 
+    
+// USERRESIDENCE
+    // Index
+    Route::get('/user_residences', [UserResidenceController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store UserResidence
+    Route::post('/user_residences', [UserResidenceController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update UserResidence
+    Route::put('/user_residences/{user}', [UserResidenceController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete UserResidence
+    Route::delete('/user_residences/{user}', [UserResidenceController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+// PROGRAM
+    // Index
+    Route::get('/programs', [ProgramController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/programs/{program}', [ProgramController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store Program
+    Route::post('/programs', [ProgramController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update Program
+    Route::put('/programs/{program}', [ProgramController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete Program
+    Route::delete('/programs/{program}', [ProgramController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // USERS
+    // Index
+    Route::middleware('auth:sanctum')->get('/programs/{program}/users', function (Request $request, Program $program) {
+        return response()->json($program->users());
+    });
+
+
+// USER PROGRAM
+    // Index
+    Route::get('/user_programs', [UserProgramController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    // Route::get('/user_programs/{user}', [UserProgramController::class, 'show'])
+    // ->middleware('auth:sanctum')
+    // ;
+
+    // Store
+    Route::post('/user_programs', [UserProgramController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update
+    Route::put('/user_programs/{user_program}', [UserProgramController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/user_programs/{user_program}', [UserProgramController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+
+// ZONE
+    // Index
+    Route::get('/zones', [ZoneController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/zones/{zone}', [ZoneController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // ---Store
+    Route::post('/zones', [ZoneController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+
+    // Update
+    Route::put('/zones/{zone}', [ZoneController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/zones/{zone}', [ZoneController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // USER
+    // Index
+    Route::middleware('auth:sanctum')->get('/zones/{zone}/users', function (Zone $zone) {
+        return response()->json($zone->users());
+    });
+    
+    // RESIDENCE
+    // Index
+    Route::middleware('auth:sanctum')->get('/zones/{zone}/residences', function (Zone $zone) {
+        return response()->json($zone->residences);
+    });
+    
 // RESIDENCE
     // Get residences
     Route::middleware('auth:sanctum')->get('/residences', function () {
@@ -53,44 +218,203 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     });
 
     // Store Residence
-    Route::post('/residence', [ResidenceController::class, 'store'])
+    Route::post('/residences', [ResidenceController::class, 'store'])
     ->middleware('auth:sanctum')
     ;
 
     // Update Residence
-    Route::put('/residence/{residence}', [ResidenceController::class, 'update'])
+    Route::put('/residences/{residence}', [ResidenceController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
     // Delete Residence
-    Route::delete('/residence/{residence}', [ResidenceController::class, 'destroy'])
+    Route::delete('/residences/{residence}', [ResidenceController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Methods
+    //Get zone
+    Route::middleware('auth:sanctum')->get('/residences/{residence}/zone', function (Request $request, Residence $residence) {
+        return response()->json($residence->zone);
+    });
+
+    //Get users
+    Route::middleware('auth:sanctum')->get('/residences/{residence}/users', function (Request $request, Residence $residence) {
+        return response()->json($residence->users());
+    });
+
+// MEETING
+    // Index
+    Route::get('/meetings', [MeetingController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/meetings/{meeting}', [MeetingController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store
+    Route::post('/meetings', [MeetingController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update
+    Route::put('/meetings/{meeting}', [MeetingController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])
     ->middleware('auth:sanctum')
     ;
     
-// USERRESIDENCE
-    // Get all userResidence for the academic year
-    Route::middleware('auth:sanctum')->get('/user-residences/{academic_year_id}', function ($academic_year_id) {
-        $userResidences = UserResidence::where('academic_year_id', $academic_year_id)
-            ->with('user', 'residence')
-            ->get();
 
-        return response()->json($userResidences);
+// MEETING TYPE
+    // Index
+    Route::get('/meeting_types', [MeetingTypeController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/meeting_types/{meeting_type}', [MeetingTypeController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store
+    Route::post('/meeting_types', [MeetingTypeController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;   
+    
+    // Update
+    Route::put('/meeting_types/{meeting_type}', [MeetingTypeController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/meeting_types/{meeting_type}', [MeetingTypeController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Methods
+    // Meetings
+    Route::middleware('auth:sanctum')->get('/meeting_types/{meeting_type}/meetings', function (Request $request, MeetingType $meeting_type) {
+        return response()->json($meeting_type->meetings);
     });
 
-    // Store UserResidence
-    Route::post('/user-residence', [UserResidenceController::class, 'store'])
+// OFFICIATING ROLE
+    // Index
+    Route::get('/officiating_roles', [OfficiatingRoleController::class, 'index'])
     ->middleware('auth:sanctum')
     ;
 
-    // Update UserResidence
-    Route::put('/user-residence/{user_residence}', [UserResidenceController::class, 'update'])
+    // Show
+    Route::get('/officiating_roles/{officiating_role}', [OfficiatingRoleController::class, 'show'])
     ->middleware('auth:sanctum')
     ;
 
-    // Delete UserResidence
-    Route::delete('/user-residence/{user_residence}', [UserResidenceController::class, 'destroy'])
+    // Store
+    Route::post('/officiating_roles', [OfficiatingRoleController::class, 'store'])
     ->middleware('auth:sanctum')
     ;
+
+    // Update
+    Route::put('/officiating_roles/{officiating_role}', [OfficiatingRoleController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/officiating_roles/{officiating_role}', [OfficiatingRoleController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Methods
+
+// OFFICIATORS
+    // Index
+    Route::get('/officiators', [OfficiatorController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/officiators/{officiator}', [OfficiatorController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store
+    Route::post('/officiators', [OfficiatorController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update
+    Route::put('/officiators/{officiator}', [OfficiatorController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/officiators/{officiator}', [OfficiatorController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+// RECORD
+    // Index
+    Route::get('/records', [RecordController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/records/{record}', [RecordController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store
+    Route::post('/records', [RecordController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update
+    Route::put('/records/{record}', [RecordController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/records/{record}', [RecordController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Methods
+    // RecordItems
+    Route::middleware('auth:sanctum')->get('/records/{record}/record_items', function (Request $request, Record $record) {
+        return response()->json($record->record_items);
+    });
+
+// RECORD ITEM
+    // Index
+    Route::get('/record_items', [RecordItemController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/record_items/{record_item}', [RecordItemController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store
+    Route::post('/record_items', [RecordItemController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update
+    Route::put('/record_items/{record_item}', [RecordItemController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/record_items/{record_item}', [RecordItemController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+    
 
 // USER
     // GET USER
@@ -188,7 +512,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     // POST USER
         // Register
         Route::post('/register', [UserController::class, 'register'])
-        ->middleware('auth:sanctum')
+        // ->middleware('auth:sanctum')
         ;
 
         // Update
@@ -215,7 +539,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // hello route
 Route::get('/hello', function () {
-    // return getAcademicYearId();
+    return App\Models\User::find(1)->zone_id;
     return App\Models\User::find(1)->residence();
+    // return getAcademicYearId();
     return 'hello';
 });

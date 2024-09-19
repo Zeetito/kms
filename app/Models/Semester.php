@@ -21,6 +21,10 @@ class Semester extends Model
 
     // STATIC FUCNTION
     // Get active semester
+    public static function getActiveSemester(){
+        return Semester::where('is_active',1)->first();
+    }
+
     public static function active_semester(){
         return Semester::where('is_active',1)->first();
     }

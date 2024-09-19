@@ -40,6 +40,8 @@ return new class extends Migration
 
             $table->text('location')->nullable();
 
+            $table->foreignId('semester_id')->constrained() ;
+
             $table->timestamps();
         });
     }

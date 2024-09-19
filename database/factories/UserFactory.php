@@ -43,7 +43,7 @@ class UserFactory extends Factory
                 'is_member' => '1',
                 'is_knust_affiliate' => '1',
                 'is_alumni' => '0',
-                'status' => 'student',
+                'is_student' => 1,
             ];
         });
     }
@@ -56,7 +56,7 @@ class UserFactory extends Factory
                 'is_member' => '1',
                 'is_knust_affiliate' => '0',
                 'is_alumni' => '0',
-                'status' => 'student',  
+                'is_student' => 1,  
             ];
         });
     }
@@ -69,7 +69,8 @@ class UserFactory extends Factory
                 'is_member' => 1,
                 'is_knust_affiliate' => '1',
                 'is_alumni' => '1',
-                'status' => 'Worker/Ns',
+                // 'status' => 'Worker/Ns',
+                'is_student' => 0,  
             ];
         });
     }
@@ -82,7 +83,8 @@ class UserFactory extends Factory
                 'is_member' => 0,
                 'is_knust_affiliate' => '1',
                 'is_alumni' => '1',
-                'status' => 'Alumni',
+                // 'status' => 'Alumni',
+                'is_student' => 0,
 
             ];
         });
@@ -95,8 +97,9 @@ class UserFactory extends Factory
                 // User attributes...
                 'is_member' => '1',
                 'is_knust_affiliate' => '0',
-                'status' => 'Worker/Ns',
+                // 'status' => 'Worker/Ns',
                 'is_alumni' => '0',
+                'is_student' => 0,
                 
 
             ];

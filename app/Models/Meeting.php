@@ -2,9 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\MeetingType;
+use App\Models\Scopes\SemesterScope;
+use App\Http\Resources\MeetingResource;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[ScopedBy([SemesterScope::class])]
 class Meeting extends Model
 {
     use HasFactory;
@@ -20,7 +25,38 @@ class Meeting extends Model
         'end_time',
         'venue',
         'location',
+        'semester_id',
         'allows_question',
 
     ];
+
+    
+    // Override the toArray method
+    public function toArray()
+    {
+        // Use MeetingResource to transform the model's array
+        return (new MeetingResource($this))->resolve();
+    }
+    
+    // Override the toJson method
+    public function toJson($options = 0)
+    {
+        // Use MeetingResource to transform the model's JSON representation
+        return (new MeetingResource($this))->toJson($options);
+    }
+    
+    // ATTRIBUTES
+    // getMeetingType Attribute
+    public function getMeetingTypeSlugAttribute()
+    {
+        return $this->meeting_type->slug;
+    }
+
+    // RELATIONSHIOPS
+        // Get related meeting_type
+        public function meeting_type()
+        {
+            return $this->belongsTo(MeetingType::class);
+        }
+
 }

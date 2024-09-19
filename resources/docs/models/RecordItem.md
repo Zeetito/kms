@@ -1,12 +1,11 @@
-### ACCOUNT RECORD
+### RECORD ITEMS
 
 ## Table Attributes
 - id
-- account_id
+- record_id
 - user_id (Nullable)
 - unit_cost
-- unit_number
-- discount
+- quantity
 - info (Nullable)
 - value
 - timestamps
