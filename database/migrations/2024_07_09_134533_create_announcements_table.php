@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('meeting_id');
             $table->text('body');
+            $table->morphs('createable');
             $table->foreignId('user_id');
             $table->boolean('is_public')->default(0);
+            $table->boolean('is_request');
             $table->timestamps();
         });
     }

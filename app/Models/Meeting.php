@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\MeetingType;
+use App\Models\Announcement;
 use App\Models\Scopes\SemesterScope;
 use App\Http\Resources\MeetingResource;
 use Illuminate\Database\Eloquent\Model;
@@ -49,7 +50,7 @@ class Meeting extends Model
     // getMeetingType Attribute
     public function getMeetingTypeSlugAttribute()
     {
-        return $this->meeting_type->slug;
+        return $this->meeting_type ? $this->meeting_type->slug: null;
     }
 
     // RELATIONSHIOPS
@@ -58,5 +59,25 @@ class Meeting extends Model
         {
             return $this->belongsTo(MeetingType::class);
         }
+
+        // Annoucements
+        public function announcements()
+        {
+            return $this->hasMany(Announcement::class);
+        }
+
+    
+    // FUNCTIONS
+    // Get visible annoucments
+    public function visible_announcements()
+    {
+        return $this->announcements->visible;
+    }
+
+    // Get announcements
+    public function announcement_requests()
+    {
+        return $this->announcements->request;
+    }
 
 }

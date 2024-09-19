@@ -4,11 +4,13 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Role;
+use App\Models\Record;
+use App\Models\Report;
 use App\Models\Semester;
 use App\Models\UserRole;
+// use App\Models\UserSemester;
 use App\Models\Residence;
 use App\Models\SemesterUser;
-// use App\Models\UserSemester;
 use Illuminate\Http\Request;
 use App\Models\UserResidence;
 use Laravel\Sanctum\HasApiTokens;
@@ -124,6 +126,11 @@ class User extends Authenticatable
             }
         }
 
+        // Get name attribute
+        public function getNameAttribute(){
+            return $this->firstname." ".$this->othername." ".$this->lastname;
+        }
+
         // Get Role Attribute
         public function getRoleAttribute(){
             if($this->roles()->count() > 0){
@@ -192,6 +199,19 @@ class User extends Authenticatable
         return $this->residence() ? $this->residence()->zone : null;
     }
 
+    // Report with morph relation
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'createable');
+    }
+
+    // Records
+    public function records()
+    {
+        return $this->morphMany(Record::class, 'createable');
+    }
+    
+
     // FUNCTION
     // User Semester - Current semester of user
     public function user_semester(){
@@ -203,6 +223,7 @@ class User extends Authenticatable
             return Semester::getActiveSemester();
         }
     }
+
 
     // STATIC FUNCTIONS
 

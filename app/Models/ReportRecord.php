@@ -11,6 +11,7 @@ class ReportRecord extends Model
 
     protected $fillable = [
         'user_id',
+        'report_id',
         'body',
         'path',//(local path) (nullable)
         'position',

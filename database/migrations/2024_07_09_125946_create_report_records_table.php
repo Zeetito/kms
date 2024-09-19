@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('report_records', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('user_id')
                     ->nullable()
                     ->constrained()
@@ -26,7 +27,7 @@ return new class extends Migration
 
             $table->string('body');
 
-            $table->string('path');
+            $table->string('path')->nullable();
 
             $table->integer('position')->nullable();
 

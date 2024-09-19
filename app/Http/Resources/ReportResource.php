@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RecordResource extends JsonResource
+class ReportResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,7 +18,7 @@ class RecordResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'type' => $this->type,
-            'author' => $this->createable->name,
+            'author' => $this->createable ? $this->createable->name : null,
             'user_id' => $this->user_id,
             'semester_id' => $this->semester_id,
             'creatable_type' => $this->createable_type,

@@ -4,9 +4,12 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Zone;
 use App\Models\Record;
+use App\Models\Report;
+use App\Models\Meeting;
 use App\Models\Program;
 use App\Models\Residence;
 use App\Models\MeetingType;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\UserResidence;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +18,7 @@ use App\Http\Controllers\api\V1\UserController;
 use App\Http\Controllers\Api\V1\ZoneController;
 use App\Http\Controllers\Api\V1\LoginController;
 use App\Http\Controllers\Api\V1\RecordController;
+use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\ProgramController;
 use App\Http\Controllers\Api\V1\ResidenceController;
@@ -22,6 +26,8 @@ use App\Http\Controllers\Api\V1\OfficiatorController;
 use App\Http\Controllers\Api\V1\RecordItemController;
 use App\Http\Controllers\Api\V1\MeetingTypeController;
 use App\Http\Controllers\Api\V1\UserProgramController;
+use App\Http\Controllers\Api\V1\AnnouncementController;
+use App\Http\Controllers\Api\V1\ReportRecordController;
 use App\Http\Controllers\Api\V1\SemesterUserController;
 use App\Http\Controllers\Api\V1\UserResidenceController;
 use App\Http\Controllers\Api\V1\OfficiatingRoleController;
@@ -268,6 +274,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])
     ->middleware('auth:sanctum')
     ;
+
+    // Methods
+    // announcements
+    Route::middleware('auth:sanctum')->get('/meetings/{meeting}/announcements', function (Request $request, Meeting $meeting) {
+        return response()->json($meeting->announcements);
+    });
     
 
 // MEETING TYPE
@@ -414,6 +426,91 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ->middleware('auth:sanctum')
     ;
 
+// REPORT
+    // Index
+    Route::get('/reports', [ReportController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/reports/{report}', [ReportController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store
+    Route::post('/reports', [ReportController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update
+    Route::put('/reports/{report}', [ReportController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/reports/{report}', [ReportController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Methods
+    // ReportRecords
+    Route::middleware('auth:sanctum')->get('/reports/{report}/report_records', function (Request $request, Report $report) {
+        return response()->json($report->report_records);
+    });
+
+
+// REPORT RECORD
+    // Index
+    Route::get('/report_records', [ReportRecordController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/report_records/{report_record}', [ReportRecordController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store
+    Route::post('/report_records', [ReportRecordController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update
+    Route::put('/report_records/{report_record}', [ReportRecordController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/report_records/{report_record}', [ReportRecordController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+// ANNOUCNCEMENT
+    // Index
+    Route::get('/announcements', [AnnouncementController::class, 'index'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Show
+    Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Store
+    Route::post('/announcements', [AnnouncementController::class, 'store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Update
+    Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Delete
+    Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
     
 
 // USER
@@ -539,6 +636,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // hello route
 Route::get('/hello', function () {
+    return App\Models\User::find(6)->name;
     return App\Models\User::find(1)->zone_id;
     return App\Models\User::find(1)->residence();
     // return getAcademicYearId();

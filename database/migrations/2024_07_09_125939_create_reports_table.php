@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->string('name');
 
-            $table->string('type'); //ministry,visitation//feedback/munite
+            $table->string('type')->nullable(); //ministry,visitation//feedback/munite
             
             $table->foreignId('semester_id')
                     ->nullable()
@@ -24,9 +24,13 @@ return new class extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
 
-            $table->string('createable_type');
+            $table->morphs('createable');
 
-            $table->unsignedBigInteger('createable_id');
+            $table->foreignId('user_id')
+                    ->nullable()
+                    ->constrained()
+                    ->onUpdate('cascade')
+                    ->onDelete('set null');
 
             $table->timestamps();
         });

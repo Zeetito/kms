@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Record;
+use App\Models\Report;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
@@ -28,5 +31,17 @@ class Role extends Model
     {
         return User::whereIn('id',$this->user_roles->where('academic_year_id', getAcademicYearId($request))->pluck('user_id'))->get();
         // return $this->hasManyThrough(User::class, UserRole::class)->where('academic_year_id', getAcademicYearId($request));
+    }
+
+    // Report with morph relation
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'createable');
+    }
+
+    // Records
+    public function records()
+    {
+        return $this->morphMany(Record::class, 'createable');
     }
 }
