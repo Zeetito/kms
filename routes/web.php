@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Jobs\UserRegisteredNotificationJob;
+use App\Notifications\UserRegisteredNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,10 @@ Route::get('/', function () {
 
 // Hello route
 Route::get('/hello', function () {
+    $user = User::find(1011);
+    UserRegisteredNotificationJob::dispatch($user)->delay(now()->addSeconds(30));
+    // $user->notify(new UserRegisteredNotification());
+    return "afa";
     return User::ministry_members();
     return User::find(2)->roles()->count();
     return getAcademicYearId();

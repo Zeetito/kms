@@ -14,4 +14,10 @@ class AcademicYear extends Model
         'end_year',
         'is_active'
     ];
+
+
+    // FUNCTIONS
+    public function getActiveAcademicYear(){
+        return Semester::getActiveSemester()->academic_year;
+    }
 }

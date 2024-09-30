@@ -31,7 +31,7 @@ class UserProgramController extends Controller
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer|exists:users,id',
-            'academic_year_id' => 'required|integer|exists:academic_years,id',
+            // 'academic_year_id' => 'required|integer|exists:academic_years,id',
             'program_id' => 'nullable|integer|exists:programs,id',
             'custom_name' => 'nullable|string|max:255',
             'year' => 'nullable|integer'
@@ -78,11 +78,15 @@ class UserProgramController extends Controller
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer|exists:users,id',
-            'academic_year_id' => 'required|integer|exists:academic_years,id',
+            // 'academic_year_id' => 'required|integer|exists:academic_years,id',
             'program_id' => 'nullable|integer|exists:programs,id',
             'custom_name' => 'nullable|string|max:255',
             'year' => 'nullable|integer'
         ]);
+
+        $request->academic_year = AcademicYear::getActiveAcademicYear()->id;
+
+        return $request;
     
         // Check if program Id is null
         if($request->program_id == null){
