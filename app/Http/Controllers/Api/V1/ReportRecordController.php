@@ -54,8 +54,6 @@ class ReportRecordController extends Controller
     public function update(Request $request, ReportRecord $reportRecord)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'nullable|exists:users,id',
-            'report_id' => 'required|exists:reports,id',
             'body' => 'required|string',
             'path' => 'nullable|string',
             'position' => 'nullable|integer'

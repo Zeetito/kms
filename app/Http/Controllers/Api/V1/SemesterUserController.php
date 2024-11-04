@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\User;
 use App\Models\Semester;
 use App\Models\SemesterUser;
 use Illuminate\Http\Request;
@@ -20,12 +21,11 @@ class SemesterUserController extends Controller
     }
 
 
-    // Store or Update an instance
-    public function storeOrUpdate(Request $request)
+    // Store,delete or Update an instance 
+    public function storeOrUpdate(User $user, Request $request)
     {
         // Validate the incoming request
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|integer|exists:users,id',
             'semester_id' => 'required|integer|exists:semesters,id',
         ]);
 
@@ -40,6 +40,7 @@ class SemesterUserController extends Controller
         try {
             // Get validated data
             $validated = $validator->validated();
+            $validated['user_id'] = $user->id;
 
             // Check if a SemesterUser entry already exists for the user
             $semesterUser = $request->user()->semester_user;

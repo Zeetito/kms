@@ -1,9 +1,12 @@
 <?php
 
 use App\Models\User;
+use App\Models\Program;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Jobs\UserRegisteredNotificationJob;
 use App\Notifications\UserRegisteredNotification;
+use App\Http\Controllers\Auth\SocialiteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,20 +23,27 @@ Route::get('/', function () {
     // return view('welcome');
 });
 
-// Hello route
-Route::get('/hello', function () {
-    $user = User::find(1011);
-    UserRegisteredNotificationJob::dispatch($user)->delay(now()->addSeconds(30));
-    // $user->notify(new UserRegisteredNotification());
-    return "afa";
-    return User::ministry_members();
-    return User::find(2)->roles()->count();
-    return getAcademicYearId();
-    
-    // return App\Models\User::all()->update(['is_active'=>1]);
-    return App\Models\UserResidence::all();
-    return App\Models\User::workers_members()->get()->pluck('is_worker');
-    // return App\Models\User::query()->update(['is_active' => 1]);
 
-    return "Hello Sir";
+Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+
+// home route
+// Route::get('/home', function () {
+//     return "ay3 ka";
+// })->name('home')->middleware(['auth:sanctum','valid_account']);
+
+// USER ACCOUNT COMPONENTS
+Route::get('/user/account_components/phone/{user}', function () {
+    return view('user.account.components.phone');
+})->name('update_contacts');
+
+// Hello route
+Route::get('/hello', function (Request $request) {
+    return User::students()->get();
+    return Program::find(10)->users();
+    return User::find(1012)->user_residences;
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

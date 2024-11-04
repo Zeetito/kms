@@ -57,10 +57,7 @@ class ReportController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'type' => 'nullable|string',
-            'semester_id' => 'nullable|exists:semesters,id',
-            'user_id' => 'nullable|exists:users,id',
-            'createable_type' => 'required|string|max:255',
-            'createable_id' => 'required|integer',
+        
         ]);
 
         if ($validator->fails()) {

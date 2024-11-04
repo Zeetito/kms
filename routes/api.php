@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Store or Update
-    Route::post('/semester_users', [SemesterUserController::class, 'storeOrUpdate'])
+    Route::post('/semester_users/{user}', [SemesterUserController::class, 'storeOrUpdate'])
     ->middleware('auth:sanctum')
     ;
 
@@ -103,7 +103,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Store UserResidence
-    Route::post('/user_residences', [UserResidenceController::class, 'store'])
+    Route::post('/user_residences/{user}', [UserResidenceController::class, 'store'])
     ->middleware('auth:sanctum')
     ;
 
@@ -143,8 +143,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ->middleware('auth:sanctum')
     ;
 
-    // USERS
-    // Index
+    // Methods
+    // Users
     Route::middleware('auth:sanctum')->get('/programs/{program}/users', function (Request $request, Program $program) {
         return response()->json($program->users());
     });
@@ -162,17 +162,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     // ;
 
     // Store
-    Route::post('/user_programs', [UserProgramController::class, 'store'])
+    Route::post('/user_programs/{user}', [UserProgramController::class, 'store'])
     ->middleware('auth:sanctum')
     ;
 
     // Update
-    Route::put('/user_programs/{user_program}', [UserProgramController::class, 'update'])
+    Route::put('/user_programs/{user}', [UserProgramController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
     // Delete
-    Route::delete('/user_programs/{user_program}', [UserProgramController::class, 'destroy'])
+    Route::delete('/user_programs/{user}', [UserProgramController::class, 'destroy'])
     ->middleware('auth:sanctum')
     ;
 
@@ -635,10 +635,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 // hello route
-Route::get('/hello', function () {
+Route::get('/hello', function (Request $request) {
+    return auth()->user();
     return App\Models\User::find(6)->name;
     return App\Models\User::find(1)->zone_id;
     return App\Models\User::find(1)->residence();
     // return getAcademicYearId();
     return 'hello';
-});
+})->middleware('auth:sanctum');

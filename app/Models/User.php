@@ -10,6 +10,7 @@ use App\Models\Semester;
 use App\Models\UserRole;
 // use App\Models\UserSemester;
 use App\Models\Residence;
+use App\Models\UserProgram;
 use App\Models\SemesterUser;
 use Illuminate\Http\Request;
 use App\Models\UserResidence;
@@ -34,6 +35,7 @@ class User extends Authenticatable
         'lastname',
         'gender',
         'email',
+        'contacts',
         'is_alumni',
         'is_member',
         'is_worker',
@@ -186,11 +188,21 @@ class User extends Authenticatable
         return $this->hasMany(UserResidence::class);
     }
 
+    // Get User Residence
+    public function user_residence(){
+        return $this->user_residences->first();
+    }
+
     // Get related residence
     public function residence()
     {
        
         return $this->user_residences->first() ? $this->user_residences->first()->residence : null;
+    }
+
+    // User Programs
+    public function user_programs(){
+        return $this->hasMany(UserProgram::class);
     }
 
     // Get zone

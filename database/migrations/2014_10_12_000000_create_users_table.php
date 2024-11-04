@@ -13,16 +13,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('firstname');
-            $table->string('lastname');
+            $table->string('firstname')->nullable();
+            $table->string('lastname')->nullable();
             $table->string('othername')->nullable();
-            $table->char('gender', 1);
-            $table->boolean('is_member');
+            $table->char('gender', 1)->nullable();
+            $table->boolean('is_member')->nullable();
             $table->string('email')->unique();
+            $table->text('contacts')->nullable();
             $table->boolean('is_alumni')->default(0);
-            $table->boolean('is_student');
+            $table->boolean('is_student')->nullable();
             $table->integer('is_worker')->default(0);
-            $table->boolean('is_knust_affiliate');
+            $table->boolean('is_knust_affiliate')->nullable();
             // $table->string('status');
             $table->integer('is_active')->default(0); // 0->inactive , 1 ->active, 2->deactivated
             $table->date('dob')->nullable();

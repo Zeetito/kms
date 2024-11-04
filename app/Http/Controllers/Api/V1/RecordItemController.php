@@ -53,8 +53,6 @@ class RecordItemController extends Controller
     public function update(Request $request, RecordItem $record_item)
     {
         $validator = Validator::make($request->all(), [
-            'record_id' => 'required|exists:records,id',
-            'user_id' => 'nullable|exists:users,id',
             'unit_cost' => 'nullable|numeric',
             'quantity' => 'nullable|numeric',
             'info' => 'nullable|string|max:255',

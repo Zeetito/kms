@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\User;
 use App\Models\UserProgram;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,10 +29,8 @@ class UserProgramController extends Controller
     }
 
     // Store
-    public function store(Request $request){
+    public function store(User $user, Request $request){
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|integer|exists:users,id',
-            // 'academic_year_id' => 'required|integer|exists:academic_years,id',
             'program_id' => 'nullable|integer|exists:programs,id',
             'custom_name' => 'nullable|string|max:255',
             'year' => 'nullable|integer'
@@ -57,6 +56,8 @@ class UserProgramController extends Controller
             ], 422);
         }
     
+        // Add user id to the request
+        $request['user_id'] = $user->id;
         try {
             $user_program = UserProgram::create($request->all());
             return response()->json([
@@ -74,19 +75,18 @@ class UserProgramController extends Controller
     }
 
     // Update
-    public function update(Request $request, UserProgram $user_program){
-
+    public function update(Request $request, User $user){
+        $user_program = $user->user_programs->first();
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|integer|exists:users,id',
             // 'academic_year_id' => 'required|integer|exists:academic_years,id',
             'program_id' => 'nullable|integer|exists:programs,id',
             'custom_name' => 'nullable|string|max:255',
             'year' => 'nullable|integer'
         ]);
 
-        $request->academic_year = AcademicYear::getActiveAcademicYear()->id;
+        
 
-        return $request;
+        $request['user_id'] = $user->id;
     
         // Check if program Id is null
         if($request->program_id == null){
@@ -128,8 +128,9 @@ class UserProgramController extends Controller
     }
 
     // Delete
-    public function destroy(UserProgram $user_program)
+    public function destroy(User $user)
     {
+        $user_program = $user->user_programs->first();
         try {
             $user_program->delete();
             return response()->json([

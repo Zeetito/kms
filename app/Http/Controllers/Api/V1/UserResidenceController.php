@@ -23,16 +23,14 @@ class UserResidenceController extends Controller
 
     // Store UserResidence
 
-    public function store(Request $request){
+    public function store(User $user,Request $request){
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
             'residence_id' => 'required',
             'room' => 'nullable',
             'floor' => 'nullable',
             'block' => 'nullable',
             'custom_name' => 'nullable',
             'custom_description' => 'nullable',
-            'academic_year_id' => 'nullable',
         ]);
     
         if ($validator->fails()) {
@@ -44,6 +42,7 @@ class UserResidenceController extends Controller
         }
     
         $instance = $request->all();
+        $instance['user_id'] = $user->id;
         $instance['academic_year_id'] = Semester::active_semester()->academic_year_id;
     
         try {
@@ -69,14 +68,12 @@ class UserResidenceController extends Controller
     public function update(Request $request, User $user){
         $user_residence = UserResidence::where('user_id', $user->id)->first();
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
             'residence_id' => 'required',
             'room' => 'nullable',
             'floor' => 'nullable',
             'block' => 'nullable',
             'custom_name' => 'nullable',
             'custom_description' => 'nullable',
-            'academic_year_id' => 'nullable',
         ]);
     
         if ($validator->fails()) {

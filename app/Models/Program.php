@@ -31,7 +31,7 @@ class Program extends Model
 
     // Get Users
     public function users(){
-        return User::whereIn('user_id',$this->user_programs()->pluck('user_id'))->get();
+        return User::whereIn('id',$this->user_programs->pluck('user_id'))->get();
     }
 
 }
