@@ -27,10 +27,9 @@ Route::get('/', function () {
 Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
-// home route
-// Route::get('/home', function () {
-//     return "ay3 ka";
-// })->name('home')->middleware(['auth:sanctum','valid_account']);
+
+
+
 
 // USER ACCOUNT COMPONENTS
 Route::get('/user/account_components/phone/{user}', function () {
