@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
+                    {{ __('Kindly access the app from the KMS application') }}
                 </div>
             </div>
         </div>

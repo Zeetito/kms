@@ -38,6 +38,8 @@ Route::get('/user/account_components/phone/{user}', function () {
 
 // Hello route
 Route::get('/hello', function (Request $request) {
+    return User::find(2)->profile();
+    return User::find(4)->program();
     return User::students()->get();
     return Program::find(10)->users();
     return User::find(1012)->user_residences;

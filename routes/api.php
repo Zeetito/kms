@@ -526,6 +526,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         ->middleware('auth:sanctum')
         ;
 
+        
+
         // Get unverified users
         Route::middleware('auth:sanctum')->get('/unverified_users', function () {
             $users = User::unverified()->get();
@@ -622,6 +624,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::put('/user_account/{user}', [UserController::class, 'user_account'])
         ->middleware('auth:sanctum')
         ;
+
+    // PROFILE
+        // Get user profile
+        Route::middleware('auth:sanctum')->get('/user/{user}/profile', function (User $user) {
+            return $user->profile();
+        });
 
 
 

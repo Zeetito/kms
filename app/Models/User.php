@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\UserResidence;
 use Laravel\Sanctum\HasApiTokens;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\ProfileResource;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -211,6 +212,38 @@ class User extends Authenticatable
         return $this->residence() ? $this->residence()->zone : null;
     }
 
+    // Get Program
+    public function program()
+    {
+    
+        $instance = $this->user_programs->first() ? $this->user_programs->first()->program : null;
+
+        if($instance){
+            return $instance;
+        }else{
+
+            // Check if the user has a custom program
+            $custom = $this->user_programs->first();
+            if($custom && $custom->custom_name != null){
+                $program = new Program;
+                $program->id = "none";
+                $program->name = $custom->custom_name;
+                $program->college_id = null;
+
+                return $program;
+            }else{
+                return null;
+            }
+            
+        }
+    }
+
+    // Get College
+    public function college()
+    {
+        return $this->program() ? $this->program()->college : null;
+    }
+
     // Report with morph relation
     public function reports()
     {
@@ -320,5 +353,12 @@ class User extends Authenticatable
         });
 
         return $users->values();
+    }
+
+
+    // PROFILE
+    // Get user profile
+    public function profile(){
+        return (new ProfileResource($this)); 
     }
 }

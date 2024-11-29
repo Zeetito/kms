@@ -21,8 +21,16 @@ class ProgramController extends Controller
     }
 
     // Show
-    public function show(Program $program)
+    public function show($program)
     {
+        $program = Program::where('id', $program)->orWhere('name', $program)->first();
+
+        if (!$program) {
+            return response()->json([
+                'message' => 'Program not found'
+            ], 404);
+        }
+        
         return response()->json([
             'data' => $program
         ]);
