@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('meeting_id')->unique();
+            $table->boolean('is_active')->default(0);
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });
     }

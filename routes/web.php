@@ -38,6 +38,7 @@ Route::get('/user/account_components/phone/{user}', function () {
 
 // Hello route
 Route::get('/hello', function (Request $request) {
+    return User::members()->where('is_student','!=',1)->get()->count();
     return User::find(2)->profile();
     return User::find(4)->program();
     return User::students()->get();

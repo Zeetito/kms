@@ -322,6 +322,28 @@ class User extends Authenticatable
         return self::where('is_worker',1);
     }
 
+    // Get male users
+    public static function male_users(){
+        return User::where('gender','m')->get();
+    }
+    
+    // Get female users
+    public static function female_users(){
+        return User::where('gender','f')->get();
+    }
+
+    // Get male members
+    public static function male_members(){
+        return User::male_users()->where('is_member',1);
+    }
+    // Get female members
+    public static function female_members(){
+        return User::female_users()->where('is_member',1);
+    }
+
+    // Get female members
+
+
     // Account Status
 
     // Get inactive users

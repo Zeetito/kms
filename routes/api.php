@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\ProgramController;
 use App\Http\Controllers\Api\V1\ResidenceController;
+use App\Http\Controllers\Api\V1\AttendanceController;
 use App\Http\Controllers\Api\V1\OfficiatorController;
 use App\Http\Controllers\Api\V1\RecordItemController;
 use App\Http\Controllers\Api\V1\MeetingTypeController;
@@ -47,6 +48,11 @@ use App\Http\Controllers\Api\V1\OfficiatingRoleController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+// ATTENDANCE
+    // Index
+    Route::get('/attendances', [AttendanceController::class, 'index']);
 
 // SEMESTER USER
     // Index
@@ -526,6 +532,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         ->middleware('auth:sanctum')
         ;
 
+
         
 
         // Get unverified users
@@ -565,6 +572,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
                 $users = User::members()->get();
                 return response()->json($users);
             });
+
+            // Get male Members
+            Route::middleware('auth:sanctum')->get('/male_members', function () {
+                $users = User::male_members();
+                return response()->json($users);
+            });
+
+            // Get female Members
+            Route::middleware('auth:sanctum')->get('/female_members', function () {
+                $users = User::female_members();
+                return response()->json($users);
+            });
+
             // Get affliliate members
             Route::middleware('auth:sanctum')->get('/affiliate_members', function () {
                 $users = User::affiliate_members()->get();

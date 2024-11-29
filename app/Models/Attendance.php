@@ -11,6 +11,7 @@ class Attendance extends Model
 
     protected $fillable = [
         'meeting_id',
-        'in_session',
+        'is_active',
+        'user_id',//created_by
     ];
 }

@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Meeting;
+use App\Models\Attendance;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class AttendanceSeeder extends Seeder
 {
@@ -12,6 +14,11 @@ class AttendanceSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        foreach(Meeting::all() as $meeting){
+            $attendance = new Attendance;
+            $attendance->meeting_id = $meeting->id;
+            $user_id = auth()->id();
+            $attendance->save();
+        }
     }
 }
