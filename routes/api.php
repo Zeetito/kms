@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\V1\UserProgramController;
 use App\Http\Controllers\Api\V1\AnnouncementController;
 use App\Http\Controllers\Api\V1\ReportRecordController;
 use App\Http\Controllers\Api\V1\SemesterUserController;
+use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\UserResidenceController;
 use App\Http\Controllers\Api\V1\OfficiatingRoleController;
 
@@ -632,6 +633,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     // Logout
     Route::middleware('auth:sanctum')->post('/logout', [LoginController::class, 'logout']);
+
+    // Password Reset and Forget
+    Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword'])->name('password.email');
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.reset');
+
 
 
 // hello route
