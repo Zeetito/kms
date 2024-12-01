@@ -47,7 +47,7 @@ class Report extends Model
     // ReportRecords
     public function report_records()
     {
-        return $this->hasMany(ReportRecord::class);
+        return $this->hasMany(ReportRecord::class)->orderBy('position');
     }
 
 }

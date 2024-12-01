@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Report;
 use App\Models\ReportRecord;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -24,22 +25,25 @@ class ReportRecordController extends Controller
     }
 
     // Store
-    public function store(Request $request)
+    public function store(Request $request, Report $report)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'nullable|exists:users,id',
-            'report_id' => 'required|exists:reports,id',
             'body' => 'required|string',
             'path' => 'nullable|string',
-            'position' => 'nullable|integer'
         ]);
+
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        // Create an instnace
+        $instance = $request->all();
+        $instance['report_id'] = $report->id;
+        $instance['user_id'] = auth()->id();
+        $instance['position'] = ReportRecord::where('report_id', $report->id)->count() + 1;
 
         try {
-            $reportRecord = ReportRecord::create($request->all());
+            $reportRecord = ReportRecord::create($instance);
             return response()->json(['message' => 'Report record created successfully', 'reportRecord' => $reportRecord], 201);
         } catch (QueryException $e) {
             $errorCode = $e->errorInfo[1];
@@ -51,10 +55,10 @@ class ReportRecordController extends Controller
     }
 
     // Update
-    public function update(Request $request, ReportRecord $reportRecord)
+    public function update(Request $request, ReportRecord $report_record)
     {
         $validator = Validator::make($request->all(), [
-            'body' => 'required|string',
+            'body' => 'nullable|string',
             'path' => 'nullable|string',
             'position' => 'nullable|integer'
         ]);
@@ -63,9 +67,34 @@ class ReportRecordController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+       // Check if the position is altered
+        if ($request->position != $report_record->position) {
+            $newPosition = $request->position;
+            $oldPosition = $report_record->position;
+
+            if ($newPosition > $oldPosition) {
+                // Reduce the position of all report_records between the old and new position
+                ReportRecord::where('report_id', $report_record->report_id)
+                            ->where('position', '>', $oldPosition)
+                            ->where('position', '<=', $newPosition)
+                            ->decrement('position');
+            } else {
+                // Increase the position of all report_records between the new and old position
+                ReportRecord::where('report_id', $report_record->report_id)
+                            ->where('position', '<', $oldPosition)
+                            ->where('position', '>=', $newPosition)
+                            ->increment('position');
+            }
+
+            // Update the position of the current report_record
+            $report_record->position = $newPosition;
+            $report_record->save();
+        }
+
+
         try {
-            $reportRecord->update($request->all());
-            return response()->json(['message' => 'Report record updated successfully', 'reportRecord' => $reportRecord], 200);
+            $report_record->update($request->all());
+            return response()->json(['message' => 'Report record updated successfully', 'reportRecord' => $report_record], 200);
         } catch (QueryException $e) {
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {

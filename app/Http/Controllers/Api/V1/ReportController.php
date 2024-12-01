@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Role;
 use App\Models\Report;
+use App\Models\Semester;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
@@ -27,20 +29,43 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'type' => 'nullable|string',
-            'semester_id' => 'nullable|exists:semesters,id',
             'user_id' => 'nullable|exists:users,id',
-            'createable_type' => 'required|string|max:255',
-            'createable_id' => 'required|integer',
+            'reportable_id' => 'nullable|integer',
+            'reportable_type' => 'nullable|string',
+            'role' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+            $role = Role::where('slug', $request->role)->first();
+
+            if(!$role){
+                return response()->json(['error' => 'Sorry. You Cannot Create this report'], 404);
+            }else{
+
+                $createable_type = "App\\Models\\Role";
+                $createable_id = $role->id;
+            }
+            // Create a new instnace to be saved using the request
+            $instance = $request->all();
+
+            $reportable = ucfirst("App\\Models\\".$instance['reportable_type'])::find($instance['reportable_id']);
+            if($reportable){
+                $instance['reportable_id'] = $reportable->id;
+                $instance['reportable_type'] = get_class($reportable);
+            }
+            // If reportable does not exist, it means it's a general report            
+
+            $instance['createable_type'] = $createable_type;
+            $instance['createable_id'] = $createable_id;
+            $instance['semester_id'] = Semester::getActiveSemester()->id;
+            unset($instance['role']);
 
         try {
-            $report = Report::create($request->all());
+            $report = Report::create($instance);
             return response()->json(['message' => 'Report created successfully', 'report' => $report], 201);
         } catch (QueryException $e) {
             $errorCode = $e->errorInfo[1];

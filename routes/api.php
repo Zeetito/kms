@@ -478,7 +478,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Store
-    Route::post('/report_records', [ReportRecordController::class, 'store'])
+    Route::post('/report_records/{report}', [ReportRecordController::class, 'store'])
     ->middleware('auth:sanctum')
     ;
 
