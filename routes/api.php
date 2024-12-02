@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\V1\ReportRecordController;
 use App\Http\Controllers\Api\V1\SemesterUserController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\UserResidenceController;
+use App\Http\Controllers\Api\V1\AttendanceUserController;
 use App\Http\Controllers\Api\V1\OfficiatingRoleController;
 
 /*
@@ -53,6 +54,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // ATTENDANCE
     // Index
     Route::get('/attendances', [AttendanceController::class, 'index']);
+
+    // Attendance User
+    // Mark user for a particular attendance session
+    Route::post('/attendances/{meeting}/user', [AttendanceUserController::class, 'store'])
+    ->middleware('auth:sanctum');
+
+    // Update Attendance user
+    Route::put('/attendance_users/{attendance_user}', [AttendanceUserController::class, 'update'])
+    ->middleware('auth:sanctum');
+
 
 // SEMESTER USER
     // Index
@@ -287,6 +298,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::middleware('auth:sanctum')->get('/meetings/{meeting}/announcements', function (Request $request, Meeting $meeting) {
         return response()->json($meeting->announcements);
     });
+
+    // return the attendance session for a particular meeting
+    Route::middleware('auth:sanctum')->get('/meetings/{meeting}/attendance', function (Request $request, Meeting $meeting) {
+        return response()->json($meeting->attendance);
+    });
+
+    // Start Or End Attendance for meeting
+    Route::post('/attendances/{meeting}/toggle', [MeetingController::class, 'startOrEndAttendance'])
+    ->middleware('auth:sanctum')
+    ;
+    
+
     
 
 // MEETING TYPE

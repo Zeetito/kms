@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Meeting;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -98,6 +99,29 @@ class MeetingController extends Controller
              return response()->json(['error' => 'Failed to delete meeting due to a database error: ' . $e->getMessage()], 500);
          }
      }
+
+    //  Start or End attendance
+    public function startOrEndAttendance(Request $request, Meeting $meeting) {
+        if($meeting->attendance){
+            $attendance = $meeting->attendance;
+        }else{
+            $attendance = new Attendance;
+            $attendance->meeting_id = $meeting->id;
+            $attendance->user_id = auth()->id();
+            $attendance->save();
+
+        }
+
+        $attendance->is_active = !$attendance->is_active;
+        $attendance->save();
+
+        return response()->json(
+            [
+                'message' => ($attendance->is_active ? 'Attendance is in session now' : 'Attendance session has ended'), 
+                'attendance' => $attendance
+            ]
+        );
+    }
 
      
 

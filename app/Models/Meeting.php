@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Attendance;
 use App\Models\MeetingType;
 use App\Models\Announcement;
 use App\Models\Scopes\SemesterScope;
@@ -64,6 +65,11 @@ class Meeting extends Model
         public function announcements()
         {
             return $this->hasMany(Announcement::class);
+        }
+
+        // Attendance
+        public function attendance(){
+            return $this->hasOne(Attendance::class);
         }
 
     

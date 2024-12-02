@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Meeting;
+// use App\Models\Scopes\SemesterScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+// #[ScopedBy([SemesterScope::class])]
 class Attendance extends Model
 {
     use HasFactory;
@@ -14,4 +17,11 @@ class Attendance extends Model
         'is_active',
         'user_id',//created_by
     ];
+
+    // RELATIONSHIPS
+    public function meeting()
+    {
+        return $this->belongsTo(Meeting::class);
+    }
+
 }

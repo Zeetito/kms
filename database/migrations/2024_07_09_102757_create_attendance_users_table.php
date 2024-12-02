@@ -19,13 +19,20 @@ return new class extends Migration
                     ->onDelete('cascade');
 
             $table->foreignId('user_id')
+                    ->nullable()
                     ->constrained()
                     ->onUpdate('cascade')
-                    ->onDelete('cascade');
+                    ->onDelete('set null');
+                   
+            $table->boolean('is_present')->default(1);
+
+            $table->json('guest_details')->nullable();
+
+            $table->string('info')->nullable();
 
             $table->unsignedBigInteger('marked_by')->nullable();
 
-            $table->foreign('marked_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('marked_by')->references('id')->on('users')->onDelete('set null');
             
 
             $table->timestamps();
