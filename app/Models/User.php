@@ -6,9 +6,10 @@ namespace App\Models;
 use App\Models\Role;
 use App\Models\Record;
 use App\Models\Report;
+use App\Models\College;
 use App\Models\Semester;
-use App\Models\UserRole;
 // use App\Models\UserSemester;
+use App\Models\UserRole;
 use App\Models\Residence;
 use App\Models\UserProgram;
 use App\Models\SemesterUser;
@@ -201,6 +202,55 @@ class User extends Authenticatable
         return $this->user_residences->first() ? $this->user_residences->first()->residence : null;
     }
 
+    // Get user Residence Note
+    public function residence_note(){
+        // Check if the user has a registered instance for residence for the sem
+        $registered = $this->user_residences->first();
+
+        if($registered){
+            // Check if the instance has a registered residence
+            if($registered->residence){
+                $data = [
+                    "id" => $registered->residence->id,
+                    "name" => $registered->residence->name,
+                    "is_custom" => false,
+                    // "custom_id" => null,
+                    // "custom_name" => null,
+                    // "custom_description" => null
+                ];
+                // return json_decode(json_encode($data),true);
+                
+                
+            }else{
+
+                $data = [
+                    // "id" => null,
+                    // "name" => null,
+                    "is_custom" => true,
+                    "custom_id" => $registered->id,
+                    "custom_name" => $registered->custom_name,
+                    "custom_description" => $registered->custom_description
+                ];
+                // return json_decode(json_encode($data),true);
+                
+                
+            }
+
+            // add the room of the individual
+            $data["room"] = $registered->room;
+            $data["floor"] = $registered->floor;
+            $data["block"] = $registered->block;
+
+            return json_decode(json_encode($data),true);
+            
+
+        }else{
+            return null;
+        }
+
+
+    }
+
     // User Programs
     public function user_programs(){
         return $this->hasMany(UserProgram::class);
@@ -211,6 +261,43 @@ class User extends Authenticatable
     {
         return $this->residence() ? $this->residence()->zone : null;
     }
+    // Get Zone Note
+    public function zone_note(){
+        // Check if the user has a registered instance for residence for the sem
+        $registered = $this->user_residences->first();
+
+        if($registered){
+            // Check if the instance has a registered residence
+            if($registered->residence){
+                $data = [
+                    "id" => $registered->residence->zone_id,
+                    "name" => $registered->residence->zone->name,
+                ];
+                
+                
+            }else{
+
+                $data = [
+                    "id" => $registered->custom_zone_id ? $registered->custom_zone_id : null,
+                    "name" => $registered->custom_zone_id ? Zone::find($registered->custom_zone_id)->name : "Others",
+                ];
+                
+                
+            }
+
+
+
+            return json_decode(json_encode($data),true);
+            
+
+        }else{
+            return null;
+        }
+
+
+    }
+
+    
 
     // Get Program
     public function program()
@@ -220,28 +307,96 @@ class User extends Authenticatable
 
         if($instance){
             return $instance;
-        }else{
-
-            // Check if the user has a custom program
-            $custom = $this->user_programs->first();
-            if($custom && $custom->custom_name != null){
-                $program = new Program;
-                $program->id = "none";
-                $program->name = $custom->custom_name;
-                $program->college_id = null;
-
-                return $program;
-            }else{
-                return null;
-            }
-            
         }
+        // else{
+
+        //     // Check if the user has a custom program
+        //     $custom = $this->user_programs->first();
+        //     if($custom && $custom->custom_name != null){
+        //         $program = new Program;
+        //         $program->id = "none";
+        //         $program->name = $custom->custom_name;
+        //         $program->college_id = null;
+
+        //         return $program;
+        //     }else{
+        //         return null;
+        //     }
+            
+        // }
     }
+
+    // Get program note
+    public function program_note(){
+        // Check if the user has a registered instance for Program for the sem
+        $registered = $this->user_programs->first();
+
+        if($registered){
+            // Check if the instance has a registered program
+            if($registered->program){
+                $data = [
+                    "is_custom" => false,
+                    "id" => $registered->program->id,
+                    "name" => $registered->program->name,
+                ];
+                
+                
+            }else{
+
+                $data = [
+                    "is_custom" => true,
+                    "custom_id" => $registered->id,
+                    "custom_name" => $registered->custom_name,
+                    "custom_span" => $registered->custom_span
+                ];
+                
+                
+            }
+
+
+
+            return json_decode(json_encode($data),true);
+            
+
+        }else{
+            return null;
+        }
+
+
+    }
+
 
     // Get College
     public function college()
     {
         return $this->program() ? $this->program()->college : null;
+    }
+
+    // Get College Note
+    public function college_note(){
+        // Check if the user has a registered instance for College for the sem
+        $registered = $this->user_programs->first();
+
+        if($registered){
+            // Check if the instance has a registered program
+            if($registered->program){
+                $data = [
+                    "id" => $registered->program->college_id,
+                    "name" => $registered->program->college ? $registered->program->college->name : null,
+                ];
+                
+            }else{
+                $data = [
+                    "id" => $registered->custom_college_id ? $registered->custom_college_id : null,
+                    "custom_name" => $registered->custom_college_id ? College::find($registered->custom_college_id)->name : Null,
+                ];
+                
+            }
+            return json_decode(json_encode($data),true);
+        }else{
+            return null;
+            }
+
     }
 
     // Report with morph relation

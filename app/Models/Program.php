@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\College;
 use App\Models\UserProgram;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -32,6 +33,11 @@ class Program extends Model
     // Get Users
     public function users(){
         return User::whereIn('id',$this->user_programs->pluck('user_id'))->get();
+    }
+
+    // Get college
+    public function college(){
+        return $this->belongsTo(College::class);
     }
 
 }

@@ -55,7 +55,7 @@ class OfficiatorController extends Controller
     public function update(Request $request, Officiator $officiator)
     {
         $validator = Validator::make($request->all(), [
-            'meeting_id' => 'required|exists:meetings,id',
+            // 'meeting_id' => 'required|exists:meetings,id',
             'officiating_role_id' => 'nullable|exists:officiating_roles,id',
             'gender' => 'required|in:M,F',
             'fullname' => 'required|string|max:255',

@@ -22,6 +22,7 @@ class UserResidence extends Model
         'block',
         'custom_name',
         'custom_description',
+        'custom_zone_id',
         'academic_year_id',
     ];
 

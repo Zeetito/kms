@@ -18,7 +18,7 @@ class AttendanceUserController extends Controller
         $instance['attendance_id'] = $meeting->attendance->id;
 
         $save = new AttendanceUser($instance);
-
+        
         if($save->save()){
             return response()->json(['message' => 'Attendance Checked Successfully', 'attendanceUser' => $save], 201);
         }else{

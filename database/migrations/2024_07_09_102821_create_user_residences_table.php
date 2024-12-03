@@ -30,6 +30,8 @@ return new class extends Migration
             
             $table->string('block')->nullable();
             
+            $table->string('custom_zone_id')->nullable();
+
             $table->string('custom_name')->nullable();
 
             $table->string('custom_description')->nullable();

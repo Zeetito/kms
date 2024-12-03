@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\V1\LoginController;
 use App\Http\Controllers\Api\V1\RecordController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\MeetingController;
+use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ProgramController;
 use App\Http\Controllers\Api\V1\ResidenceController;
 use App\Http\Controllers\Api\V1\AttendanceController;
@@ -674,6 +675,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
             return $user->profile();
         });
 
+        // Update User profile
+        Route::put('/user/{user}/profile', [ProfileController::class, 'update'])
+        ->middleware('auth:sanctum')
+        ;
 
 
         // AUTH
