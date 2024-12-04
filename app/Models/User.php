@@ -37,12 +37,14 @@ class User extends Authenticatable
         'lastname',
         'gender',
         'email',
+        'dob',
         'contacts',
         'is_alumni',
         'is_member',
         'is_worker',
         'is_student',
         'is_knust_affiliate',
+        'local_congregation',
         'password'
     ];
 
@@ -63,7 +65,11 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        // 'email' => 'email',
+        'contacts' => 'json',
+        'local_congregation' => 'json',
         'email_verified_at' => 'datetime',
+        // 'dob' => 'date',
         'password' => 'hashed',
     ];
 
@@ -353,7 +359,7 @@ class User extends Authenticatable
                 
             }
 
-
+            $data['student_year'] = $registered->year;
 
             return json_decode(json_encode($data),true);
             

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Meeting;
+use App\Models\Semester;
 use App\Models\Attendance;
+use App\Models\MeetingType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -28,7 +30,6 @@ class MeetingController extends Controller
              'meeting_type_id' => 'nullable|exists:meeting_types,id',
              'program_name' => 'nullable|string|max:255',
              'is_special' => 'boolean',
-             'allows_question' => 'boolean',
              'description' => 'nullable|string',
              'start_date' => 'required|date',
              'end_date' => 'nullable|date',
@@ -36,15 +37,23 @@ class MeetingController extends Controller
              'end_time' => 'nullable|date_format:H:i',
              'venue' => 'nullable|string|max:255',
              'location' => 'nullable|string',
-             'semester_id' => 'required|exists:semesters,id',
          ]);
  
          if ($validator->fails()) {
              return response()->json(['errors' => $validator->errors()], 422);
          }
+         
+         $instance = $request->all();
+
+        //  If program name is null, put there the name of the meeting type
+         if ($instance['program_name'] == null) {
+             $instance['program_name'] = MeetingType::find($request->meeting_type_id)->name;
+         }
+
+         $instance['semester_id'] = Semester::getActiveSemester()->id;
  
          try {
-             $meeting = Meeting::create($request->all());
+             $meeting = Meeting::create($instance);
              return response()->json(['message' => 'Meeting created successfully', 'meeting' => $meeting], 201);
          } catch (QueryException $e) {
              $errorCode = $e->errorInfo[1];

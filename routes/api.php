@@ -556,6 +556,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         ->middleware('auth:sanctum')
         ;
 
+        // Delete A users account
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])
+        ->middleware('auth:sanctum')
+        ;
+
 
         
 

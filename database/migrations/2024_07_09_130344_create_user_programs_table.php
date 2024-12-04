@@ -20,6 +20,10 @@ return new class extends Migration
 
             $table->string('custom_name')->nullable();
 
+            $table->bigInteger('custom_college_id')->nullable();
+
+            $table->integer("custom_span")->nullable();
+
             $table->integer('year')->nullable();
 
             $table->foreignId('academic_year_id');

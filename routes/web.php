@@ -39,7 +39,7 @@ Route::get('/user/account_components/phone/{user}', function () {
 
 // Hello route
 Route::get('/hello', function (Request $request) {
-    return User::find(1)->residence_note();
+    return User::find(1)->profile();
     return Role::where('slug','welfare')->first();
     return User::members()->where('is_student','!=',1)->get()->count();
     return User::find(4)->program();

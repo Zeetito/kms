@@ -22,6 +22,10 @@ class ProfileResource extends JsonResource
             'gender' => $this->gender,
             'email' => $this->email,
 
+            'dob' => $this->dob,
+
+            'contacts' => $this->contacts,
+
             'status' => $this->status,
             'role' => $this->role,
 
@@ -30,6 +34,8 @@ class ProfileResource extends JsonResource
 
             'program' => $this->program_note(),
             'college' => $this->college_note(),
+
+            'local_congregation' => $this->local_congregation,
         ];
     }
 }

@@ -16,14 +16,16 @@ class UserProgramSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach(User::students()->get() as $user){
+        // foreach(AcademicYear::all() as $academic_year){
+            foreach(User::students()->get() as $user){
 
-            $instance = new UserProgram();
-            $instance->user_id = $user->id;
-            $instance->year = rand(1,4);
-            $instance->program_id = Program::all()->random()->id;
-            $instance->academic_year_id =  Semester::active_semester()->academic_year_id;
-            $instance->save();
-        }
+                $instance = new UserProgram();
+                $instance->user_id = $user->id;
+                $instance->year = rand(1,4);
+                $instance->program_id = Program::all()->random()->id;
+                $instance->academic_year_id =  Semester::active_semester()->academic_year_id;
+                $instance->save();
+            }
+        // }
     }
 }

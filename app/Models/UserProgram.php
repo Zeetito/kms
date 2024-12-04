@@ -18,6 +18,8 @@ class UserProgram extends Model
         'user_id',
         'program_id',
         'custom_name',
+        'custom_college_id',
+        'custom_span',
         'year',
         'academic_year_id',
     ];

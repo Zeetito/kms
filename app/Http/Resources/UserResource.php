@@ -21,12 +21,14 @@ class UserResource extends JsonResource
             'lastname' => $this->lastname,
             'gender' => $this->gender,
             'email' => $this->email,
+            'contacts' => $this->contacts,
             
             'is_alumni' => $this->is_alumni,
             'is_member' => $this->is_member,
             'is_worker' => $this->is_worker,
             'is_student' => $this->is_student,
             'is_knust_affiliate' => $this->is_knust_affiliate,
+            'local_congregation' => $this->local_congregation,
 
             // -----
 

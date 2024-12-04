@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('is_student')->nullable();
             $table->integer('is_worker')->default(0);
             $table->boolean('is_knust_affiliate')->nullable();
-            // $table->string('status');
+            $table->json('local_congregation')->nullable();
             $table->integer('is_active')->default(0); // 0->inactive , 1 ->active, 2->deactivated
             $table->date('dob')->nullable();
             $table->timestamp('email_verified_at')->nullable();
