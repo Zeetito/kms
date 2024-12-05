@@ -77,6 +77,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::put('/attendance_users/{attendance_user}', [AttendanceUserController::class, 'update'])
     ->middleware('auth:sanctum');
 
+    // Methods
+    // Get Attendees
+    Route::get('/attendances/{attendance}/attendees', [AttendanceUserController::class, 'attendees'])
+    ->middleware('auth:sanctum');
+    ;
+
+    // Get Absentees
+    Route::get('/attendances/{attendance}/absentees', [AttendanceUserController::class, 'absentees'])
+    ->middleware('auth:sanctum');
+    ;
+
 
 // SEMESTER USER
     // Index

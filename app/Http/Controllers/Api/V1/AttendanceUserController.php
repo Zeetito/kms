@@ -30,8 +30,18 @@ class AttendanceUserController extends Controller
     // Update attendance user instance
     public function update(Request $request, AttendanceUser $attendance_user){
        
-        return response()->json(['message' => 'This route is a work in progress'], 200);
-        // return response()->json(['message' => 'Attendance user session updated successfully', 'attendanceUser' => $attendanceUser], 200);
+        $attendance_user->update($request->all());
+        return response()->json(['message' => 'Attendance user session updated successfully', 'attendanceUser' => $attendance_user], 200);
+    }
+
+    // Attendees
+    public function attendees(Request $request, Attendance $attendance){
+        return response()->json($attendance->attendees, 200);
+    }
+
+    // Absentees
+    public function absentees(Request $request, Attendance $attendance){
+        return response()->json($attendance->absentees, 200);
     }
 
 }

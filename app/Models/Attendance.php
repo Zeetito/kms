@@ -24,4 +24,19 @@ class Attendance extends Model
         return $this->belongsTo(Meeting::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class,'attendance_users');
+    }
+
+    // Attendees
+    public function attendees(){
+        return $this->users()->where('is_present', true);
+    }
+
+    // Absentees
+    public function absentees(){
+        return $this->users()->where('is_present', false);
+    }
+
 }
