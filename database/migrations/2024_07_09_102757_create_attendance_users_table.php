@@ -34,7 +34,6 @@ return new class extends Migration
 
             $table->foreign('marked_by')->references('id')->on('users')->onDelete('set null');
             
-
             $table->timestamps();
         });
     }
