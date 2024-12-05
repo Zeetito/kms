@@ -5,9 +5,12 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Meeting;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Scopes\SemesterRangeScope;
 use App\Http\Resources\AnnouncementResource;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[ScopedBy([SemesterRangeScope::class])]
 class Announcement extends Model
 {
     use HasFactory;

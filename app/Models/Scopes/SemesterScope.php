@@ -14,7 +14,7 @@ class SemesterScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        // $builder->where('semester_id', auth()->user()->semester_id);
-        $builder->where('semester_id', User::find(1011)->semester_id);
+        $builder->where('semester_id', auth()->user()->semester_id??6);
+        // $builder->where('semester_id', User::find(1011)->semester_id);
     }
 }

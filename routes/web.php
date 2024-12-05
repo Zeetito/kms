@@ -2,6 +2,7 @@
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Meeting;
 use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,7 @@ Route::get('/user/account_components/phone/{user}', function () {
 
 // Hello route
 Route::get('/hello', function (Request $request) {
+    return Meeting::all();
     return User::find(1)->profile();
     return Role::where('slug','welfare')->first();
     return User::members()->where('is_student','!=',1)->get()->count();

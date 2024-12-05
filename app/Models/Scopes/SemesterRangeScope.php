@@ -2,9 +2,10 @@
 
 namespace App\Models\Scopes;
 
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Semester;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Database\Eloquent\Builder;
 
 class SemesterRangeScope implements Scope
 {
@@ -13,6 +14,16 @@ class SemesterRangeScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        // $builder->where('created_at', '>=', Semester::find());
+        $current_semester_id = auth()->user()->semester_id;
+        $current_semester = Semester::find($current_semester_id);
+        $next_semester = Semester::where('id', '>', $current_semester_id)->first();
+
+        if($next_semester){
+            $builder->whereDate('created_at', '>=', $current_semester->start_date)->whereDate('created_at', '<=', $next_semester->start_date);
+        }else{
+
+            $builder->whereDate('created_at', '>=', $current_semester->start_date);
+        }
+
     }
 }

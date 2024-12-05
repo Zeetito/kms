@@ -62,7 +62,7 @@ class SemesterUserController extends Controller
             } else {
                 // Check if the new being created is same a sactive
                 if($validated['semester_id'] == Semester::getActiveSemester()->id){
-                    return response()->json(['message' => 'No Change made!', 'data' => $semesterUser], 201);
+                    return response()->json(['message' => 'No Change made!'], 201);
                     
                 }else{
 

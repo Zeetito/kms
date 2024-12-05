@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Meeting;
+use App\Models\Semester;
 use App\Models\Announcement;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -14,6 +15,8 @@ class AnnouncementSeeder extends Seeder
      */
     public function run(): void
     {   
+        $start_date = Semester::active_semester()->start_date; 
+        $end_date = Semester::active_semester()->end_date; 
         // Create meeting annoucements
         Foreach(Meeting::all() as $meeting){
             for($i=1; $i<=rand(3,8); $i++){
@@ -25,6 +28,11 @@ class AnnouncementSeeder extends Seeder
                 $instance->user_id = 1;
                 $instance->is_public = true;
                 $instance->is_request = false;
+
+                $random_date = fake()->dateTimeBetween($start_date, $end_date)->format('Y-m-d');
+                $instance->created_at = $random_date;
+                $instance->updated_at = $random_date;
+
                 $instance->save();
             }
 
@@ -40,6 +48,11 @@ class AnnouncementSeeder extends Seeder
             $instance->user_id = 1;
             $instance->is_public = true;
             $instance->is_request = false;
+            
+            $random_date = fake()->dateTimeBetween($start_date, $end_date)->format('Y-m-d');
+            $instance->created_at = $random_date;
+            $instance->updated_at = $random_date;
+
             $instance->save();  
         }
 
