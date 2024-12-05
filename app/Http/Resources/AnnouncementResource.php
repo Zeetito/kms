@@ -16,6 +16,8 @@ class AnnouncementResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'type' => $this->type,
+            'meeting_id' => $this->meeting_id,
             'body' => $this->body,
             'from' => $this->createable->name,
             'user_id' => $this->user_id,

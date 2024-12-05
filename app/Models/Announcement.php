@@ -55,6 +55,15 @@ class Announcement extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Get the type attribute
+    public function getTypeAttribute(){
+        if($this->meeting_id == null){
+            return "General";
+        }else{
+            return "Meeting";
+        }
+    }
+
     // // STATIC QUERIES
 
     // public static function visible()

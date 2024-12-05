@@ -47,3 +47,5 @@ merging records/reports...
 <!-- - CoursePrograms -->
 - Attendance
 - AttendanceUsers
+
+- Seen (seenable,seeable)

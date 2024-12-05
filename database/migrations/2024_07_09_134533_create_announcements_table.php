@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('meeting_id');
+            $table->foreignId('meeting_id')->nullable();
             $table->text('body');
             $table->morphs('createable');
             $table->foreignId('user_id');
-            $table->boolean('is_public')->default(0);
-            $table->boolean('is_request');
+            $table->boolean('is_public')->default(false);
+            $table->boolean('is_request')->default(true);
             $table->timestamps();
         });
     }

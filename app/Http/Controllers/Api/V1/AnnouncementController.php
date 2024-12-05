@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Role;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -26,21 +27,31 @@ class AnnouncementController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'meeting_id' => 'required|exists:meetings,id',
+            'meeting_id' => 'nullable|exists:meetings,id',
             'body' => 'required|string',
-            'createable_type' => 'required|string|max:255',
-            'createable_id' => 'required|integer',
-            'user_id' => 'required|exists:users,id',
-            'is_request' => 'required|boolean',
-            'is_public' => 'required|boolean'
+            'role' => 'required|string|max:255',
         ]);
+
+        //is Request is by default true
+
+        // Create an instance variable out of the requests
+        $instance = $request->all();
+        // Get the related role
+        $role = Role::where('slug', $instance['role'])->first();
+
+        // Get the related user
+        $user_id = auth()->id();
+
+        $instance['user_id'] = $user_id;
+        $instance['createable_type'] = get_class($role);
+        $instance['createable_id'] = $role->id;
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
         try {
-            $announcement = Announcement::create($request->all());
+            $announcement = Announcement::create($instance);
             return response()->json(['message' => 'Announcement created successfully', 'announcement' => $announcement], 201);
         } catch (QueryException $e) {
             $errorCode = $e->errorInfo[1];
@@ -55,11 +66,7 @@ class AnnouncementController extends Controller
     public function update(Request $request, Announcement $announcement)
     {
         $validator = Validator::make($request->all(), [
-            'meeting_id' => 'required|exists:meetings,id',
             'body' => 'required|string',
-            'createable_type' => 'required|string|max:255',
-            'createable_id' => 'required|integer',
-            'user_id' => 'required|exists:users,id',
             'is_request' => 'required|boolean',
             'is_public' => 'required|boolean'
         ]);
