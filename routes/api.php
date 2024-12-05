@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Models\UserResidence;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\RoleController;
+use App\Http\Controllers\Api\V1\SeenController;
 use App\Http\Controllers\api\V1\UserController;
 use App\Http\Controllers\Api\V1\ZoneController;
 use App\Http\Controllers\Api\V1\LoginController;
@@ -50,6 +51,17 @@ use App\Http\Controllers\Api\V1\OfficiatingRoleController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// SEEN
+    // Store
+    Route::post('/seen/{type}/{id}', [SeenController::class, 'Store'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Destroy
+    Route::delete('/seen/{type}/{id}', [SeenController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
 
 
 // ATTENDANCE
@@ -139,12 +151,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // PROGRAM
     // Index
     Route::get('/programs', [ProgramController::class, 'index'])
-    ->middleware('auth:sanctum')
+    // ->middleware('auth:sanctum')
     ;
 
     // Show
     Route::get('/programs/{program}', [ProgramController::class, 'show'])
-    ->middleware('auth:sanctum')
+    // ->middleware('auth:sanctum')
     ;
 
     // Store Program
@@ -231,7 +243,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     
     // RESIDENCE
     // Index
-    Route::middleware('auth:sanctum')->get('/zones/{zone}/residences', function (Zone $zone) {
+    Route::get('/zones/{zone}/residences', function (Zone $zone) {
         return response()->json($zone->residences);
     });
     

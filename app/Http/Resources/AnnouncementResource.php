@@ -19,7 +19,7 @@ class AnnouncementResource extends JsonResource
             'type' => $this->type,
             'meeting_id' => $this->meeting_id,
             'body' => $this->body,
-            'from' => $this->createable->name,
+            'from' => $this->createable->name ?? $createable->fullname ?? null,
             'user_id' => $this->user_id,
             'is_public' => $this->is_public,
             'is_request' => $this->is_request,
