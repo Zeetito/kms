@@ -93,6 +93,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ->middleware('auth:sanctum');
     ;
 
+    // Get guests
+    Route::get('/attendances/{attendance}/guests', [AttendanceUserController::class, 'guests'])
+    ->middleware('auth:sanctum');
+    ;
+
 
 // SEMESTER USER
     // Index
@@ -227,7 +232,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // ZONE
     // Index
     Route::get('/zones', [ZoneController::class, 'index'])
-    ->middleware('auth:sanctum')
+    // ->middleware('auth:sanctum')
     ;
 
     // Show

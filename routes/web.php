@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Meeting;
 use App\Models\Program;
 use Illuminate\Http\Request;
+use App\Models\AttendanceUser;
 use Illuminate\Support\Facades\Route;
 use App\Jobs\UserRegisteredNotificationJob;
 use App\Notifications\UserRegisteredNotification;
@@ -40,6 +41,7 @@ Route::get('/user/account_components/phone/{user}', function () {
 
 // Hello route
 Route::get('/hello', function (Request $request) {
+    // return AttendanceUser::where('user_id',null)->get()->each->delete();
     return Meeting::all();
     return User::find(1)->profile();
     return Role::where('slug','welfare')->first();

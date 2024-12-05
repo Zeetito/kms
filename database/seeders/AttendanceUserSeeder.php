@@ -25,6 +25,25 @@ class AttendanceUserSeeder extends Seeder
                 $au->save();
             }
 
+            // Seed Some Guests too
+            for($i = 0; $i < rand(1,10); $i++){
+                $au = new AttendanceUser;
+                $au->user_id = null;
+                $au->attendance_id = $attendance->id;
+
+                $details = [
+                    'name' => fake()->name(),
+                    'email' => fake()->email(),
+                    'is_member' => rand(0,1) == 1 ? true : false,
+                    'gender' => rand(0,1) == 1 ? "m" : "f",
+                    'phone' => fake()->phoneNumber(),
+                ];
+
+                $au->guest_details = json_decode(json_encode($details), true);
+
+                $au->save();
+            }
+
         }
     }
 }

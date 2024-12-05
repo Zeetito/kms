@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 // use App\Models\Scopes\SemesterScope;
 use App\Models\Meeting;
+use App\Models\AttendanceUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -30,6 +31,12 @@ class Attendance extends Model
         return $this->belongsToMany(User::class,'attendance_users');
     }
 
+    // AttendanceUsers 
+    public function attendance_users()
+    {
+        return $this->hasMany(AttendanceUser::class);
+    }
+
     // Attendees
     public function attendees(){
         return $this->users()->where('is_present', true);
@@ -43,6 +50,11 @@ class Attendance extends Model
     // Unmarked
     public function unmarked(){
         return User::members()->get()->diff($this->users);
+    }
+
+    // Guests
+    public function guests(){
+        return $this->attendance_users()->where('user_id', null)->get();
     }
 
 }
