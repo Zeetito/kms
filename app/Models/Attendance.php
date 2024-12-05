@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Meeting;
+use App\Models\User;
 // use App\Models\Scopes\SemesterScope;
+use App\Models\Meeting;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -37,6 +38,11 @@ class Attendance extends Model
     // Absentees
     public function absentees(){
         return $this->users()->where('is_present', false);
+    }
+
+    // Unmarked
+    public function unmarked(){
+        return User::members()->get()->diff($this->users);
     }
 
 }

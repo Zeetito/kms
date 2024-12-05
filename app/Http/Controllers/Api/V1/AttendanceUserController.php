@@ -49,4 +49,9 @@ class AttendanceUserController extends Controller
         return response()->json($attendance->absentees, 200);
     }
 
+    // Unmarked
+    public function unmarked(Request $request, Attendance $attendance){
+        return response()->json($attendance->unmarked(), 200);
+    }
+
 }

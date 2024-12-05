@@ -88,6 +88,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ->middleware('auth:sanctum');
     ;
 
+    // Get unmarked members 
+    Route::get('/attendances/{attendance}/unmarked', [AttendanceUserController::class, 'unmarked'])
+    ->middleware('auth:sanctum');
+    ;
+
 
 // SEMESTER USER
     // Index
