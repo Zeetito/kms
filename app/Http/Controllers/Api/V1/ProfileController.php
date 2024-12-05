@@ -21,7 +21,7 @@ class ProfileController extends Controller
         if($request->has('dob')) $user->dob = $request->dob;
         if($request->has('local_congregation')) $user->local_congregation = $request->local_congregation;
 
-        if($request->has('residence')){
+        if($request->has('residence')  && empty(array_filter($request->residence)) == false){
             $user_residence = $user->user_residences->first();
             // If the residence coming is a registered one, do this
             if($request->residence['is_custom'] == false){
@@ -51,8 +51,8 @@ class ProfileController extends Controller
             $user_residence->save();
 
         }
-
-        if($request->has('program')){
+        // Check if program input exists and has atleast one non_null value
+        if($request->has('program') && empty(array_filter($request->program)) == false){
             $user_program = $user->user_programs->first();
             // If the program coming is a registered one, do this
             if($request->program['is_custom'] == false){
