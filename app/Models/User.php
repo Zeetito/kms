@@ -4,11 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Role;
+use App\Models\Image;
 use App\Models\Record;
 use App\Models\Report;
 use App\Models\College;
-use App\Models\Semester;
 // use App\Models\UserSemester;
+use App\Models\Semester;
 use App\Models\UserRole;
 use App\Models\Residence;
 use App\Models\UserProgram;
@@ -175,6 +176,16 @@ class User extends Authenticatable
 
 
     // RELATIONSHIPS
+
+    // Images
+    public function images(){
+        return $this->morphMany(Image::class,'imageable');
+    }
+
+    // Get profile picture
+    public function profile_pic(){
+        return $this->images()->where('is_profile_pic',1)->first();
+    }
 
     // User Role instances
     public function user_roles(){

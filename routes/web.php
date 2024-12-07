@@ -4,6 +4,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Meeting;
 use App\Models\Program;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\AttendanceUser;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,7 @@ Route::get('/user/account_components/phone/{user}', function () {
 
 // Hello route
 Route::get('/hello', function (Request $request) {
+    return Announcement::withoutGlobalScopes()->find(1)->users_seen()->get();
     // return AttendanceUser::where('user_id',null)->get()->each->delete();
     return Meeting::all();
     return User::find(1)->profile();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Seen;
 use App\Models\User;
 use App\Models\Meeting;
 use Illuminate\Database\Eloquent\Model;
@@ -65,6 +66,18 @@ class Announcement extends Model
         }else{
             return "Meeting";
         }
+    }
+
+    // Get seens
+    public function seens() // which is polymorpic relatoin
+    {
+        return $this->morphMany(Seen::class, 'seenable');
+    }
+
+    // Get users seen
+    public function users_seen()
+    {
+        return $this->hasManyThrough(User::class, Seen::class, 'seenable_id', 'id', 'id', 'user_id');
     }
 
     // // STATIC QUERIES

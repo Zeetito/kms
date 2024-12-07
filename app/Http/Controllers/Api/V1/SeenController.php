@@ -19,6 +19,7 @@ class SeenController extends Controller
 
         $seen = new Seen();
         $seen->user_id = $user->id;
+        $seen->seen_at = now();
         $seen->seenable_type = get_class($instance);
         $seen->seenable_id = $instance->id;
         

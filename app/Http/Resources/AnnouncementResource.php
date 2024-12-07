@@ -19,6 +19,7 @@ class AnnouncementResource extends JsonResource
             'type' => $this->type,
             'meeting_id' => $this->meeting_id,
             'body' => $this->body,
+            'seen_count' => $this->seens->count(),
             'from' => $this->createable->name ?? $createable->fullname ?? null,
             'user_id' => $this->user_id,
             'is_public' => $this->is_public,

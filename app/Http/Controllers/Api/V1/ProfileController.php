@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\User;
+use App\Models\Image;
+use Intervention\Image\Facades\Image as FacadeImage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -80,4 +83,70 @@ class ProfileController extends Controller
         ], 200);
 
     }
+
+    // Update profile pic
+    public function update_profile_pic(Request $request, User $user)
+    {
+        $request->validate([
+            'profile_pic' => 'required|image',
+        ]);
+    
+        // Handle the file upload
+        if ($request->hasFile('profile_pic')) {
+            $file = $request->file('profile_pic');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+    
+            // Use the public disk (or configure as necessary)
+            $disk = Storage::disk('public');
+    
+            // Temporary path within the "temp" directory in "storage/app/public"
+            $tempPath = 'temp/' . $filename;
+    
+            // Start processing with Intervention Image
+            $image = FacadeImage::make($file);
+    
+            // Save the image to the temporary location on the disk
+            $image->save($disk->path($tempPath), 100);  // Save with best quality
+    
+            // Reduce size if greater than 2MB
+            $quality = 100;  // Start with best quality
+            while ($disk->size($tempPath) > 2048 * 1024 && $quality > 10) {
+                $quality -= 10;  // Decrease quality by 10
+                $image->save($disk->path($tempPath), $quality);
+            }
+    
+            // Check file size and move to final destination
+            if ($disk->size($tempPath) <= 2048 * 1024) {
+                $finalPath = $disk->putFileAs('images', new \Illuminate\Http\File($disk->path($tempPath)), $filename);
+    
+                // Update or create new image record
+                $profile_pic = $user->profile_pic() ?? new Image([
+                    'imageable_id' => $user->id,
+                    'imageable_type' => User::class,
+                    'is_profile_pic' => true
+                ]);
+    
+                // Delete existing profile pic if any
+                if ($user->profile_pic()) {
+                    $disk->delete($user->profile_pic()->path);
+                }
+    
+                $profile_pic->path = $finalPath;
+                $profile_pic->save();
+    
+                // Clean up the temporary file
+                $disk->delete($tempPath);
+    
+                return response()->json(['message' => 'Updated profile picture successfully', 'path' => $finalPath]);
+            } else {
+                $disk->delete($tempPath);  // Clean up temporary file
+                return response()->json(['message' => 'Unable to reduce file size sufficiently'], 500);
+            }
+        }
+    
+        return response()->json(['message' => 'File upload failed'], 500);
+    }
+    
+    
+    
 }

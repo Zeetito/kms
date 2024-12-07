@@ -718,6 +718,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         ->middleware('auth:sanctum')
         ;
 
+        // Update User profile pic
+        Route::post('/user/{user}/profile_pic', [ProfileController::class, 'update_profile_pic'])
+        ->middleware('auth:sanctum')
+        ;
 
         // AUTH
     // Login

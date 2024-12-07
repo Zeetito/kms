@@ -1,0 +1,1 @@
+- Create the images table (migrate)
