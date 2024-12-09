@@ -15,7 +15,7 @@ use App\Models\UserResidence;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\SeenController;
-use App\Http\Controllers\api\V1\UserController;
+use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\ZoneController;
 use App\Http\Controllers\Api\V1\LoginController;
 use App\Http\Controllers\Api\V1\RecordController;

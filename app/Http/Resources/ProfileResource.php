@@ -21,6 +21,7 @@ class ProfileResource extends JsonResource
             'lastname' => $this->lastname,
             'gender' => $this->gender,
             'email' => $this->email,
+            'profile_pic_path' => $this->profile_pic()->path ?? null,
 
             'dob' => $this->dob,
 
