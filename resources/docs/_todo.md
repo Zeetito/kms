@@ -1,10 +1,9 @@
-1. Work on user Profile pic
+<!-- 1. Work on user Profile pic
  - Create images table
- - composer require intervention/image
+ - composer require intervention/image -->
  
 
- - and yarh.
-
+2. - Add report record for object even when the object does not have a report instance yet passing the role of the individual.
 
 
 

@@ -28,12 +28,12 @@ class ReportController extends Controller
     // Store
     public function store(Request $request)
     {
+        //object type not specified? name required
         $validator = Validator::make($request->all(), [
             'name' => 'nullable|string|max:255',
             'type' => 'nullable|string',
-            'user_id' => 'nullable|exists:users,id',
-            'reportable_id' => 'nullable|integer',
-            'reportable_type' => 'nullable|string',
+            'object_id' => 'nullable|integer',
+            'object_type' => 'nullable|string',
             'role' => 'required|string|max:255',
         ]);
 
@@ -52,16 +52,25 @@ class ReportController extends Controller
             // Create a new instnace to be saved using the request
             $instance = $request->all();
 
-            $reportable = ucfirst("App\\Models\\".$instance['reportable_type'])::find($instance['reportable_id']);
+            if($request->object_type || $request->object_id){
+                $reportable = ucfirst("App\\Models\\".$instance['object_type'])::find($instance['object_id']);
+            }else{
+                $reportable = null;
+            }
+
             if($reportable){
                 $instance['reportable_id'] = $reportable->id;
                 $instance['reportable_type'] = get_class($reportable);
             }
-            // If reportable does not exist, it means it's a general report            
 
+            // if the name input is present
+            $instance['name'] = $request->name ?? null;
+
+            $instance['type'] = ucfirst($request->object_type);
             $instance['createable_type'] = $createable_type;
             $instance['createable_id'] = $createable_id;
             $instance['semester_id'] = Semester::getActiveSemester()->id;
+            $instance['user_id'] = auth()->id();
             unset($instance['role']);
 
         try {

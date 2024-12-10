@@ -20,6 +20,8 @@ class Report extends Model
         'semester_id',
         'createable_type',
         'createable_id',
+        'reportable_type',
+        'reportable_id',
         'user_id',
     ];
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
+            $table->string('name')->nullable();
 
             $table->string('type')->nullable(); //ministry,visitation//feedback/munite
             
@@ -25,6 +25,11 @@ return new class extends Migration
                     ->onDelete('cascade');
 
             $table->morphs('createable');
+
+
+            $table->unsignedBigInteger('reportable_id')->nullable();
+
+            $table->string('reportable_type')->nullable();
 
             $table->foreignId('user_id')
                     ->nullable()
