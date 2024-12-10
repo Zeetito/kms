@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Role;
+use App\Models\Report;
 use App\Models\Attendance;
 use App\Models\MeetingType;
 use App\Models\Announcement;
@@ -59,6 +61,20 @@ class Meeting extends Model
         public function meeting_type()
         {
             return $this->belongsTo(MeetingType::class);
+        }
+
+        // Get reports
+        public function reports()
+        {
+            return $this->morphMany(Report::class, 'reportable');
+
+        }
+
+
+        // Get reports by a role
+        public function reports_by($role_slug){
+            $role = Role::where('slug',$role_slug)->first();
+            return $this->reports()->where('createable_id',$role->id)->first();
         }
 
         // Annoucements

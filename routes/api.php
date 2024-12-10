@@ -522,6 +522,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return response()->json($report->report_records);
     });
 
+    // Get repots for user or meeting
+    Route::get('/reports/{type}/{id}/{role_slug}', [ReportController::class, 'report_by_role'])
+    ->middleware('auth:sanctum')
+    ;
+
 
 // REPORT RECORD
     // Index

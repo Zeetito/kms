@@ -37,41 +37,51 @@ class ReportController extends Controller
             'role' => 'required|string|max:255',
         ]);
 
+        
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-            $role = Role::where('slug', $request->role)->first();
+        $role = Role::where('slug', $request->role)->first();
+        
+        if(!$role){
+            return response()->json(['error' => 'Sorry. You Cannot Create this report'], 404);
+        }else{
+            
+            $createable_type = "App\\Models\\Role";
+            $createable_id = $role->id;
+        }
+        // Create a new instnace to be saved using the request
+        $instance = $request->all();
+        
+        if($request->object_type || $request->object_id){
+            $reportable = ucfirst("App\\Models\\".$instance['object_type'])::find($instance['object_id']);
+        }else{
+            $reportable = null;
+        }
 
-            if(!$role){
-                return response()->json(['error' => 'Sorry. You Cannot Create this report'], 404);
-            }else{
+        $instance['createable_type'] = $createable_type;
+        $instance['createable_id'] = $createable_id;
+        
+        if($reportable){
+            $instance['reportable_id'] = $reportable->id;
+            $instance['reportable_type'] = get_class($reportable);
 
-                $createable_type = "App\\Models\\Role";
-                $createable_id = $role->id;
+            // Check for existence
+            if(Report::where('reportable_id', $instance['reportable_id']) ->where('reportable_type', $instance['reportable_type'])->where('createable_id', $instance['createable_id'])->where('createable_type', $instance['createable_type'])->exists()){
+                return response()->json(['error' => 'Report already exists for this '.$request->object_type], 409);
             }
-            // Create a new instnace to be saved using the request
-            $instance = $request->all();
+        }
+        
+        // if the name input is present
+        $instance['name'] = $request->name ?? null;
+        
+        $instance['type'] = $request->object_type ? ucfirst($request->object_type) : "General";
 
-            if($request->object_type || $request->object_id){
-                $reportable = ucfirst("App\\Models\\".$instance['object_type'])::find($instance['object_id']);
-            }else{
-                $reportable = null;
-            }
+        $instance['semester_id'] = Semester::getActiveSemester()->id;
+        $instance['user_id'] = auth()->id();
+        unset($instance['role']);
 
-            if($reportable){
-                $instance['reportable_id'] = $reportable->id;
-                $instance['reportable_type'] = get_class($reportable);
-            }
 
-            // if the name input is present
-            $instance['name'] = $request->name ?? null;
-
-            $instance['type'] = ucfirst($request->object_type);
-            $instance['createable_type'] = $createable_type;
-            $instance['createable_id'] = $createable_id;
-            $instance['semester_id'] = Semester::getActiveSemester()->id;
-            $instance['user_id'] = auth()->id();
-            unset($instance['role']);
 
         try {
             $report = Report::create($instance);
@@ -119,6 +129,17 @@ class ReportController extends Controller
         } catch (QueryException $e) {
             return response()->json(['error' => 'Failed to delete report due to a database error: ' . $e->getMessage()], 500);
         }
+    }
+
+    //////////////////
+    // Get repots by role
+    public function report_by_role(Request $request, $type, $id, $role_slug){
+        $object_path = "App\\Models\\".ucfirst($type);
+        $object = $object_path::find($id);
+
+        // $role = Role::where('slug', $role_slug)->first();
+
+        return $object->reports_by($role_slug) ?? null;
     }
 
 
