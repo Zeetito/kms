@@ -333,6 +333,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return response()->json($meeting->announcements);
     });
 
+    // Upcoming meetings
+    Route::middleware('auth:sanctum')->get('/upcoming_meetings', function (Request $request) {
+        return response()->json(Meeting::upcoming());
+    });
+
     // return the attendance session for a particular meeting
     Route::middleware('auth:sanctum')->get('/meetings/{meeting}/attendance', function (Request $request, Meeting $meeting) {
         return response()->json($meeting->attendance);
@@ -551,6 +556,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     // Delete
     Route::delete('/report_records/{report_record}', [ReportRecordController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ;
+
+    // Add Report record for a user/meeting...
+    Route::post('/report_records/{type}/{id}/{role_slug}', [ReportRecordController::class, 'store_instnace'])
     ->middleware('auth:sanctum')
     ;
 

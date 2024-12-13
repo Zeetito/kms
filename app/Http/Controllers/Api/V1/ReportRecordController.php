@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Role;
 use App\Models\Report;
+use App\Models\Semester;
 use App\Models\ReportRecord;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -114,6 +116,49 @@ class ReportRecordController extends Controller
             return response()->json(['error' => 'Failed to delete report record due to a database error: ' . $e->getMessage()], 500);
         }
     }
+
+    // Add instance
+    public function store_instnace(Request $request, $type, $id, $role_slug){
+        $model_path = "App\\Models\\" . ucfirst($type);
+        $model = $model_path::find($id);
+
+        $role = Role::where('slug', $role_slug)->first();
+
+        // Check if the role already has a report instnace for the instance
+        if($role->hasReport($model, $type)){
+            // Get the report
+            $report = $role->getReport($model, $type);
+
+        }else{
+            // else Create one and proceed
+            $report = new Report;
+            $report->name = "Report for " . $model->name;
+            $report->reportable_id = $model->id;
+            $report->reportable_type = $model_path;
+            $report->createable_id = $role->id;
+            $report->type = ucfirst($type);
+            $report->createable_type = "App\\Models\\Role";
+            $report->semester_id = Semester::active_semester()->id;
+            $report->save();
+
+        }
+
+        $record = new ReportRecord;
+        $record->report_id = $report->id;
+        $record->user_id = auth()->id();
+        $record->position = ReportRecord::where('report_id', $report->id)->count() + 1;
+        $record->body = $request->body;
+        $record->path = $request->path ?? null;
+        $record->save();
+
+        return response()->json(['message' => 'Record added successfully', 'reportRecord' => $record], 200);
+
+
+
+
+
+    }
+
 
 
 }

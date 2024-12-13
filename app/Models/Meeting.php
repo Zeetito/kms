@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Role;
 use App\Models\Report;
+use App\Models\Meeting;
 use App\Models\Attendance;
 use App\Models\MeetingType;
 use App\Models\Announcement;
@@ -100,6 +101,11 @@ class Meeting extends Model
     public function announcement_requests()
     {
         return $this->announcements->request;
+    }
+
+    // STATIC FUNCTIONS
+    public static function upcoming(){
+        return Meeting::whereDate('start_date', '>=', date('Y-m-d'))->get();
     }
 
 }

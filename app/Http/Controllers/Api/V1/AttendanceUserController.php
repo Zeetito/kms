@@ -20,7 +20,7 @@ class AttendanceUserController extends Controller
 
         $save = new AttendanceUser($instance);
 
-        if(AttendanceUser::where('attendance_id', $save->attendance_id)->where('user_id', $save->user_id)->exists()){
+        if(AttendanceUser::where('attendance_id', $save->attendance_id)->where('user_id', '!=', null)->where('user_id', $save->user_id)->exists()){
             return response()->json(['message' => 'User already marked'], 500);
         }
         

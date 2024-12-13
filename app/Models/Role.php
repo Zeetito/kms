@@ -44,4 +44,17 @@ class Role extends Model
     {
         return $this->morphMany(Record::class, 'createable');
     }
+
+
+    // FUNCTIONS
+    // Check if role has report for an instance whether user or meeting
+    public function hasReport($instance, $type){
+        return $this->reports()->where('reportable_type',  "App\\Models\\".ucfirst($type))->where('reportable_id', $instance->id)->exists();
+    }
+
+    // Return report for instance
+    public function getReport($instance, $type){
+        return $this->reports()->where('reportable_type',  "App\\Models\\".ucfirst($type))->where('reportable_id', $instance->id)->first();
+    }
+
 }
