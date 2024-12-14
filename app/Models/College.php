@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class College extends Model
 {
@@ -12,4 +13,13 @@ class College extends Model
     protected $fillable = [
         'name',
     ];
+
+    // User
+    public function users()
+    {
+        // filter students having college_id as $this->id
+        return User::students()->get()->filter(function ($user) {
+            return $user->program() && $user->program()->college_id == $this->id;
+        });
+    }
 }

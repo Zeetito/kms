@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\V1\ZoneController;
 use App\Http\Controllers\Api\V1\LoginController;
 use App\Http\Controllers\Api\V1\RecordController;
 use App\Http\Controllers\Api\V1\ReportController;
+use App\Http\Controllers\Api\V1\CollegeController;
 use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ProgramController;
@@ -51,6 +52,14 @@ use App\Http\Controllers\Api\V1\OfficiatingRoleController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// COLLEGE
+    // Index
+
+    // Methods
+    // Get users
+    Route::get('/colleges/{college}/users', [CollegeController::class, 'users'])
+    ->middleware('auth:sanctum');
 
 // SEEN
     // Store
