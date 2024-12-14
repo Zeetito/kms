@@ -36,7 +36,7 @@ class ReportController extends Controller
         //object type not specified? name required
         $validator = Validator::make($request->all(), [
             'name' => 'nullable|string|max:255',
-            'type' => 'nullable|string',
+            // 'type' => 'nullable|string',
             'object_id' => 'nullable|integer',
             'object_type' => 'nullable|string',
             'role' => 'required|string|max:255',
@@ -58,8 +58,9 @@ class ReportController extends Controller
         // Create a new instnace to be saved using the request
         $instance = $request->all();
         
-        if($request->object_type || $request->object_id){
+        if($request->object_type != null || $request->object_id != null){
             $reportable = ucfirst("App\\Models\\".$instance['object_type'])::find($instance['object_id']);
+            $instance['name'] = "Reprot on ".($reportable->name ?? $reportable->fullname ?? $reportable->program_name ?? null);
         }else{
             $reportable = null;
         }
@@ -78,8 +79,6 @@ class ReportController extends Controller
         }
         
         // if the name input is present
-        $instance['name'] = $request->name ?? null;
-        
         $instance['type'] = $request->object_type ? ucfirst($request->object_type) : "General";
 
         $instance['semester_id'] = Semester::getActiveSemester()->id;
