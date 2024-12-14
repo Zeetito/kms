@@ -24,7 +24,8 @@ return new class extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('set null');
 
-            $table->string('type');
+            $table->string('type'); // should of type enum to set allowable values
+            // $table->enum('type', ['text', 'audio', 'image']);
 
             $table->string('path')->nullable();
 

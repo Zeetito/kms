@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\ReportRecord;
 use App\Models\Scopes\SemesterScope;
 use App\Http\Resources\ReportResource;
@@ -50,6 +51,12 @@ class Report extends Model
     public function report_records()
     {
         return $this->hasMany(ReportRecord::class)->orderBy('position');
+    }
+
+    // User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('type');
             $table->integer('span')->nullable();
             $table->timestamps();
+            //$table->softDeletes();
         });
     }
 

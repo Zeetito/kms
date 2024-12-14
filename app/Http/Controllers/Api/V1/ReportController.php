@@ -22,7 +22,12 @@ class ReportController extends Controller
     // Show
     public function show(Request $request, Report $report)
     {
-        return response()->json($report);
+        return response()->json(
+            [                
+                "report" =>   $report,
+                "report_records" => $report->report_records
+            ]
+        );
     }
 
     // Store
