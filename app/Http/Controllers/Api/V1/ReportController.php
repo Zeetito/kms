@@ -137,7 +137,7 @@ class ReportController extends Controller
     }
 
     //////////////////
-    // Get repots by role
+    // Get repots by role for an object
     public function report_by_role(Request $request, $type, $id, $role_slug){
         $object_path = "App\\Models\\".ucfirst($type);
         $object = $object_path::find($id);
@@ -146,6 +146,13 @@ class ReportController extends Controller
 
         return $object->reports_by($role_slug) ?? null;
     }
+
+    // get all reports by role
+    public function all_reports_by_role($role_slug){
+        $role = Role::where('slug', $role_slug)->first();
+        return response()->json($role->reports) ?? null ;
+    }
+
 
 
 }

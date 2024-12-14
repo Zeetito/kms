@@ -532,6 +532,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ->middleware('auth:sanctum')
     ;
 
+    // Get reports for a role
+    Route::get('/reports_by_role/{role_slug}', [ReportController::class, 'all_reports_by_role'])
+    ->middleware('auth:sanctum')
+    ;
+
 
 // REPORT RECORD
     // Index
