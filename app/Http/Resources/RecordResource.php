@@ -19,12 +19,12 @@ class RecordResource extends JsonResource
             'name' => $this->name,
             'type' => $this->type,
             'author' => $this->createable->name,
-            'user_id' => $this->user_id,
-            'semester_id' => $this->semester_id,
-            'creatable_type' => $this->createable_type,
-            'creatable_id' => $this->createable_id,
+            // 'user_id' => $this->user_id,
+            // 'semester_id' => $this->semester_id,
+            // 'creatable_type' => $this->createable_type,
+            // 'creatable_id' => $this->createable_id,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'updated_at' => $this->updated_at,
         ];
     }
 }
