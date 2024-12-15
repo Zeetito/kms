@@ -18,8 +18,10 @@ class College extends Model
     public function users()
     {
         // filter students having college_id as $this->id
-        return User::students()->get()->filter(function ($user) {
+        $response = User::students()->get()->filter(function ($user) {
             return $user->program() && $user->program()->college_id == $this->id;
         });
+
+        return response()->json($response);
     }
 }
