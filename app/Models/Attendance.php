@@ -6,6 +6,7 @@ use App\Models\User;
 // use App\Models\Scopes\SemesterScope;
 use App\Models\Meeting;
 use App\Models\AttendanceUser;
+use App\Models\Scopes\SemesterScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -55,6 +56,19 @@ class Attendance extends Model
     // Guests
     public function guests(){
         return $this->attendance_users()->where('user_id', null)->get();
+    }
+
+    // FUNCTIONS
+    // REgister absentees
+    public function registerAbsentees(){
+        $absentees = $this->unmarked();
+        foreach($absentees as $absentee){
+            $attendance_user = new AttendanceUser;
+            $attendance_user->user_id = $absentee->id;
+            $attendance_user->is_present = false;
+            $attendance_user->attendance_id = $this->id;
+            $attendance_user->save();
+        }
     }
 
 }

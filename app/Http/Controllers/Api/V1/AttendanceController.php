@@ -15,4 +15,6 @@ class AttendanceController extends Controller
         return response()->json(Attendance::all());
     }
 
+    //Storing Attendance is done in the meeting controller
+
 }

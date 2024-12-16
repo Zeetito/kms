@@ -122,6 +122,17 @@ class MeetingController extends Controller
         }
 
         $attendance->is_active = !$attendance->is_active;
+
+        // Set Every other attendance to inactive
+        Attendance::where('id', '!=', $attendance->id)->update(['is_active' => false]);
+
+        // if the attedance is just being ended, then, register or absentees
+        // Check if the meeting day is same as today, if it is, then, register or absentees
+        if (!$attendance->is_active) {
+            $attendance->registerAbsentees();
+        }
+
+
         $attendance->save();
 
         return response()->json(
