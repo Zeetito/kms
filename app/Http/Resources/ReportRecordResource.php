@@ -20,8 +20,9 @@ class ReportRecordResource extends JsonResource
             "report_id"=> $this->report_id,
             "body"=> $this->body,
             // "path"=> $this->path,
+            "role" => $this->report->createable->slug,
             "position"=> $this->position,
-            // "created_at"=> $this->created_at,
+            "created_at"=> $this->created_at,
             "updated_at"=> $this->updated_at,
         ];
     }

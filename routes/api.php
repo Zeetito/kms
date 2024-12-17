@@ -77,6 +77,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     // Index
     Route::get('/attendances', [AttendanceController::class, 'index']);
 
+    // Show
+    Route::get('/attendances/{attendance}', [AttendanceController::class, 'show']);
+
     // Attendance User
     // Mark user for a particular attendance session
     Route::post('/attendances/{meeting}/user', [AttendanceUserController::class, 'store'])
@@ -84,6 +87,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     // Update Attendance user
     Route::put('/attendance_users/{attendance_user}', [AttendanceUserController::class, 'update'])
+    ->middleware('auth:sanctum');
+
+    // Check Attendance for active session
+    Route::post('/attendances/active', [AttendanceController::class, 'check_for_active'])
     ->middleware('auth:sanctum');
 
     // Methods
