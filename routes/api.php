@@ -86,7 +86,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ->middleware('auth:sanctum');
 
     // Update Attendance user
-    Route::put('/attendance_users/{attendance_user}', [AttendanceUserController::class, 'update'])
+    Route::post('/attendance_users/{attendance_user}', [AttendanceUserController::class, 'update'])
     ->middleware('auth:sanctum');
 
     // Check Attendance for active session
@@ -176,7 +176,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update UserResidence
-    Route::put('/user_residences/{user}', [UserResidenceController::class, 'update'])
+    Route::post('/user_residences/{user}', [UserResidenceController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -202,7 +202,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update Program
-    Route::put('/programs/{program}', [ProgramController::class, 'update'])
+    Route::post('/programs/{program}', [ProgramController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -235,7 +235,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update
-    Route::put('/user_programs/{user}', [UserProgramController::class, 'update'])
+    Route::post('/user_programs/{user}', [UserProgramController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -263,7 +263,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
     // Update
-    Route::put('/zones/{zone}', [ZoneController::class, 'update'])
+    Route::post('/zones/{zone}', [ZoneController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -297,7 +297,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update Residence
-    Route::put('/residences/{residence}', [ResidenceController::class, 'update'])
+    Route::post('/residences/{residence}', [ResidenceController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -334,7 +334,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update
-    Route::put('/meetings/{meeting}', [MeetingController::class, 'update'])
+    Route::post('/meetings/{meeting}', [MeetingController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -384,7 +384,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;   
     
     // Update
-    Route::put('/meeting_types/{meeting_type}', [MeetingTypeController::class, 'update'])
+    Route::post('/meeting_types/{meeting_type}', [MeetingTypeController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -416,7 +416,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update
-    Route::put('/officiating_roles/{officiating_role}', [OfficiatingRoleController::class, 'update'])
+    Route::post('/officiating_roles/{officiating_role}', [OfficiatingRoleController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -444,7 +444,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update
-    Route::put('/officiators/{officiator}', [OfficiatorController::class, 'update'])
+    Route::post('/officiators/{officiator}', [OfficiatorController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -470,7 +470,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update
-    Route::put('/records/{record}', [RecordController::class, 'update'])
+    Route::post('/records/{record}', [RecordController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -502,7 +502,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update
-    Route::put('/record_items/{record_item}', [RecordItemController::class, 'update'])
+    Route::post('/record_items/{record_item}', [RecordItemController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -528,7 +528,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update
-    Route::put('/reports/{report}', [ReportController::class, 'update'])
+    Route::post('/reports/{report}', [ReportController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -571,7 +571,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update
-    Route::put('/report_records/{report_record}', [ReportRecordController::class, 'update'])
+    Route::post('/report_records/{report_record}', [ReportRecordController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -602,7 +602,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Update
-    Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])
+    Route::post('/announcements/{announcement}', [AnnouncementController::class, 'update'])
     ->middleware('auth:sanctum')
     ;
 
@@ -739,7 +739,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         ;
 
         // Update User Account Status
-        Route::put('/user_account/{user}', [UserController::class, 'user_account'])
+        Route::post('/user_account/{user}', [UserController::class, 'user_account'])
         ->middleware('auth:sanctum')
         ;
 
@@ -750,7 +750,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         });
 
         // Update User profile
-        Route::put('/user/{user}/profile', [ProfileController::class, 'update'])
+        Route::post('/user/{user}/profile', [ProfileController::class, 'update'])
         ->middleware('auth:sanctum')
         ;
 
