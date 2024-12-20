@@ -657,6 +657,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
             return response()->json($users);
         });
 
+        // Get all baptised members
+        Route::middleware('auth:sanctum')->get('/baptised_members', function () {
+            $users = User::baptised_members()->get();
+            return response()->json($users);
+        });
+
+        // Get all unbaptised members
+        Route::middleware('auth:sanctum')->get('/unbaptised_members', function () {
+            $users = User::unbaptised_members()->get();
+            return response()->json($users);
+        });
+
 
         // NON MEMBERS
             // Get all alumni

@@ -547,6 +547,16 @@ class User extends Authenticatable
         return self::where('is_active',1);
     }
 
+    // Get all baptised members
+    public static function baptised_members(){
+        return self::members()->where('is_baptised',1)->where('is_member',1);
+    }
+
+    // Get all unbaptised members
+    public static function unbaptised_members(){
+        return self::members()->where('is_baptised',0)->where('is_member',1);
+    }
+
 
     // ROLES
     // Get Ministry Members for a specific year
@@ -557,6 +567,7 @@ class User extends Authenticatable
 
         return $users->values();
     }
+
 
 
     // PROFILE
