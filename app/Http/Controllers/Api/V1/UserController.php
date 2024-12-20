@@ -143,6 +143,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'required|string|max:255',
             'is_member' => 'required|boolean',
+            'is_baptised' => 'nullable|boolean',
             'is_worker' => 'required|boolean',
             'is_student' => 'required|boolean',
             'is_knust_affiliate' => 'required|boolean',

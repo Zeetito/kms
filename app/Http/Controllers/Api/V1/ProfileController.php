@@ -23,12 +23,13 @@ class ProfileController extends Controller
         if($request->has('email')) $user->email = $request->email;
         if($request->has('dob')) $user->dob = $request->dob;
         if($request->has('local_congregation')) $user->local_congregation = $request->local_congregation;
+        if($request->has('is_baptised')) $user->is_baptised = $request->is_baptised;
 
         if($request->has('residence')  && empty(array_filter($request->residence)) == false){
             $user_residence = $user->user_residences->first();
             // If the residence coming is a registered one, do this
             if($request->residence['is_custom'] == false){
-                $user_residence->residence_id = $request->residence['id'];
+                $user_residence->residence_id = $request->residence['id'] ;
                     // Clear off any custom stuff if they existed for the instance
                     if($user_residence->custom_zone_id != null) $user_residence->custom_zone_id = null;
                     if($user_residence->custom_name != null) $user_residence->custom_name = null;

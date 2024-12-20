@@ -25,6 +25,7 @@ class UserResource extends JsonResource
             
             'is_alumni' => $this->is_alumni,
             'is_member' => $this->is_member,
+            'is_baptised' => $this->is_baptised,
             'is_worker' => $this->is_worker,
             'is_student' => $this->is_student,
             'is_knust_affiliate' => $this->is_knust_affiliate,

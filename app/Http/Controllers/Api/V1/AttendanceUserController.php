@@ -17,14 +17,19 @@ class AttendanceUserController extends Controller
         $instance['marked_by'] = auth()->id();
         $instance['attendance_id'] = $meeting->attendance->id;
 
-
+        
+        
         $save = new AttendanceUser($instance);
+        return $save;
 
-        if(AttendanceUser::where('attendance_id', $save->attendance_id)->where('user_id', '!=', null)->where('user_id', $save->user_id)->exists()){
+        if(AttendanceUser::where('attendance_id', $save->attendance_id)->where('user_id', $save->user_id)->exists()){
             return response()->json(['message' => 'User already marked'], 500);
         }
         
         if($save->save()){
+
+            
+
             return response()->json(['message' => 'Attendance Checked Successfully', 'attendanceUser' => $save], 201);
         }else{
             return response()->json(['error' => 'Failed to create attendance user session'], 500);

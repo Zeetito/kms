@@ -42,6 +42,7 @@ class User extends Authenticatable
         'contacts',
         'is_alumni',
         'is_member',
+        'is_baptised',
         'is_worker',
         'is_student',
         'is_knust_affiliate',
