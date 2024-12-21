@@ -17,13 +17,13 @@ class ValidAccount
     {
 
         // Check if user has names 
-        // if ($request->user() && $request->user()->contacts == null) {
-        //     return response()->json([
-        //         'message' => 'Please update your contact information.',
-        //         'redirect_to' => route('update_contacts')
-        //     ], 403); // You can use a 403 Forbidden status or another appropriate status code
-        // }
+        if ($request->user() && $request->user()->contacts == null) {
+            return response()->json([
+                'message' => 'Please update your contact information.',
+                'redirect_to' => route('update_contacts')
+            ], 403); // You can use a 403 Forbidden status or another appropriate status code
+        }
 
-        // return $next($request);
+        return $next($request);
     }
 }
