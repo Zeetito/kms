@@ -32,6 +32,8 @@ Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
 
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 
 
