@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Jobs\UserRegisteredNotificationJob;
 use App\Notifications\UserRegisteredNotification;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
