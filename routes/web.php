@@ -38,9 +38,9 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 
 // USER ACCOUNT COMPONENTS
-Route::get('/user/account_components/phone/{user}', function () {
-    return view('user.account.components.phone');
-})->name('update_contacts');
+// Route::get('/user/account_components/phone/{user}', function () {
+//     return view('user.account.components.phone');
+// })->name('update_contacts');
 
 // Hello route
 Route::get('/hello', function (Request $request) {
