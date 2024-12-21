@@ -24,6 +24,6 @@ class ValidAccount
         //     ], 403); // You can use a 403 Forbidden status or another appropriate status code
         // }
 
-        return $next($request);
+        // return $next($request);
     }
 }
