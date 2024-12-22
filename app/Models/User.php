@@ -573,6 +573,6 @@ class User extends Authenticatable
     // PROFILE
     // Get user profile
     public function profile(){
-        return (new ProfileResource($this)); 
+        return (new ProfileResource($this)) ?? response->json(['message' => 'User has no profile'], 404); ; 
     }
 }
