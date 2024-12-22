@@ -14,7 +14,6 @@ class ProfileController extends Controller
  
     // Update Use profile
     public function update(Request $request, User $user){
-
         if($request->has('firstname')) $user->firstname = $request->firstname;
         if($request->has('othername')) $user->othername = $request->othername;
         if($request->has('lastname')) $user->lastname = $request->lastname;

@@ -136,20 +136,13 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'othername' => 'nullable|string|max:255',
-            'gender' => 'required|in:m,f',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'required|string|max:255',
             'is_member' => 'required|boolean',
-            'is_baptised' => 'nullable|boolean',
             'is_worker' => 'required|boolean',
             'is_student' => 'required|boolean',
             'is_knust_affiliate' => 'required|boolean',
             'is_alumni' => 'required|boolean',
-            'dob' => 'required|date',
-            'password' => 'sometimes|string|min:6|confirmed'
+            'password' => 'string|min:6|confirmed'
         ]);
 
         if ($validator->fails()) {
