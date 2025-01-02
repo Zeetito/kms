@@ -4,6 +4,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Meeting;
 use App\Models\Program;
+use App\Models\Attendance;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\AttendanceUser;
@@ -45,13 +46,15 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 // Hello route
 Route::get('/hello', function (Request $request) {
+
+    return User::where('email','like','%mark%')->get(); 
+    return Attendance::find(1)->unmarked()->count();
     return Announcement::withoutGlobalScopes()->find(1)->users_seen()->get();
     // return AttendanceUser::where('user_id',null)->get()->each->delete();
     return Meeting::all();
     return User::find(1)->profile();
     return Role::where('slug','welfare')->first();
     return User::members()->where('is_student','!=',1)->get()->count();
-    return User::find(4)->program();
     return User::students()->get();
     return Program::find(10)->users();
     return User::find(1012)->user_residences;

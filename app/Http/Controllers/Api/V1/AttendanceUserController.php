@@ -20,17 +20,16 @@ class AttendanceUserController extends Controller
         
         
         $save = new AttendanceUser($instance);
-        return $save;
 
         // Get instance if already exists
-        $instance = AttendanceUser::where('attendance_id', $save->attendance_id)->where('user_id', $save->user_id);
-        if($instance->exists()){
+        $old_instance = AttendanceUser::where('attendance_id', $save->attendance_id)->where('user_id', $save->user_id);
+        if($old_instance->exists()){
             
             // Check if the intance has the same is_present status return user marked..
-            if($instance->first()->is_present == $save->is_present){
+            if($old_instance->first()->is_present == $save->is_present){
                 return response()->json(['message' => 'User already marked'], 500);
             }else{
-                $instance->update(['is_present' => $save->is_present]);
+                $old_instance->update($instance);
                 return response()->json(['message' => 'Attendance Checked Successfully', 'attendanceUser' => $save], 201);
             }
 
