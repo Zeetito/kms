@@ -10,6 +10,8 @@ use App\Models\UserResidence;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use App\Jobs\UserRegisteredNotificationJob;
+use App\Notifications\UserRegistrationNotification;
 
 class UserController extends Controller
 {
@@ -55,6 +57,13 @@ class UserController extends Controller
 
         // Create the Primary User Instance
         $user = User::create($instance);
+
+        if($user){
+            // disptach the notification job
+            dispatch(new UserRegisteredNotificationJob($user))->onQueue('user_registered_notification');
+            // $user->notify(new UserRegisteredNotification($user));
+
+        }
         
         // Get the residence details for the member
         if($instance['is_member'] == true){
@@ -124,7 +133,7 @@ class UserController extends Controller
         return response()->json([
             'message' => 'User Accounted Created successfully',
             'user' => $user,
-            'member_note' => ($user->is_member && !(isset($user_residence))) ? "no_residence_info" : "completed_residence_info",
+            'member_note' => ($user->is_member && !(isset($user_residence))) ? "no_residence_info" : "complete_residence_info",
             'student_note' => ($user->is_member && $user->is_student && !(isset($user_program))) ? "no_program_info" : "complete_program_info",
         
         ], 200);

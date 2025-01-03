@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\AttendanceUser;
 use Illuminate\Support\Facades\Route;
 use App\Jobs\UserRegisteredNotificationJob;
+use App\Http\Controllers\Auth\AccountController;
 use App\Notifications\UserRegisteredNotification;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -37,6 +38,9 @@ Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCal
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+Route::get('account/activate/{email}', [
+AccountController::class, 'activate_account'])->name('account.activate');
+
 
 
 // USER ACCOUNT COMPONENTS
@@ -47,7 +51,10 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 // Hello route
 Route::get('/hello', function (Request $request) {
 
-    return User::where('email','like','%mark%')->get(); 
+    $user =  User::where('email','like','agyareernest%')->first();
+    $user->notify(new \App\Notifications\ActivateAccountNotification($user));
+
+    return "user"; 
     return Attendance::find(1)->unmarked()->count();
     return Announcement::withoutGlobalScopes()->find(1)->users_seen()->get();
     // return AttendanceUser::where('user_id',null)->get()->each->delete();

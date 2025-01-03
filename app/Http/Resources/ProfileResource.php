@@ -29,7 +29,9 @@ class ProfileResource extends JsonResource
             'contacts' => $this->contacts,
 
             'status' => $this->status,
-            'role' => $this->role,
+            // 'role' => $this->role,
+            'role' => $this->all_roles,
+
 
             'residence' => $this->residence_note(),
             'zone' => $this->zone_note(),

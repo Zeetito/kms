@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    {{ __('Kindly access the app from the KMS application') }}
+                    {{ __('Kindly go back to the App.') }}
                 </div>
             </div>
         </div>

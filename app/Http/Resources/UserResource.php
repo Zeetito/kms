@@ -40,7 +40,9 @@ class UserResource extends JsonResource
             'status' => $this->status,
             'account_status' => $this->account_status,
             'fullname' => $this->fullname,
-            'role' => $this->role,
+            // 'role' => $this->role,
+            'role' => $this->all_roles,
+
             'role_level' => $this->role_level,
             'semester_id' => $this->semester_id,
 

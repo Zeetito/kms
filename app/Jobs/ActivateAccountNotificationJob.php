@@ -8,9 +8,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Notifications\UserRegisteredNotification;
+use App\Notifications\ActivateAccountNotification;
 
-class UserRegisteredNotificationJob implements ShouldQueue
+class ActivateAccountNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -21,7 +21,6 @@ class UserRegisteredNotificationJob implements ShouldQueue
      */
     public function __construct(User $user)
     {
-        //
         $this->user = $user;
     }
 
@@ -29,7 +28,8 @@ class UserRegisteredNotificationJob implements ShouldQueue
      * Execute the job.
      */
     public function handle(): void
-    {        
-        $this->user->notify(new UserRegisteredNotification());
+    {
+        $this->user->notify(new ActivateAccountNotification());
+        
     }
 }

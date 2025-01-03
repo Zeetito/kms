@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class UserRegisteredNotification extends Notification
+class VerifyAccountNotification extends Notification
 {
     use Queueable;
 
@@ -34,13 +34,11 @@ class UserRegisteredNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        // $salutation = "Regards, [Leadership, KNUST-COC]";
         return (new MailMessage)
-                    ->subject('KMS Account Registration')
-                    ->line('Your KNUST COC Membership Account has been created. We will notify you when it is ready.')
-                    // ->action('Log in When Ready', url('/login'))
-                    ->line('Thank you for using our application!')
-                    ->salutation("Regards, [Leadership, KNUST-COC]");
+                    ->subject('Verify Account')
+                    ->line('We need you to activate your KNUST-COC membership account by clicking the button below.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**

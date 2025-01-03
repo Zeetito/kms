@@ -154,6 +154,20 @@ class User extends Authenticatable
             }
         }
 
+        // get All Roles Attribute
+        public function getAllRolesAttribute(){
+            if($this->roles()->count() > 0){
+                $roles = [];
+                foreach($this->roles()->get() as $role){
+                   $roles[] = $role->slug; 
+                }
+                return $roles;
+                
+            }else{
+                return "none";
+            }
+        }
+
         // Get Role Level Attribute
         public function getRoleLevelAttribute(){
             if($this->roles()->count() > 0){

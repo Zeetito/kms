@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\V1\ZoneController;
 use App\Http\Controllers\Api\V1\LoginController;
 use App\Http\Controllers\Api\V1\RecordController;
 use App\Http\Controllers\Api\V1\ReportController;
+use App\Http\Controllers\Api\V1\AccountController;
 use App\Http\Controllers\Api\V1\CollegeController;
 use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\ProfileController;
@@ -627,6 +628,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
         // Delete A users account
         Route::delete('/users/{user}', [UserController::class, 'destroy'])
+        ->middleware('auth:sanctum')
+        ;
+
+
+        // ACCOUNT
+        // Notify User(s) to activate account
+        Route::post('/notify_to_activate_account', [AccountController::class, 'activation_notificatoin'])
         ->middleware('auth:sanctum')
         ;
 
