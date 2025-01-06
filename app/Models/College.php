@@ -22,6 +22,6 @@ class College extends Model
             return $user->program() && $user->program()->college_id == $this->id;
         });
 
-        return response()->json($response);
+        return response()->json($response->values());
     }
 }

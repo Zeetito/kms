@@ -54,27 +54,32 @@ class ProfileController extends Controller
             $user_residence->save();
 
         }
-        // Check if program input exists and has atleast one non_null value
-        if($request->has('program') && empty(array_filter($request->program)) == false){
-            $user_program = $user->user_programs->first();
-            // If the program coming is a registered one, do this
-            if($request->program['is_custom'] == false){
-                $user_program->program_id = $request->program['id'];
-                if($user_program->custom_name != null) $user_program->custom_name = null;
-                if($user_program->custom_college_id != null) $user_program->custom_college_id = null;
-                if($user_program->custom_span != null) $user_program->custom_span = null;
-            }else{
-                // else if it's a custom relationship,
-                $user_program->program_id = null;
-                if (array_key_exists("custom_name", $request->program)) $user_program->custom_name =  $request->program['custom_name'];
-                if (array_key_exists("custom_span", $request->program)) $user_program->custom_span =  $request->program['custom_span'];
-                if (array_key_exists("custom_college_id", $request->program)) $user_program->custom_college_id =  $request->program['custom_college_id'];
+
+        // User is student? check for program
+        // if($user->is_student == true){
+            // Check if program input exists and has atleast one non_null value
+            if($request->has('program') && empty(array_filter($request->program)) == false){
+                $user_program = $user->user_programs->first();
+                // If the program coming is a registered one, do this
+                if($request->program['is_custom'] == false){
+                    $user_program->program_id = $request->program['id'];
+                    // if($user_program->custom_name != null) $user_program->custom_name = null;
+                    // if($user_program->custom_college_id != null) $user_program->custom_college_id = null;
+                    // if($user_program->custom_span != null) $user_program->custom_span = null;
+                }else{
+                    // else if it's a custom relationship,
+                    $user_program->program_id = null;
+                    if (array_key_exists("custom_name", $request->program)) $user_program->custom_name =  $request->program['custom_name'];
+                    if (array_key_exists("custom_span", $request->program)) $user_program->custom_span =  $request->program['custom_span'];
+                    if (array_key_exists("custom_college_id", $request->program)) $user_program->custom_college_id =  $request->program['custom_college_id'];
+                }
+                if(array_key_exists("year", $request->program))  $user_program->year = $request->program['year'];
+    
+                $user_program->save();
+    
             }
-            if(array_key_exists("year", $request->program))  $user_program->year = $request->program['year'];
+        // }
 
-            $user_program->save();
-
-        }
 
         $user->save();
         return response()->json([

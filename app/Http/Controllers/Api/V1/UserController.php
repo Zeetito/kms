@@ -146,11 +146,11 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'is_member' => 'required|boolean',
-            'is_worker' => 'required|boolean',
-            'is_student' => 'required|boolean',
-            'is_knust_affiliate' => 'required|boolean',
-            'is_alumni' => 'required|boolean',
+            'is_member' => 'nullable|boolean',
+            'is_worker' => 'nullable|boolean',
+            'is_student' => 'nullable|boolean',
+            'is_knust_affiliate' => 'nullable|boolean',
+            'is_alumni' => 'nullable|boolean',
             'password' => 'string|min:6|confirmed'
         ]);
 
