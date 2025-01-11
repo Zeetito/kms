@@ -56,8 +56,18 @@ class ResetPasswordController extends Controller
             'email' => 'required|email',
             'password' => 'required|confirmed|min:8',
         ]);
-
-        // Proceed with the default reset password logic
-        return $this->resetPassword($request);
+    
+        // Attempt to reset the user's password
+        $response = $this->broker()->reset(
+            $this->credentials($request),
+            function ($user, $password) {
+                $this->resetPassword($user, $password); // Pass both arguments
+            }
+        );
+    
+        return $response == \Password::PASSWORD_RESET
+            ? $this->sendResetResponse($request, $response)
+            : $this->sendResetFailedResponse($request, $response);
     }
+    
 }
