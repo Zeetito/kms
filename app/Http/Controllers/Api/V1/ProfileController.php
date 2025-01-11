@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Models\User;
 use App\Models\Image;
-use Intervention\Image\Facades\Image as FacadeImage;
+use App\Models\UserProgram;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image as FacadeImage;
 
 class ProfileController extends Controller
 {
@@ -59,7 +60,7 @@ class ProfileController extends Controller
         // if($user->is_student == true){
             // Check if program input exists and has atleast one non_null value
             if($request->has('program') && empty(array_filter($request->program)) == false){
-                $user_program = $user->user_programs->first();
+                $user_program = $user->user_programs->first() ?? new UserProgram();
                 // If the program coming is a registered one, do this
                 if($request->program['is_custom'] == false){
                     $user_program->program_id = $request->program['id'];
@@ -74,8 +75,16 @@ class ProfileController extends Controller
                     if (array_key_exists("custom_college_id", $request->program)) $user_program->custom_college_id =  $request->program['custom_college_id'];
                 }
                 if(array_key_exists("year", $request->program))  $user_program->year = $request->program['year'];
-    
-                $user_program->save();
+                
+                // Check if model is empty
+                if ($user_program->getAttributes() == []) {
+                    // The model is empty
+                    // do nothing.
+
+                }else{
+
+                    $user_program->save();
+                }
     
             }
         // }

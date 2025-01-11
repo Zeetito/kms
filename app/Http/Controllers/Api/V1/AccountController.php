@@ -35,7 +35,7 @@ class AccountController extends Controller
         return response()->json([
             'message' => 'Emails sent successfully',
             'data' => collect([
-                'emails' => $emails
+            'emails' => $emails
             ])
         ]);
         
