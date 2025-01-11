@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Image;
 use App\Models\UserProgram;
 use Illuminate\Http\Request;
+use App\Models\UserResidence;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image as FacadeImage;
@@ -26,7 +27,7 @@ class ProfileController extends Controller
         if($request->has('is_baptised')) $user->is_baptised = $request->is_baptised;
 
         if($request->has('residence')  && empty(array_filter($request->residence)) == false){
-            $user_residence = $user->user_residences->first();
+            $user_residence = $user->user_residences->first() ?? new UserResidence;
             // If the residence coming is a registered one, do this
             if($request->residence['is_custom'] == false){
                 $user_residence->residence_id = $request->residence['id'] ;
@@ -52,7 +53,15 @@ class ProfileController extends Controller
             if (array_key_exists("floor", $request->residence))  $user_residence->floor = $request->residence['floor'];
             if (array_key_exists("block", $request->residence))  $user_residence->block = $request->residence['block'];
 
-            $user_residence->save();
+             // Check if model is empty
+             if ($user_residence->getAttributes() == []) {
+                // The model is empty
+                // do nothing.
+
+            }else{
+
+                $user_residence->save();
+            }
 
         }
 
