@@ -24,7 +24,8 @@ class ProfileResource extends JsonResource
             'profile_pic_path' => $this->profile_pic()->path ?? null,
             'is_baptised' => $this->is_baptised,
 
-            'dob' => $this->dob,
+            // 'dob' => $this->dob,
+            'dob' => date('M d', strtotime($this->dob)),
 
             'contacts' => $this->contacts,
 
