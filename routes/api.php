@@ -789,8 +789,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::middleware('auth:sanctum')->post('/logout', [LoginController::class, 'logout']);
 
     // Password Reset and Forget
-    Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword'])->name('password.email');
-    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.reset');
+    Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword'])->name('api.password.email');
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('api.password.reset');
 
 
 
