@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Models\User;
 use App\Models\Image;
+use App\Models\Semester;
 use App\Models\UserProgram;
 use Illuminate\Http\Request;
 use App\Models\UserResidence;
@@ -59,7 +60,8 @@ class ProfileController extends Controller
                 // do nothing.
 
             }else{
-
+                $user_residence->user_id = $user->id;
+                $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
                 $user_residence->save();
             }
 
@@ -91,7 +93,9 @@ class ProfileController extends Controller
                     // do nothing.
 
                 }else{
-
+                    $user_program->user_id = $user->id;
+                    $user_program->academic_year_id = Semester::active_semester()->academic_year_id;
+                    $user_program->save();
                     $user_program->save();
                 }
     
