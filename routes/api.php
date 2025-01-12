@@ -782,7 +782,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         // AUTH
     // Login
     Route::post('/login', [LoginController::class, 'login'])
-    ->name('login')
+    ->name('api.login')
     ;
 
     // Logout
