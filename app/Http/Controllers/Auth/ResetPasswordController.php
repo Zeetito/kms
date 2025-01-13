@@ -40,8 +40,8 @@ class ResetPasswordController extends Controller
     {
         Log::info('Reset Form Inputs', [
             'token' => $token,
-            // 'email' => $request->email,
-            'email' => urldecode($request->email),
+            'email' => $request->email,
+            // 'email' => urldecode($request->email),
         ]);
     
         if (empty($token) || empty($request->email)) {
@@ -50,7 +50,8 @@ class ResetPasswordController extends Controller
     
         return view('auth.passwords.reset', [
             'token' => $token,
-            'email' => $request->email,
+            // 'email' => $request->email,
+            'email' => urldecode($request->email),
         ]);
     }
     
