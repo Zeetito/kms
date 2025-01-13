@@ -50,8 +50,7 @@ class ResetPasswordController extends Controller
     
         return view('auth.passwords.reset', [
             'token' => $token,
-            // 'email' => $request->email,
-            'email' => urldecode($request->email),
+            'email' => $request->only('email'),
         ]);
     }
     
