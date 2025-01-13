@@ -14,10 +14,9 @@ class PasswordResetController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        $status = Password::sendResetLink([
-            $request->request('email')
-            // 'email' => urlencode($request->email),
-        ]);
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
 
         if ($status == Password::RESET_LINK_SENT) {
             return response()->json(['status' => __($status)], 200);
