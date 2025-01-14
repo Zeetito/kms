@@ -19,6 +19,7 @@ use App\Models\UserResidence;
 use Laravel\Sanctum\HasApiTokens;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\ProfileResource;
+use App\Http\Resources\BirthdayResource;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -589,4 +590,21 @@ class User extends Authenticatable
     public function profile(){
         return (new ProfileResource($this)) ?? response->json(['message' => 'User has no profile'], 404); ; 
     }
+
+    // Upcoming birthdays
+    public static function upcoming_birthdays()
+    {
+        $today = now();  // Get current date as a Carbon instance
+        $monthDayToday = $today->format('m-d'); // Get the month-day part of today's date
+    
+        // Query users whose birthday is after today in terms of month-day (ignoring year)
+        $birthdays = User::whereNotNull('dob') // Ensure 'dob' is not null
+                         ->whereRaw('DATE_FORMAT(dob, "%m-%d") >= ?', [$monthDayToday]) // Compare month-day part
+                         ->get();
+    
+        // Return the resource collection
+        return BirthdayResource::collection($birthdays);
+    }
+    
+    
 }

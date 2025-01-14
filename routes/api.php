@@ -38,6 +38,7 @@ use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\UserResidenceController;
 use App\Http\Controllers\Api\V1\AttendanceUserController;
 use App\Http\Controllers\Api\V1\OfficiatingRoleController;
+use App\Http\Resources\BirthdayResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -778,6 +779,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::post('/user/{user}/profile_pic', [ProfileController::class, 'update_profile_pic'])
         ->middleware('auth:sanctum')
         ;
+
+        // Other Methods
+        // Get upcoming birthdays throught the right json format
+        Route::middleware('auth:sanctum')->get('/upcoming_birthdays', function () {
+            return response()->json(User::upcoming_birthdays());
+        });
+        
 
         // AUTH
     // Login
