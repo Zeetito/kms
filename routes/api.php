@@ -152,6 +152,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ->middleware('auth:sanctum')
     ;
 
+    // AssignRole
+    Route::post('/assign_role/{role}/{user}', [RoleController::class, 'assign_role']);
+
 
     // USER
     // Index

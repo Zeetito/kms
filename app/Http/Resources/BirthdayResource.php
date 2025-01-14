@@ -22,7 +22,7 @@ class BirthdayResource extends JsonResource
             'contacts' => $this->contacts ?? "None",
             'zone' => $this->zone_note(),
             'program' => $this->program_note(),
-            'days_left' => Carbon::today()->diffInDays(Carbon::parse($this->dob)),
+            // 'days_left' => Carbon::today()->diffInDays(Carbon::parse($this->dob)),
     
         ];
     }
