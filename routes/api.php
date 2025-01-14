@@ -786,6 +786,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
             return response()->json(User::upcoming_birthdays());
         });
         
+        // Get birthdays today
+        Route::middleware('auth:sanctum')->get('/birthdays_today', function () {
+            return response()->json(User::birthdays_today());
+        });
 
         // AUTH
     // Login
