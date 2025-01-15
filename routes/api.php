@@ -163,7 +163,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ;
 
     // Get all ministry members
-    Route::middleware('auth:sanctum')->get('/roles/ministry_members', function () {
+    Route::middleware('auth:sanctum')->get('/ministry_members', function (Request $request) {
         $users = User::ministry_members();
         return response()->json($users);
     });
@@ -632,6 +632,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
         // Delete A users account
         Route::delete('/users/{user}', [UserController::class, 'destroy'])
+        ->middleware('auth:sanctum')
+        ;
+
+        // Verify / Activiate account
+        Route::post('/verify_user/{user}', [UserController::class, 'verify_user'])
+        ->middleware('auth:sanctum')
+        ;
+
+        // Deactivate user account
+        Route::post('/deactivate_user/{user}', [UserController::class, 'deactivate_user'])
         ->middleware('auth:sanctum')
         ;
 

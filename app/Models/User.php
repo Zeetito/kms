@@ -172,7 +172,7 @@ class User extends Authenticatable
         // Get Role Level Attribute
         public function getRoleLevelAttribute(){
             if($this->roles()->count() > 0){
-                return $this->roles()->first()->level;
+                return $this->roles()->pluck('level')->max();
                 
             }else{
                 return 0;
@@ -577,7 +577,7 @@ class User extends Authenticatable
     // Get Ministry Members for a specific year
     public static function ministry_members(){
         $users = User::all()->filter(function ($user) {
-            return $user->role_level >= 2 && $user->role_level != 8;
+            return $user->role_level >= 2 && $user->role_level < 4;
         });
 
         return $users->values();

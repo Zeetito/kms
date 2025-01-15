@@ -189,6 +189,34 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    // Verify User' account
+    public function verify_user(Request $request, User $user){
+        abort_unless($request->user->role_level >= 2, 403);
+        $user->is_active = true;
+        $user->save();
+
+        return response()->json([
+            'message' => 'User Verified Successfully',
+            'status' => 'success',
+            'user' => $user
+        ], 200);
+
+    }
+
+    // Deactivate User account
+    public function deactivate_user(Request $request, User $user){
+        abort_unless($request->user->role_level >= 2, 403);
+        $user->is_active = false;
+        $user->save();
+
+        return response()->json([
+            'message' => 'User Deactivated Successfully',
+            'status' => 'success',
+            'user' => $user
+        ], 200);
+
+    }
+
 
 
 }

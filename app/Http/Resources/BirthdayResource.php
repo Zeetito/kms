@@ -18,6 +18,8 @@ class BirthdayResource extends JsonResource
         return [
             'user_id' => $this->id,
             'name_of_user' => $this->fullname,
+            'firstname' => $this->firstname,
+            'gender' => $this->gender,
             'birthday' => date('M d', strtotime($this->dob)),
             'contacts' => $this->contacts ?? "None",
             'zone' => $this->zone_note(),
