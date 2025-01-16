@@ -191,7 +191,7 @@ class UserController extends Controller
 
     // Verify User' account
     public function verify_user(Request $request, User $user){
-        abort_unless($request->user->role_level >= 2, 403);
+        abort_unless($request->user()->role_level >= 2, 403);
         $user->is_active = true;
         $user->save();
 
@@ -205,7 +205,7 @@ class UserController extends Controller
 
     // Deactivate User account
     public function deactivate_user(Request $request, User $user){
-        abort_unless($request->user->role_level >= 2, 403);
+        abort_unless($request->user()->role_level >= 2, 403);
         $user->is_active = false;
         $user->save();
 

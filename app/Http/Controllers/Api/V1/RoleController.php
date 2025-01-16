@@ -73,7 +73,7 @@ class RoleController extends Controller
 
     // Assign Role
     public function assign_role(Request $request, Role $role, User $user){
-        // abort_unless($request->user->role_level >= 2, 403);
+        abort_unless($request->user->role_level >= 2, 403);
         if($user && $role){
            $instance = new UserRole;
            $instance->user_id = $user->id;
