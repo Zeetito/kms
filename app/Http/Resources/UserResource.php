@@ -31,6 +31,8 @@ class UserResource extends JsonResource
             'is_knust_affiliate' => $this->is_knust_affiliate,
             'local_congregation' => $this->local_congregation,
 
+            // 'zone' => $this->zone_note(),
+
             // -----
 
             

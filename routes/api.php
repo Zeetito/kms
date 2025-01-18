@@ -157,6 +157,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ->middleware('auth:sanctum')
     ;
 
+    // Retract Role
+    Route::post('/retract_role/{role}/{user}', [RoleController::class, 'retract_role'])
+    ->middleware('auth:sanctum')
+    ;
 
     // USER
     // Index
@@ -283,6 +287,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     // Index
     Route::middleware('auth:sanctum')->get('/zones/{zone}/users', function (Zone $zone) {
         return response()->json($zone->users());
+    });
+
+    // Get members for Others Zone
+    Route::middleware('auth:sanctum')->get('/others_zone_members', function (Zone $zone) {
+        return response()->json($zone->other_zone_members());
     });
     
     // RESIDENCE

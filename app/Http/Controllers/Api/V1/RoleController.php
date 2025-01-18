@@ -83,7 +83,7 @@ class RoleController extends Controller
         //    Check for double entry with try and catch
            try {
                $instance->save();
-                 return response()->json(['message' => 'Role assigned successfully!']);
+                 return response()->json(['message' => 'Role assigned '.$user->fullname.' successfully!']);
 
            } catch (Exception $e) {
                if($e->getCode() == 23000){
@@ -92,6 +92,22 @@ class RoleController extends Controller
                return response()->json(['error' => 'Failed to assign role: ' . $e->getMessage()], 500);
            }
 
+        }else{
+            return response()->json(['error' => 'User or Role not found'], 404);
+        }
+    }
+
+    // Retract Role
+    public function retract_role(Request $request, Role $role, User $user){
+        abort_unless($request->user->role_level >= 2, 403);
+        if($user && $role){
+            $instance = UserRole::where('user_id', $user->id)->where('role_id', $role->id)->where('academic_year_id', Semester::active_semester()->academic_year_id)->first();
+            if($instance){
+                $instance->delete();
+                return response()->json(['message' => 'Role retracted from '.$user->fullname.' successfully!']);
+            }else{
+                return response()->json(['error' => 'User does not have this role'], 400);
+            }
         }else{
             return response()->json(['error' => 'User or Role not found'], 404);
         }

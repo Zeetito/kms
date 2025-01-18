@@ -26,6 +26,17 @@ class Zone extends Model
 
     }
 
+    // Get Other Zone Members
+    public function other_zone_members()
+    {
+        $users = User::members()->get()->filter(function ($user) {
+            return $user->zone_note() ? $user->zone_note()["id"] == null : true;
+        });
+    
+        return $users->values();
+    }
+    
+
     // residence
     // In Zone model
     public function residences()
