@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use Log;
+use Password;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class ResetPasswordController extends Controller
@@ -42,9 +42,8 @@ class ResetPasswordController extends Controller
     {
         Log::info('Reset Form Inputs', [
             'token' => $token,
-            // 'email' => $request->email,
+            'email' => $request->email,
             // 'email' => urldecode($request->email),
-            // 'email' => $request->only('email'),
         ]);
     
         if (empty($token) || empty($request->email)) {
@@ -53,18 +52,18 @@ class ResetPasswordController extends Controller
     
         return view('auth.passwords.reset', [
             'token' => $token,
-            'email' => $request->email,
+            'email' => $request->only('email'),
         ]);
     }
     
     
 
-    // /**
-    //  * Handle a password reset request for the application.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-    //  */
+    /**
+     * Handle a password reset request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
     public function reset(Request $request)
     {
         $request->validate([
