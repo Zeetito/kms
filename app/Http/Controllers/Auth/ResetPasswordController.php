@@ -6,6 +6,7 @@ use Log;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class ResetPasswordController extends Controller
@@ -30,19 +31,20 @@ class ResetPasswordController extends Controller
      */
     protected $redirectTo = '/home';
 
-    /**
-     * Show the password reset form.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string|null  $token
-     * @return View
-     */
+    // /**
+    //  * Show the password reset form.
+    //  *
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @param  string|null  $token
+    //  * @return View
+    //  */
     public function showResetForm(Request $request, $token = null)
     {
         Log::info('Reset Form Inputs', [
             'token' => $token,
-            'email' => $request->email,
+            // 'email' => $request->email,
             // 'email' => urldecode($request->email),
+            // 'email' => $request->only('email'),
         ]);
     
         if (empty($token) || empty($request->email)) {
@@ -51,18 +53,18 @@ class ResetPasswordController extends Controller
     
         return view('auth.passwords.reset', [
             'token' => $token,
-            'email' => $request->only('email'),
+            'email' => $request->email,
         ]);
     }
     
     
 
-    /**
-     * Handle a password reset request for the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-     */
+    // /**
+    //  * Handle a password reset request for the application.
+    //  *
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+    //  */
     public function reset(Request $request)
     {
         $request->validate([
@@ -79,7 +81,7 @@ class ResetPasswordController extends Controller
             }
         );
     
-        return $response == \Password::PASSWORD_RESET
+        return $response == Password::PASSWORD_RESET
             ? $this->sendResetResponse($request, $response)
             : $this->sendResetFailedResponse($request, $response);
     }
