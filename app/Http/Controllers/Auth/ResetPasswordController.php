@@ -31,13 +31,13 @@ class ResetPasswordController extends Controller
      */
     protected $redirectTo = '/home';
 
-    // /**
-    //  * Show the password reset form.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @param  string|null  $token
-    //  * @return View
-    //  */
+    /**
+     * Show the password reset form.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string|null  $token
+     * @return View
+     */
     public function showResetForm(Request $request, $token = null)
     {
         Log::info('Reset Form Inputs', [
