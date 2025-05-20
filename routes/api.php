@@ -662,8 +662,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::post('/notify_to_activate_account', [AccountController::class, 'activation_notificatoin'])
         ->middleware('auth:sanctum')
         ;
-
-
         
 
         // Get unverified users

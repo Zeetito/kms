@@ -30,6 +30,7 @@ class ZoneSeeder extends Seeder
             ['name' => 'UNITY'],
             ['name' => 'UNIVERSITY'],
             ['name' => 'SRC,IMPACT,HALL 7'],
+            ['name' => 'OTHERS'],
         ];
 
         foreach ($zones as $zone) {

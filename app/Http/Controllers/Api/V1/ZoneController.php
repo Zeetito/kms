@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\User;
 use App\Models\Zone;
+use App\Models\Semester;
+use App\Models\Residence;
 use Illuminate\Http\Request;
+use App\Models\UserResidence;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
@@ -88,5 +92,54 @@ class ZoneController extends Controller
         }
     }
 
+    // Add Zone User
+    public function addZoneUser(Request $request)
+    {     
+        $validator = Validator::make($request->all(), [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'nullable|string|max:255',
+            'gender' => 'required|in:m,f',
+            'is_baptised' => 'int',
+            'active_contact' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255|unique:users,email',
+            'residence' => 'nullable|exists:residences,id',
+            'password' => 'required|string|confirmed|min:8',
+            // 'password_confirmation' => 'required|string|confirmed|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+
+
+        $user =  new User;
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->gender = $request->gender;
+        $user->active_contact = $request->active_contact;
+        $user->email = $request->email;
+        $user->is_baptised = $request->is_baptised == 1 ? true : false;
+        $user->password = bcrypt($request->password);
+        $user->is_active =  true;
+        $user->is_member = true;
+        $user->save();
+
+        #Retrieve Residence
+        $residence = Residence::find($request->residence);
+
+        // Save User Residence Instance
+        $user_residence = new UserResidence;
+        $user_residence->user_id = $user->id;
+        $user_residence->residence_id = $residence->id;
+        $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
+        $user_residence->save();
+
+        // Add Room and other details later...
+
+        # Return to the add user view
+        return redirect()->route('add.zone.user.view', ['zone' => $residence->zone]) ->with('success', 'User added successfully');
+        
+    }
 
 }

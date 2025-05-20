@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 // use App\Models\Scopes\SemesterScope;
 use App\Models\Meeting;
+use App\Models\Attendance;
 use App\Models\AttendanceUser;
 use App\Models\Scopes\SemesterScope;
 use Illuminate\Database\Eloquent\Model;
@@ -69,6 +70,11 @@ class Attendance extends Model
             $attendance_user->attendance_id = $this->id;
             $attendance_user->save();
         }
+    }
+
+    // Get Active Attendance Session
+    public static function active_sessions(){
+        return Attendance::where('is_active', true)->first();
     }
 
 }

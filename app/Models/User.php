@@ -41,6 +41,7 @@ class User extends Authenticatable
         'email',
         'dob',
         'contacts',
+        'active_contact',
         'is_alumni',
         'is_member',
         'is_baptised',
@@ -586,7 +587,7 @@ class User extends Authenticatable
 
 
     // PROFILE
-    // Get user profile
+// Get user profile
     public function profile(){
         return (new ProfileResource($this)) ?? response->json(['message' => 'User has no profile'], 404); ; 
     }

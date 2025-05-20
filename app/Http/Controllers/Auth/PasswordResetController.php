@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use Log;
 use Password;
+use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
-class ResetPasswordController extends Controller
+class PasswordResetController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +54,7 @@ class ResetPasswordController extends Controller
     
         return view('auth.passwords.reset', [
             'token' => $token,
-            'email' => $request->only('email'),
+            'email' => $request->email,
         ]);
     }
     
@@ -64,25 +66,33 @@ class ResetPasswordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function reset(Request $request)
+    public function reset(Request $request) 
     {
         $request->validate([
-            'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|confirmed|min:8',
+            'token' => 'required',
+            'password' => 'required|min:6|confirmed'
         ]);
     
-        // Attempt to reset the user's password
-        $response = $this->broker()->reset(
-            $this->credentials($request),
-            function ($user, $password) {
-                $this->resetPassword($user, $password); // Pass both arguments
-            }
-        );
+        // Check if the token and email exist
+        $reset = DB::table('password_resets')
+            ->where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
     
-        return $response == Password::PASSWORD_RESET
-            ? $this->sendResetResponse($request, $response)
-            : $this->sendResetFailedResponse($request, $response);
+        if (!$reset) {
+            return back()->withErrors(['message' => 'Invalid token or email']);
+        }
+    
+        // Update user's password
+        $user = User::where('email', $request->email)->first();
+        $user->update(['password' => bcrypt($request->password)]);
+    
+        // Delete the reset token after successful password reset
+        DB::table('password_resets')->where('email', $request->email)->delete();
+    
+        return redirect('/login')->with('status', 'Password has been reset.');
     }
+    
     
 }

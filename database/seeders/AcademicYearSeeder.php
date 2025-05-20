@@ -15,9 +15,9 @@ class AcademicYearSeeder extends Seeder
     {
         //
         $academic_years = [
-            ['start_year' => '2021', 'end_year' => '2022'],
-            ['start_year' => '2022', 'end_year' => '2023'],
-            ['start_year' => '2023', 'end_year' => '2024'],
+            // ['start_year' => '2021', 'end_year' => '2022'],
+            // ['start_year' => '2022', 'end_year' => '2023'],
+            ['start_year' => '2024', 'end_year' => '2025'],
         ];
 
         foreach ($academic_years as $academic_year) {

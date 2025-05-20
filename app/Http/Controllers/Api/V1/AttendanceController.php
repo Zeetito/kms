@@ -48,6 +48,41 @@ class AttendanceController extends Controller
         }
     }
 
-    //Storing Attendance is done in the meeting controller
+    // Submit Attendance
+    public function submit_attendance(Request $request)
+    {
+        $userIds = json_decode($request->input('user_ids'), true);
+
+        if (!is_array($userIds)) {
+            return back()->with('error', 'Invalid data submitted.');
+        }
+
+        $attendance = Attendance::active_sessions()->first();
+        if (!$attendance) {
+            return back()->with('error', 'No active attendance session found.');
+        }
+
+        $existing = AttendanceUser::where('attendance_id', $attendance->id)
+            ->whereIn('user_id', $userIds)
+            ->pluck('user_id')
+            ->toArray();
+
+        $newIds = array_diff($userIds, $existing); // Remove duplicates
+
+        foreach ($newIds as $id) {
+            $instance = new AttendanceUser;
+            $instance->user_id = $id;
+            $instance->is_present = true;
+            $instance->attendance_id = $attendance->id;
+
+            try {
+                $instance->save();
+            } catch (\Exception $e) {
+                return back()->with('error', 'Error submitting attendance: ' . $e->getMessage());
+            }
+        }
+
+        return back()->with('success', 'Attendance submitted successfully.');
+    }
 
 }
