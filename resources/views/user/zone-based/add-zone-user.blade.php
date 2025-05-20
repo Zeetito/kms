@@ -86,15 +86,15 @@
                 <i class="bi bi-check-circle-fill"></i> Submit Attendance
             </button>
         </div>
+        <div class="col-md-6">
+            <a href="{{route('active_attendance_session')}}">
+                <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#goToAttendanceModal">
+                    <i class="bi bi-check-circle-fill"></i> Go to Attendance
+                </button>
+            </a>
+        </div>
     @endif
 
-    <div class="col-md-6">
-        <a href="{{route('active_attendance_session')}}">
-            <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#goToAttendanceModal">
-                <i class="bi bi-check-circle-fill"></i> Go to Attendance
-            </button>
-        </a>
-    </div>
 </div>
 
   <!-- Add User Modal -->
