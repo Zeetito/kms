@@ -123,5 +123,27 @@ $(document).ready(function() {
         $('#markedUserIdsInput').val(JSON.stringify(ids)); // Submit as JSON string
     });
 
+    $('.edit-user-btn').click(function() {
+    const userId = $(this).data('id');
+    const firstname = $(this).data('firstname');
+    const lastname = $(this).data('lastname');
+    const gender = $(this).data('gender');
+    const baptised = $(this).data('baptised');
+    const contact = $(this).data('contact');
+    const email = $(this).data('email');
+    const residence = $(this).data('residence');
 
+    $('#editUserForm').attr('action', `/edit-zone-user/${userId}`);
+    $('#edit-firstname').val(firstname);
+    $('#edit-lastname').val(lastname);
+    $('#edit-gender').val(gender);
+    $('#edit-is_baptised').val(baptised);
+    $('#edit-active_contact').val(contact);
+    $('#edit-email').val(email);
+    $('#edit-residence').val(residence);
 });
+
+   
+});
+
+

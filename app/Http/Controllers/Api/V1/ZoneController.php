@@ -142,4 +142,50 @@ class ZoneController extends Controller
         
     }
 
+    // Edit Zone User
+    public function editZoneUser(Request $request, User $user)
+    {
+        $validator = Validator::make($request->all(), [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'nullable|string|max:255',
+            'gender' => 'required|in:m,f',
+            'is_baptised' => 'int',
+            'active_contact' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255|unique:users,email,'.$user->id,
+            'residence' => 'nullable|exists:residences,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->gender = $request->gender;
+        $user->active_contact = $request->active_contact;
+        $user->email = $request->email;
+        $user->is_baptised = $request->is_baptised == 1 ? true : false;
+        $user->save();
+
+        #Retrieve Residence
+        $residence = Residence::find($request->residence);
+
+        // Save User Residence Instance
+        $user_residence = UserResidence::where('user_id', $user->id)->where('academic_year_id', Semester::active_semester()->academic_year_id)->first();
+
+        // Check if the The residence instance does not exist and create it
+        if($user_residence == null){
+            $user_residence = new UserResidence;
+            $user_residence->user_id = $user->id;
+            $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
+        }
+
+        $user_residence->residence_id = $residence->id;
+        $user_residence->save();
+
+        # Return to the add user view
+        return redirect()->route('add.zone.user.view', ['zone' => $residence->zone]) ->with('success', 'User updated successfully');
+        
+    }
+
 }

@@ -47,6 +47,9 @@ Route::get('/add-zone-user/{zone}', function ($zone) {
 // Store Zone User
 Route::post('/add-zone-user' , [ZoneController::class, 'addZoneUser'])->name('add.zone.user');
 
+// Edit Zone User
+Route::post('/edit-zone-user/{user}' , [ZoneController::class, 'editZoneUser'])->name('edit.zone.user');
+
 
 // Go to attendance page
 Route::get('/active_attendance_session', function () {

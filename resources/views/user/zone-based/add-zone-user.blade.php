@@ -50,8 +50,14 @@
                     {{-- Edit Button --}}
                     <button class="btn btn-sm btn-primary edit-user-btn" data-bs-toggle="modal" data-bs-target="#editUserModal"
                         data-id="{{ $user->id }}"
-                        data-name="{{ $user->name }}"
-                        data-email="{{ $user->email }}">
+                        data-firstname="{{ $user->firstname }}"
+                        data-lastname="{{ $user->lastname }}"
+                        data-gender="{{ $user->gender }}"
+                        data-baptised="{{ $user->is_baptised }}"
+                        data-contact="{{ $user->active_contact }}"
+                        data-email="{{ $user->email }}"
+                        data-residence="{{ $user->residence()->id ?? null}}"
+                        >
                         <i class="bi bi-pencil-fill"></i>
                     </button>
 
@@ -149,7 +155,7 @@
                         {{-- Email --}}
                         <div class="mb-3">
                             <label for="email" class="form-label h6">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" >
                         </div>
 
                         {{-- <div class="mb-3"> --}}
@@ -180,10 +186,10 @@
     </div>
 
 
-<!-- Edit User Modal -->
+<!-- Temp User Modal -->
 <div class="modal fade" id="addTempUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form method="POST" action="{{ route('add.temp.user') }}" class="modal-content" id="editUserForm">
+        <form method="POST" action="{{ route('add.temp.user') }}" class="modal-content" id="addTempUserForm">
             @csrf
             {{-- @method('PUT') --}}
             <div class="modal-header bg-primary text-white">
@@ -221,29 +227,69 @@
     </div>
 </div>
 
-<!-- Add Temp User Modal -->
+<!-- Edit User Modal -->
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <form method="POST" class="modal-content" id="editUserForm">
             @csrf
-            @method('PUT')
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">Edit User</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                {{-- Firstname --}}
                 <div class="mb-3">
-                    <label>Full Name</label>
-                    <input type="text" name="name" id="edit-name" class="form-control" required>
+                    <label>FirstName</label>
+                    <input type="text" name="firstname" id="edit-firstname" class="form-control" required>
                 </div>
+                {{-- Lastname --}}
+                <div class="mb-3">
+                    <label>LastName</label>
+                    <input type="text" name="lastname" id="edit-lastname" class="form-control" required>
+                </div>
+                {{-- Gender --}}
+                <div class="mb-3">
+                    <label for="gender" class="form-label h6">Gender</label>
+                    <select class="form-select" id="edit-gender" name="gender" required>
+                        <option value="m">Male</option>
+                        <option value="f">Female</option>
+                    </select>
+                </div>
+
+                {{-- Baptismal Status --}}
+                 <div class="mb-3">
+                    <label for="is_baptised" class="form-label h6">Is Baptised?</label>
+                    <select class="form-select" id="edit-is_baptised" name="is_baptised" required>
+                        <option value="">Select</option>
+                        <option value=1>Yes</option>
+                        <option value=0>No</option>
+                    </select>
+                </div>
+
+                 {{-- Active Contact --}}
+                <div class="mb-3">
+                    <label for="active_contact" class="form-label h6 ">Active Contact</label>
+                    <input type="text" class="form-control" id="edit-active_contact" name="active_contact" placeholder="Active Contact" required>
+                </div>
+
+                <input type="hidden" name="user_id" id="edit-user-id">
+
+                {{-- Email --}}
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="email" name="email" id="edit-email" class="form-control" required>
+                    <input type="email" name="email" id="edit-email" class="form-control" >
                 </div>
+
+                {{-- Residence --}}
                 <div class="mb-3">
-                    <label>Password <small>(Leave blank to keep current)</small></label>
-                    <input type="password" name="password" class="form-control">
+                    <label for="edit-residence" class="form-label h6">Residence</label>
+                    <select class="form-select" id="edit-residence" name="residence" required>
+                        @foreach($zone->residences as $residence)
+                            <option value="{{ $residence->id }}">{{ $residence->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
+                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
