@@ -1,10 +1,14 @@
 @extends('layouts.app')
 
 {{-- @section('title', $zone->name) --}}
+<script>
+    const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    document.title = "{{ $zone->name }} Members ";
+</script>
 
 @section('content')
 <div class="container my-5">
-    <h2 class="mb-4">{{ $zone->name }} Users</h2>
+    <h2 class="mb-4">{{ $zone->name }} Members</h2>
 
     <!-- Add User Button -->
     <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
@@ -43,12 +47,13 @@
                 <td>{{ $user->fullname }}</td>
                 <td>{{ $user->gender == 'm' ? 'Male' : 'Female' }}</td>
                 <td>{{ $user->active_contact }}</td>
-                <td>{{ $user->residence()->name ?? "N/A" }}</td>
+                <td>{{ $user->residence_note() ? $user->residence_note()['name'] ?? $user->residence_note()['custom_name']  : "N/A" }}</td>
                 <td>{{ $user->email ?? "N/A" }}</td>
                 <td>{{ $user->is_baptised == 1 ? 'Yes' : 'No' ?? "N/A" }}</td>
                 <td>
                     {{-- Edit Button --}}
-                    <button class="btn btn-sm btn-primary edit-user-btn" data-bs-toggle="modal" data-bs-target="#editUserModal"
+                    <button class="btn btn-sm btn-primary edit-user-btn" 
+                        data-bs-toggle="modal" data-bs-target="#editUserModal"
                         data-id="{{ $user->id }}"
                         data-firstname="{{ $user->firstname }}"
                         data-lastname="{{ $user->lastname }}"
@@ -56,10 +61,13 @@
                         data-baptised="{{ $user->is_baptised }}"
                         data-contact="{{ $user->active_contact }}"
                         data-email="{{ $user->email }}"
-                        data-residence="{{ $user->residence()->id ?? null}}"
-                        >
+                        data-residence="{{ $user->residence()->id ?? '' }}"
+                        data-is_custom_residence="{{ $user->residence_note() && !empty($user->residence_note()['is_custome']) ? '1' : '0' }}"
+                        data-custom_residence_name="{{ $user->residence_note()['custom_name'] ?? '' }}"
+                        data-custom_residence_description="{{ $user->residence_note()['description'] ?? '' }}">
                         <i class="bi bi-pencil-fill"></i>
                     </button>
+
 
                     @if($attendance_session != null)
                         {{-- Check attendance Button --}}
@@ -166,14 +174,47 @@
 
 
                         {{-- Residence --}}
-                        <div class="mb-3">
-                            <label for="residence" class="form-label h6">Residence</label>
-                            <select class="form-select" id="residence" name="residence" required>
+                        <div class="mb-3" id="main_residence">
+
+                            <label for="residence" class="form-label h6">
+                                Residence
+                            </label>
+
+
+                            <select class="form-select" id="residence" name="residence" >
                                 @foreach($zone->residences as $residence)
                                 <option value="{{ $residence->id }}">{{ $residence->name }}</option>
                                 @endforeach
                             </select>
+
+                            
                         </div>
+
+                        {{-- Custom residence Radio Button --}}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence">
+                            <label class="form-check-label" for="edit-is_custom_residence">
+                                Can't Find Residence?
+                            </label>
+                        </div>
+
+                        <br>
+
+                        <!-- Custom Residence Details -->
+                        <div id="edit-custom_residence_details" style="display:none;">
+                            <div class="mb-3">
+                                <label for="edit-custom_residence_name" class="form-label h6">Custom Residence Name</label>
+                                <input type="text" class="form-control" id="edit-custom_residence_name" name="edit-custom_residence_name" placeholder="Enter Residence Name">
+                            </div>
+
+                            <input type="hidden" id="edit-custom_residence_zone" name="edit-custom_residence_zone" value="{{ $zone->id }}">
+
+                            <div class="mb-3">
+                                <label for="edit-custom_residence_description" class="form-label h6">Custom Residence Description</label>
+                                <input type="text" class="form-control" id="edit-custom_residence_description" name="edit-custom_residence_description" placeholder="How can one locate the Residence?">
+                            </div>
+                        </div>
+
 
                     </div>
                     <div class="modal-footer">
@@ -214,8 +255,6 @@
                 </div>
                 {{-- Zone Id --}}
                 <input type="text" name="zone_id" value = "{{ $zone->id }}" id="zone_id" class="form-control" required hidden>
-
-
 
                
             </div>
@@ -280,15 +319,57 @@
                     <input type="email" name="email" id="edit-email" class="form-control" >
                 </div>
 
-                {{-- Residence --}}
-                <div class="mb-3">
-                    <label for="edit-residence" class="form-label h6">Residence</label>
-                    <select class="form-select" id="edit-residence" name="residence" required>
+               {{-- Residence --}}
+                <div class="mb-3" id="edit-main_residence">
+
+                    <label for="edit-residence" class="form-label h6">
+                        Residence
+                    </label>
+
+
+                    <select class="form-select" id="edit-residence" name="edit-residence" >
                         @foreach($zone->residences as $residence)
-                            <option value="{{ $residence->id }}">{{ $residence->name }}</option>
+                        <option value="{{ $residence->id }}">{{ $residence->name }}</option>
                         @endforeach
                     </select>
+
+                    
                 </div>
+
+                {{-- Custom residence Radio Button --}}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence" value={{ ($user->residence_note() && !empty($user->residence_note()['is_custome'])) ? '1' : '0'}}>
+                    <label class="form-check-label" for="edit-is_custom_residence">
+                        Can't Find Residence?
+                    </label>
+                </div>
+
+
+                <br>
+
+                {{-- Custom Residence Details --}}
+                    <div id="edit-custom_residence_details" style="display: {{ ($user->residence_note() && !empty($user->residence_note()['is_custome'])) ? 'block' : 'none' }}">
+
+
+                    {{-- Residence Name --}}
+                    <div class="mb-3">
+                        <label for="edit-custom_residence_name" class="form-label h6">Custom Residence Name</label>
+                        <input type="text" class="form-control" id="edit-custom_residence_name" name="edit-custom_residence_name" placeholder="Enter Residence Name" required>
+                    </div>
+
+                    {{-- custom residence zone --}}
+                        <input type="text" class="form-control" id="edit-custom_residence_zone" name="edit-custom_residence_zone" placeholder="Enter Residence Zone" value="{{$zone->id}}"  hidden>
+
+                    {{-- Residence Description --}}
+                    <div class="mb-3">
+                        <label for="edit-custom_residence_description" class="form-label h6">Custom Residence Description</label>
+                        <input type="text" class="form-control" id="edit-custom_residence_description" name="edit-custom_residence_description" placeholder="How can one locate the Residence ?" required>
+                    </div>
+
+                </div>
+
+
+
                 
             </div>
             <div class="modal-footer">

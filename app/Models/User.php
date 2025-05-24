@@ -267,8 +267,7 @@ class User extends Authenticatable
                     "custom_description" => $registered->custom_description
                 ];
                 // return json_decode(json_encode($data),true);
-                
-                
+               
             }
 
             // add the room of the individual
@@ -313,7 +312,7 @@ class User extends Authenticatable
             }else{
 
                 $data = [
-                    "id" => $registered->custom_zone_id ? $registered->custom_zone_id : null,
+                    "id" => $registered->custom_zone_id ? $registered->custom_zone_id : 17,
                     "name" => $registered->custom_zone_id ? Zone::find($registered->custom_zone_id)->name : "Others",
                 ];
                 

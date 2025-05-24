@@ -94,7 +94,7 @@ class ZoneController extends Controller
 
     // Add Zone User
     public function addZoneUser(Request $request)
-    {     
+    {  
         $validator = Validator::make($request->all(), [
             'firstname' => 'required|string|max:255',
             'lastname' => 'nullable|string|max:255',
@@ -126,19 +126,34 @@ class ZoneController extends Controller
         $user->save();
 
         #Retrieve Residence
-        $residence = Residence::find($request->residence);
 
-        // Save User Residence Instance
-        $user_residence = new UserResidence;
-        $user_residence->user_id = $user->id;
-        $user_residence->residence_id = $residence->id;
-        $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
-        $user_residence->save();
+        // Check if the user has a Custom residence
+        if($request->custom_residence_name != null){
+            $user_residence = new UserResidence;
+            $user_residence->user_id = $user->id;
+            $user_residence->residence_id = null;
+            $user_residence->custom_name = $request->custom_residence_name;
+            $user_residence->custom_description = $request->custom_residence_description;
+            $user_residence->custom_zone_id = $request->custom_residence_zone ?? 17; // Default is Others Zone...
+            $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
+            $user_residence->save();
+        }else{
+            $residence = Residence::find($request->residence);
+    
+            // Save User Residence Instance
+            $user_residence = new UserResidence;
+            $user_residence->user_id = $user->id;
+            $user_residence->residence_id = $residence->id;
+            $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
+            $user_residence->save();
+
+        }
+
 
         // Add Room and other details later...
 
         # Return to the add user view
-        return redirect()->route('add.zone.user.view', ['zone' => $residence->zone]) ->with('success', 'User added successfully');
+        return redirect()->route('add.zone.user.view', ['zone' => $residence->zone ?? Zone::find($request->custom_residence_zone) ?? Zone::find(17)]) ->with('success', 'User added successfully');
         
     }
 

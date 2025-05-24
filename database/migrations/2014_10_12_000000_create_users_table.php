@@ -19,7 +19,7 @@ return new class extends Migration
             $table->char('gender', 1)->nullable();
             $table->boolean('is_member')->nullable();
             $table->boolean('is_baptised')->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->string('active_contact')->nullable();
             $table->json('contacts')->nullable();
             $table->boolean('is_alumni')->default(0);

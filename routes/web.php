@@ -44,6 +44,20 @@ Route::get('/add-zone-user/{zone}', function ($zone) {
     return view('user.zone-based.add-zone-user', compact('zone', 'attendance_session'));
 }) ->name('add.zone.user.view');
 
+// Zone Absentees
+Route::get('/zone-absentees/{zone}', function ($zone) {
+    // Zone
+    $zone = Zone::find($zone);
+    // Active Attendance Session
+    $attendance_session = Attendance::active_sessions() ?? null;
+
+    if($attendance_session == null){
+        return redirect()->route('home')->with('message', 'No Active Attendance Session');
+    }
+
+    return view('user.zone-based.zone-absentees', compact('zone', 'attendance_session'));
+})->name('zone.absentees');
+
 // Store Zone User
 Route::post('/add-zone-user' , [ZoneController::class, 'addZoneUser'])->name('add.zone.user');
 

@@ -1,36 +1,43 @@
-
-// Datatable
 $(document).ready(function() {
-     updateCheckIcons();
- $('#usersTable').DataTable({
+    updateCheckIcons();
+
+    // Initialize DataTables
+    $('#usersTable').DataTable({
         responsive: true,
-        paging: true,             // Enable pagination
-        pageLength: 10,           // Default items per page
-        lengthMenu: [10, 25, 50, 100], // Options for items per page
-        ordering: true,           // Enable column sorting
-        order: [[0, 'asc']],      // Default ordering (by ID column)
-        searching: true,          // Enable search/filter
-        info: true,               // Shows table information (Showing x of y entries)
+        paging: false,
+        pageLength: 10,
+        lengthMenu: [10, 25, 50, 100],
+        ordering: true,
+        order: [[0, 'asc']],
+        searching: true,
+        info: true,
         language: {
             searchPlaceholder: "Search users...",
             search: "",
         },
         columnDefs: [
-            { orderable: false, targets: -1 } // Disables ordering on Actions column
+            { orderable: false, targets: -1 }
         ],
     });
 
-    // DataTable end
+    $('#TablePrint').DataTable({
+        responsive: true,
+        paging: false,
+        dom: 'Bfrtip',
+        buttons: ['excelHtml5', 'pdfHtml5', 'print'],
+    });
 
-    // Edit User Modal Handler
+    // Single Edit User Modal Handler
     $('.edit-user-btn').click(function() {
         const userId = $(this).data('id');
-        const userName = $(this).data('name');
-        const userEmail = $(this).data('email');
-        
-        $('#editUserForm').attr('action', `/users/${userId}`);
-        $('#edit-name').val(userName);
-        $('#edit-email').val(userEmail);
+        $('#editUserForm').attr('action', `/edit-zone-user/${userId}`);
+        $('#edit-firstname').val($(this).data('firstname'));
+        $('#edit-lastname').val($(this).data('lastname'));
+        $('#edit-gender').val($(this).data('gender'));
+        $('#edit-is_baptised').val($(this).data('baptised'));
+        $('#edit-active_contact').val($(this).data('contact'));
+        $('#edit-email').val($(this).data('email'));
+        $('#edit-residence').val($(this).data('residence'));
     });
 
     // Delete User Modal Handler
@@ -42,27 +49,18 @@ $(document).ready(function() {
     // Check Attendance Modal Handler
     $('.check-attendance-btn').click(function () {
         const userId = $(this).data('id');
-        const userName = $(this).data('name');
-
-        // Set form action
-        const actionUrl = `{{ url('/check-zone-user') }}/${userId}`;
-        $('#checkAttendanceForm').attr('action', actionUrl);
-
-        // Set user's name in modal
-        $('#attendance-user-name').text(userName);
-
-        // Store user ID in form data for JS reference
+        $('#checkAttendanceForm').attr('action', `/check-zone-user/${userId}`);
+        $('#attendance-user-name').text($(this).data('name'));
         $('#checkAttendanceForm').data('user-id', userId);
     });
 
-
+    // Mark Attendance
     $('#markAttendanceBtn').click(function () {
         const userId = $('#checkAttendanceForm').data('user-id');
         let cached = JSON.parse(localStorage.getItem('marked_users_id')) || {};
         let ids = cached.data || [];
         const now = Date.now();
 
-        // Reset expired cache
         if (!cached.expiresAt || now > cached.expiresAt) {
             ids = [];
         }
@@ -73,77 +71,56 @@ $(document).ready(function() {
 
         localStorage.setItem('marked_users_id', JSON.stringify({
             data: ids,
-            expiresAt: now + 12 * 60 * 60 * 1000 // 12 hours
+            expiresAt: now + 12 * 60 * 60 * 1000
         }));
 
-        // ✅ Update icons
         updateCheckIcons();
-
-        // ✅ Close modal
         $('#checkAttendanceModal').modal('hide');
     });
 
-
-
-    function updateCheckIcons() {
-        const cache = JSON.parse(localStorage.getItem('marked_users_id'));
-        if (!cache || Date.now() > cache.expiresAt) {
-            localStorage.removeItem('marked_users_id'); // Clear expired
-            return;
+    // Custom Residence handlers (Add & Edit)
+    $('#is_custom_residence, #edit-is_custom_residence').change(function() {
+        let prefix = $(this).attr('id') === 'edit-is_custom_residence' ? 'edit-' : '';
+        if($(this).is(':checked')) {
+            $(`#${prefix}main_residence`).hide();
+            $(`#${prefix}custom_residence_details`).show();
+            $(`#${prefix}custom_residence_name, #${prefix}custom_residence_description`).prop('required', true);
+            $(`#${prefix}residence`).prop('required', false);
+        } else {
+            $(`#${prefix}main_residence`).show();
+            $(`#${prefix}custom_residence_details`).hide();
+            $(`#${prefix}custom_residence_name, #${prefix}custom_residence_description`).prop('required', false);
+            $(`#${prefix}residence`).prop('required', true);
         }
-
-        const markedUsers = cache.data;
-
-        $('.check-attendance-btn').each(function () {
-            const userId = $(this).data('id');
-            const icon = $(this).find('i');
-
-            if (markedUsers.includes(userId)) {
-                icon.addClass('text-success'); // green color
-            } else {
-                icon.removeClass('text-success');
-            }
-        });
-    }
-
-    $(document).ready(function () {
-        updateCheckIcons();
     });
 
     $('#submitAttendanceModal').on('show.bs.modal', function () {
         const cache = JSON.parse(localStorage.getItem('marked_users_id'));
-
         if (!cache || Date.now() > cache.expiresAt || !Array.isArray(cache.data)) {
-            // Clear input if no valid cache
             $('#markedUserIdsInput').val('');
             return;
         }
-
-        const ids = cache.data;
-        $('#markedUserIdsInput').val(JSON.stringify(ids)); // Submit as JSON string
+        $('#markedUserIdsInput').val(JSON.stringify(cache.data));
     });
-
-    $('.edit-user-btn').click(function() {
-    const userId = $(this).data('id');
-    const firstname = $(this).data('firstname');
-    const lastname = $(this).data('lastname');
-    const gender = $(this).data('gender');
-    const baptised = $(this).data('baptised');
-    const contact = $(this).data('contact');
-    const email = $(this).data('email');
-    const residence = $(this).data('residence');
-
-    $('#editUserForm').attr('action', `/edit-zone-user/${userId}`);
-    $('#edit-firstname').val(firstname);
-    $('#edit-lastname').val(lastname);
-    $('#edit-gender').val(gender);
-    $('#edit-is_baptised').val(baptised);
-    $('#edit-active_contact').val(contact);
-    $('#edit-email').val(email);
-    $('#edit-residence').val(residence);
 });
 
-   
-});
+function updateCheckIcons() {
+    const cache = JSON.parse(localStorage.getItem('marked_users_id'));
+    if (!cache || Date.now() > cache.expiresAt) {
+        localStorage.removeItem('marked_users_id');
+        return;
+    }
 
+    const markedUsers = cache.data;
 
+    $('.check-attendance-btn').each(function () {
+        const userId = $(this).data('id');
+        const icon = $(this).find('i');
+
+        if (markedUsers.includes(userId)) {
+            icon.addClass('text-success');
+        } else {
+            icon.removeClass('text-success');
+        }
+    });
+}
