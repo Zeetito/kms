@@ -62,7 +62,7 @@
                         data-contact="{{ $user->active_contact }}"
                         data-email="{{ $user->email }}"
                         data-residence="{{ $user->residence()->id ?? '' }}"
-                        data-is_custom_residence="{{ $user->residence_note() && !empty($user->residence_note()['is_custome']) ? '1' : '0' }}"
+                        data-is_custom_residence="{{ $user->residence_note() && !empty($user->residence_note()['is_custom']) ? '1' : '0' }}"
                         data-custom_residence_name="{{ $user->residence_note()['custom_name'] ?? '' }}"
                         data-custom_residence_description="{{ $user->residence_note()['description'] ?? '' }}">
                         <i class="bi bi-pencil-fill"></i>
@@ -339,7 +339,7 @@
 
                 {{-- Custom residence Radio Button --}}
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence" value={{ ($user->residence_note() && !empty($user->residence_note()['is_custome'])) ? '1' : '0'}}>
+                    <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence" value={{ ($user->residence_note() && !empty($user->residence_note()['is_custom'])) ? '1' : '0'}}>
                     <label class="form-check-label" for="edit-is_custom_residence">
                         Can't Find Residence?
                     </label>
@@ -349,7 +349,7 @@
                 <br>
 
                 {{-- Custom Residence Details --}}
-                    <div id="edit-custom_residence_details" style="display: {{ ($user->residence_note() && !empty($user->residence_note()['is_custome'])) ? 'block' : 'none' }}">
+                    <div id="edit-custom_residence_details" style="display: {{ ($user->residence_note() && !empty($user->residence_note()['is_custom'])) ? 'block' : 'none' }}">
 
 
                     {{-- Residence Name --}}

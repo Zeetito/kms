@@ -217,7 +217,7 @@
                 {{-- info --}}
                 <div class="mb-3">
                     <label>Info</label>
-                    <input type="text" name="info" id="temp_info" class="form-control" required>
+                    <input type="text" name="info" id="temp_info" class="form-control" placeholder="Member or Visitor" required>
                 </div>
                 {{-- Zone Id --}}
                 {{-- <input type="text" name="zone_id" value = "{{ $zone->id }}" id="zone_id" class="form-control" required hidden> --}}
