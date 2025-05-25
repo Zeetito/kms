@@ -7,9 +7,9 @@
     <h2 class="mb-4">KNUST COC - Users</h2>
 
     <!-- Add User Button -->
-    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    {{-- <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
         <i class="bi bi-person-plus-fill"></i> Add User
-    </button>
+    </button> --}}
 
     {{-- Add Temp User Button - When Attendance is in session --}}
     @if($attendance_session != null)
@@ -46,12 +46,12 @@
                 <td>{{ $user->is_baptised == 1 ? 'Yes' : 'No' ?? "N/A" }}</td>
                 <td>
                     {{-- Edit Button --}}
-                    <button class="btn btn-sm btn-primary edit-user-btn" data-bs-toggle="modal" data-bs-target="#editUserModal"
+                    {{-- <button class="btn btn-sm btn-primary edit-user-btn" data-bs-toggle="modal" data-bs-target="#editUserModal"
                         data-id="{{ $user->id }}"
                         data-name="{{ $user->name }}"
                         data-email="{{ $user->email }}">
                         <i class="bi bi-pencil-fill"></i>
-                    </button>
+                    </button> --}}
 
                     @if($attendance_session != null)
                         {{-- Check attendance Button --}}

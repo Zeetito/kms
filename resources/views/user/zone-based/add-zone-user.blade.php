@@ -16,11 +16,11 @@
     </button>
 
     {{-- Add Temp User Button - When Attendance is in session --}}
-    @if($attendance_session != null)
+    {{-- @if($attendance_session != null)
         <button class="btn btn-success mb-3 float-end" data-bs-toggle="modal" data-bs-target="#addTempUserModal">
             <i class="bi bi-person-plus-fill"></i> ...Temp User
         </button>
-    @endif
+    @endif --}}
 
     <!-- Users Table -->
     <table id="usersTable" class="table table-bordered table-striped">
@@ -93,23 +93,23 @@
 </div>
 
 {{-- Row for submit attendance and Go to Attendance page --}}
-<div class="row my-4">
-    @if($attendance_session != null)
-        <div class="col-md-6">
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#submitAttendanceModal">
-                <i class="bi bi-check-circle-fill"></i> Submit Attendance
-            </button>
-        </div>
-        <div class="col-md-6">
-            <a href="{{route('active_attendance_session')}}">
-                <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#goToAttendanceModal">
-                    <i class="bi bi-check-circle-fill"></i> Go to Attendance
+    {{-- <div class="row my-4">
+        @if($attendance_session != null)
+            <div class="col-md-6">
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#submitAttendanceModal">
+                    <i class="bi bi-check-circle-fill"></i> Submit Attendance
                 </button>
-            </a>
-        </div>
-    @endif
+            </div>
+            <div class="col-md-6">
+                <a href="{{route('active_attendance_session')}}">
+                    <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#goToAttendanceModal">
+                        <i class="bi bi-check-circle-fill"></i> Go to Attendance
+                    </button>
+                </a>
+            </div>
+        @endif
 
-</div>
+    </div> --}}
 
   <!-- Add User Modal -->
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
@@ -182,6 +182,7 @@
 
 
                             <select class="form-select" id="residence" name="residence" >
+                                <option value="">Select Residence</option>
                                 @foreach($zone->residences as $residence)
                                 <option value="{{ $residence->id }}">{{ $residence->name }}</option>
                                 @endforeach

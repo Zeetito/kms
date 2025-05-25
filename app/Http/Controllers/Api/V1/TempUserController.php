@@ -29,9 +29,14 @@ class TempUserController extends Controller
             'name' => $request->name,
             'contact' => $request->contact,
             'info' => $request->info,
-            'zone_id' => $request->zone_id,
+            'zone_id' => $request->zone_id ?? 17,
             'attendance_id' => Attendance::active_sessions()->first()->id ?? null
         ]);
+
+        // Check if attendance session is active
+        if(Attendance::active_sessions()->first()){
+            return redirect()->route('active_attendance_session')->with('success', 'Temp User added successfully');
+        }
 
         return redirect()->route('add.zone.user.view', ['zone' => Zone::find($request->zone_id)]) ->with('success', 'Temp User added successfully');
 
