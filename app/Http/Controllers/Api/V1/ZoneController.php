@@ -8,6 +8,7 @@ use App\Models\Semester;
 use App\Models\Residence;
 use Illuminate\Http\Request;
 use App\Models\UserResidence;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
@@ -183,23 +184,38 @@ class ZoneController extends Controller
         $user->save();
 
         #Retrieve Residence
-        $residence = Residence::find($request->residence);
+    //     $residence = Residence::find($request-> input('edit-residence'));
 
-        // Save User Residence Instance
-        $user_residence = UserResidence::where('user_id', $user->id)->where('academic_year_id', Semester::active_semester()->academic_year_id)->first();
+    //     Log::info($request->all());
 
-        // Check if the The residence instance does not exist and create it
-        if($user_residence == null){
-            $user_residence = new UserResidence;
-            $user_residence->user_id = $user->id;
-            $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
-        }
 
-        $user_residence->residence_id = $residence->id;
-        $user_residence->save();
+    //     // Save User Residence Instance
+    //     $user_residence = UserResidence::where('user_id', $user->id)->where('academic_year_id', Semester::active_semester()->academic_year_id)->first();
+
+    //    // Check if the user has a Custom residence
+    //     if($request->input('edit-custom_residence_name') != null){
+    //         $user_residence = $user_residence ?? new UserResidence;
+    //         $user_residence->user_id = $user->id;
+    //         $user_residence->residence_id = null;
+    //         $user_residence->custom_name = $request->input('edit-custom_residence_name');
+    //         $user_residence->custom_description = $request->input('edit-custom_residence_description');
+    //         $user_residence->custom_zone_id = $request-> input('edit-custom_residence_zone') ??17; // Default is Others Zone...
+    //         $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
+    //         $user_residence->save();
+    //     }else{
+    //         $residence = Residence::find($request->input('edit-residence'));
+    
+    //         // Save User Residence Instance
+    //         $user_residence = $user_residence ?? new UserResidence;
+    //         $user_residence->user_id = $user->id;
+    //         $user_residence->residence_id = $residence->id;
+    //         $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
+    //         $user_residence->save();
+
+    //     }
 
         # Return to the add user view
-        return redirect()->route('add.zone.user.view', ['zone' => $residence->zone]) ->with('success', 'User updated successfully');
+        return redirect()->route('add.zone.user.view', ['zone' => $residence->zone ?? $user->zone_note()['id'] ?? Zone::find(17)]) ->with('success', 'User updated successfully');
         
     }
 

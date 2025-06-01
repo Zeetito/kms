@@ -193,8 +193,8 @@
 
                         {{-- Custom residence Radio Button --}}
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence">
-                            <label class="form-check-label" for="edit-is_custom_residence">
+                            <input class="form-check-input" type="checkbox" name="is_custom_residence" id="is_custom_residence" value="0">
+                            <label class="form-check-label" for="is_custom_residence">
                                 Can't Find Residence?
                             </label>
                         </div>
@@ -202,17 +202,17 @@
                         <br>
 
                         <!-- Custom Residence Details -->
-                        <div id="edit-custom_residence_details" style="display:none;">
+                        <div id="custom_residence_details" style="display:none;">
                             <div class="mb-3">
-                                <label for="edit-custom_residence_name" class="form-label h6">Custom Residence Name</label>
-                                <input type="text" class="form-control" id="edit-custom_residence_name" name="edit-custom_residence_name" placeholder="Enter Residence Name">
+                                <label for="custom_residence_name" class="form-label h6">Custom Residence Name</label>
+                                <input type="text" class="form-control" id="custom_residence_name" name="custom_residence_name" placeholder="Enter Residence Name">
                             </div>
 
-                            <input type="hidden" id="edit-custom_residence_zone" name="edit-custom_residence_zone" value="{{ $zone->id }}">
+                            <input type="hidden" id="custom_residence_zone" name="custom_residence_zone" value="{{ $zone->id }}">
 
                             <div class="mb-3">
-                                <label for="edit-custom_residence_description" class="form-label h6">Custom Residence Description</label>
-                                <input type="text" class="form-control" id="edit-custom_residence_description" name="edit-custom_residence_description" placeholder="How can one locate the Residence?">
+                                <label for="custom_residence_description" class="form-label h6">Custom Residence Description</label>
+                                <input type="text" class="form-control" id="custom_residence_description" name="custom_residence_description" placeholder="How can one locate the Residence?">
                             </div>
                         </div>
 
@@ -336,38 +336,41 @@
 
                     
                 </div>
+                {{-- @php
+                    $residenceNote = $user->residence_note();
+                @endphp --}}
 
                 {{-- Custom residence Radio Button --}}
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence" value={{ ($user->residence_note() && !empty($user->residence_note()['is_custom'])) ? '1' : '0'}}>
+                {{-- <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence"  {{ $residenceNote && $residenceNote['is_custom'] == true ? 'checked' : '' }}>
                     <label class="form-check-label" for="edit-is_custom_residence">
                         Can't Find Residence?
                     </label>
-                </div>
+                </div> --}}
 
 
                 <br>
 
                 {{-- Custom Residence Details --}}
-                    <div id="edit-custom_residence_details" style="display: {{ ($user->residence_note() && !empty($user->residence_note()['is_custom'])) ? 'block' : 'none' }}">
+                {{-- <div id="edit-custom_residence_details" style="display: {{ ($residenceNote && $residenceNote['is_custom'] == true) ? 'block' : 'none' }};"> --}}
 
 
                     {{-- Residence Name --}}
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="edit-custom_residence_name" class="form-label h6">Custom Residence Name</label>
                         <input type="text" class="form-control" id="edit-custom_residence_name" name="edit-custom_residence_name" placeholder="Enter Residence Name" required>
-                    </div>
+                    </div> --}}
 
                     {{-- custom residence zone --}}
-                        <input type="text" class="form-control" id="edit-custom_residence_zone" name="edit-custom_residence_zone" placeholder="Enter Residence Zone" value="{{$zone->id}}"  hidden>
+                        {{-- <input type="text" class="form-control" id="edit-custom_residence_zone" name="edit-custom_residence_zone" placeholder="Enter Residence Zone" value="{{$zone->id}}"  hidden> --}}
 
                     {{-- Residence Description --}}
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="edit-custom_residence_description" class="form-label h6">Custom Residence Description</label>
                         <input type="text" class="form-control" id="edit-custom_residence_description" name="edit-custom_residence_description" placeholder="How can one locate the Residence ?" required>
-                    </div>
+                    </div> --}}
 
-                </div>
+                {{-- </div> --}}
 
 
 

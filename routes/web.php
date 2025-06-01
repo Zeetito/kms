@@ -111,7 +111,8 @@ AccountController::class, 'activate_account'])->name('account.activate');
 // Hello route
 Route::get('/hello', function (Request $request) {
 
-    return Attendance::active_sessions();
+    $attendance = Attendance::active_sessions()->first();
+    return $attendance->attendees->count();
 
     $user =  User::where('email','like','agyareernest%')->first();
     $user->notify(new \App\Notifications\ActivateAccountNotification($user));
