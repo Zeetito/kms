@@ -62,6 +62,12 @@
                         </button>
                     @endif
 
+                        <button class=" btn-sm  delete-user-btn" data-bs-toggle="modal" data-bs-target="#deleteUserModal"
+                            data-id="{{ $user->id }}"
+                            data-name="{{ $user->fullname }}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+
                     
 
                     {{-- Delete Button --}}
@@ -103,6 +109,30 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+<!--Delete Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="deleteUserForm" method="POST" action="">
+        @method('DELETE')
+        @csrf
+        <input type="hidden" name="user_ids" id="markedUserIdsInput">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to user?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
             </div>
         </div>
     </form>

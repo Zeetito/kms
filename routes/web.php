@@ -102,6 +102,13 @@ Route::get('account/activate/{email}', [
 AccountController::class, 'activate_account'])->name('account.activate');
 
 
+// USER
+// Delete User
+Route::delete('/users/{user}', function (User $user) {
+    $user->delete();
+    // return response()->json(['message' => 'User deleted successfully'], 200);
+    return redirect()->route('active_attendance_session');
+})->name('user.delete');
 
 // USER ACCOUNT COMPONENTS
 // Route::get('/user/account_components/phone/{user}', function () {
