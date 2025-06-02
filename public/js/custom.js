@@ -1,18 +1,5 @@
 $(document).ready(function() {
-
-    // Prevent modal from closing on select2 dropdown click
-    $(document).on('select2:opening select2:closing', function (e) {
-        $(e.target).parentsUntil('.modal').css('z-index', 999999);
-        e.stopPropagation();
-    });
-
-    $('form').on('keypress', function (e) {
-        if (e.which === 13) {
-            e.preventDefault(); // Prevent accidental form submit
-        }
-    });
-
-
+    
     updateCheckIcons();
 
     // Initialize DataTables
@@ -98,10 +85,16 @@ $(document).ready(function() {
 
 
     // Delete User Modal Handler
-    $('.delete-user-btn').click(function() {
+    $('.delete-user-btn').on('click', function (e) {
+        e.preventDefault(); // prevent accidental form submission
         const userId = $(this).data('id');
+
+        console.log('Delete button clicked. ID:', userId); // Debugging
+
         $('#deleteUserForm').attr('action', `/users/${userId}`);
+        $('#deleteUserModal').modal('show'); // manually show modal (fallback)
     });
+
 
     // Check Attendance Modal Handler
     $('.check-attendance-btn').click(function () {
