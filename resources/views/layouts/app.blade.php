@@ -21,8 +21,11 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Your Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Optional: Your Custom CSS (commented if not used) -->
+    {{-- <link rel="stylesheet" href="{{ asset('css/styles.css') }}"> --}}
 </head>
 <body>
     @if (session('success'))
@@ -32,13 +35,15 @@
         </div>
     @endif
 
-
     <div class="container my-4">
         @yield('content')
     </div>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Select2 JS (after jQuery) -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <!-- Bootstrap Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -54,7 +59,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
-    <!-- Your Custom JS -->
+    <!-- Your Custom JS (must come after everything else) -->
     <script src="{{ asset('js/custom.js') }}"></script>
 
     <!-- Page-specific Scripts -->

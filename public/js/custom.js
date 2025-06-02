@@ -1,4 +1,18 @@
 $(document).ready(function() {
+
+    // Prevent modal from closing on select2 dropdown click
+    $(document).on('select2:opening select2:closing', function (e) {
+        $(e.target).parentsUntil('.modal').css('z-index', 999999);
+        e.stopPropagation();
+    });
+
+    $('form').on('keypress', function (e) {
+        if (e.which === 13) {
+            e.preventDefault(); // Prevent accidental form submit
+        }
+    });
+
+
     updateCheckIcons();
 
     // Initialize DataTables
@@ -29,6 +43,8 @@ $(document).ready(function() {
 
     // Single Edit User Modal Handler
     $('.edit-user-btn').click(function() {
+
+
         const userId = $(this).data('id');
         $('#editUserForm').attr('action', `/edit-zone-user/${userId}`);
         $('#edit-firstname').val($(this).data('firstname'));
@@ -38,7 +54,48 @@ $(document).ready(function() {
         $('#edit-active_contact').val($(this).data('contact'));
         $('#edit-email').val($(this).data('email'));
         $('#edit-residence').val($(this).data('residence'));
+
+        // 🆕 Handle Custom Residence
+        const isCustom = $(this).data('is_custom_residence') == 1;
+        $('#edit-is_custom_residence').prop('checked', isCustom).trigger('change'); // triggers show/hide
+        $('#edit-custom_residence_name').val($(this).data('custom_residence_name'));
+        $('#edit-custom_residence_description').val($(this).data('custom_residence_description'));
+
+            // ✅ Program and Year (if using them)
+            $('#edit-program').val($(this).data('program')).trigger('change.select2');
+            $('#edit-year').val($(this).data('year'));
+            $('#edit-status').val($(this).data('status')).trigger('change');
+            $('#edit-occupation').val($(this).data('occupation'));
+            $('#edit-occupation_description').val($(this).data('occupation_description'));
     });
+
+
+        $('#edit-program').select2({
+            theme: 'bootstrap-5',
+            placeholder: "Select a program",
+            allowClear: true
+        });
+
+    // Changing the Status of a Student
+    $('#edit-status').change(function () {
+        const value = $(this).val();
+
+        // Hide all conditional fields first
+        $('#student-fields, #other-fields').hide();
+        $('#edit-year, #edit-program, #edit-occupation, #edit-occupation_description').prop('required', false);
+
+        if (value === 'student') {
+            $('#student-fields').show();
+            $('#edit-year, #edit-program').prop('required', true);
+        } else if (value === 'other') {
+            $('#other-fields').show();
+            $('#edit-occupation, #edit-occupation_description').prop('required', true);
+        }
+    });
+
+
+
+
 
     // Delete User Modal Handler
     $('.delete-user-btn').click(function() {

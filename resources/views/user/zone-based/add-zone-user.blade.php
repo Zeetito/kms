@@ -37,11 +37,18 @@
             </tr>
         </thead>
         <tbody>
+
             @php
                 $i = 1;
-                
             @endphp
+
             @foreach($zone->users() as $user)
+                @php
+                    // $i = 1;
+                    $has_cutom_residence = $residenceNote = $user->residence_note()['is_custom'] == true ? true : false;
+                    $residence_note = $user->residence_note();
+                    
+                @endphp
             <tr>
                 <td>{{ $i++ }}</td>
                 <td>{{ $user->fullname }}</td>
@@ -61,10 +68,19 @@
                         data-baptised="{{ $user->is_baptised }}"
                         data-contact="{{ $user->active_contact }}"
                         data-email="{{ $user->email }}"
+                        data-is_custom_residence="{{ $has_cutom_residence ? '1' : '0' }}"
                         data-residence="{{ $user->residence()->id ?? '' }}"
-                        data-is_custom_residence="{{ $user->residence_note() && !empty($user->residence_note()['is_custom']) ? '1' : '0' }}"
-                        data-custom_residence_name="{{ $user->residence_note()['custom_name'] ?? '' }}"
-                        data-custom_residence_description="{{ $user->residence_note()['description'] ?? '' }}">
+                        {{-- data-is_custom_residence="{{ $user->residence_note() && !empty($user->residence_note()['is_custom']) ? '1' : '0' }}" --}}
+                        data-custom_residence_name="{{ $residence_note['custom_name'] ?? '' }}"
+                        data-custom_residence_description="{{ $residence_note['custom_description'] ?? '' }}"
+                            {{-- //////////////// --}}
+                            data-status="{{ $user->status ?? null}}"
+                            data-year="{{ $user->year ?? null}}"
+                            data-program="{{ $user->program_id ?? null }}"
+                            data-occupation="{{ $user->occupation  ?? null}}"
+                            data-occupation_description="{{ $user->occupation_description ?? null}}"
+                        >
+                            
                         <i class="bi bi-pencil-fill"></i>
                     </button>
 
@@ -81,10 +97,10 @@
                     
 
                     {{-- Delete Button --}}
-                    {{-- <button class="btn btn-sm btn-danger delete-user-btn" data-bs-toggle="modal" data-bs-target="#deleteUserModal"
+                    <button class="btn btn-sm btn-danger delete-user-btn" data-bs-toggle="modal" data-bs-target="#deleteUserModal"
                         data-id="{{ $user->id }}">
                         <i class="bi bi-trash-fill"></i>
-                    </button> --}}
+                    </button>
                 </td>
             </tr>
             @endforeach
@@ -336,46 +352,93 @@
 
                     
                 </div>
-                {{-- @php
+                @php
                     $residenceNote = $user->residence_note();
-                @endphp --}}
+                @endphp
 
                 {{-- Custom residence Radio Button --}}
-                {{-- <div class="form-check">
+                <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence"  {{ $residenceNote && $residenceNote['is_custom'] == true ? 'checked' : '' }}>
                     <label class="form-check-label" for="edit-is_custom_residence">
                         Can't Find Residence?
                     </label>
-                </div> --}}
+                </div>
 
 
                 <br>
 
                 {{-- Custom Residence Details --}}
-                {{-- <div id="edit-custom_residence_details" style="display: {{ ($residenceNote && $residenceNote['is_custom'] == true) ? 'block' : 'none' }};"> --}}
+                <div id="edit-custom_residence_details" style="display: {{ ($residenceNote && $residenceNote['is_custom'] == true) ? 'block' : 'none' }};">
 
 
                     {{-- Residence Name --}}
-                    {{-- <div class="mb-3">
+                    <div class="mb-3">
                         <label for="edit-custom_residence_name" class="form-label h6">Custom Residence Name</label>
                         <input type="text" class="form-control" id="edit-custom_residence_name" name="edit-custom_residence_name" placeholder="Enter Residence Name" required>
-                    </div> --}}
+                    </div>
 
                     {{-- custom residence zone --}}
-                        {{-- <input type="text" class="form-control" id="edit-custom_residence_zone" name="edit-custom_residence_zone" placeholder="Enter Residence Zone" value="{{$zone->id}}"  hidden> --}}
+                        <input type="text" class="form-control" id="edit-custom_residence_zone" name="edit-custom_residence_zone" placeholder="Enter Residence Zone" value="{{$zone->id}}"  hidden>
 
                     {{-- Residence Description --}}
-                    {{-- <div class="mb-3">
+                    <div class="mb-3">
                         <label for="edit-custom_residence_description" class="form-label h6">Custom Residence Description</label>
                         <input type="text" class="form-control" id="edit-custom_residence_description" name="edit-custom_residence_description" placeholder="How can one locate the Residence ?" required>
+                    </div>
+            </div>
+
+            {{-- Status Dropdown --}}
+                    {{-- <div class="mb-3">
+                        <label for="edit-status" class="form-label h6">Status</label>
+                        <select class="form-select" name="edit-status" id="edit-status" required>
+                            <option value="">Select</option>
+                            <option value="student">Student</option>
+                            <option value="other">Other</option>
+                        </select>
                     </div> --}}
 
-                {{-- </div> --}}
+                    {{-- Student Fields --}}
+                    <div id="student-fields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="edit-year" class="form-label h6">Year</label>
+                            <select class="form-select" name="edit-year" id="edit-year">
+                                <option value="">Select</option>
+                                @for($i = 1; $i <= 6; $i++)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                            </select>
+                        </div>
 
+                        <div class="mb-3">
+                            <label for="edit-program" class="form-label h6">Program</label>
+                            <select class="form-select" name="edit-program" id="edit-program">
+                                <option value="">Select a program</option>
+                                @foreach(App\Models\Program::all() as $program)
+                                    <option value="{{ $program->id }}">{{ $program->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
+                    </div>
 
-                
-            </div>
+                    {{-- Other Fields --}}
+                    <div id="other-fields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="edit-occupation" class="form-label h6">Occupation</label>
+                            <select class="form-select" name="edit-occupation" id="edit-occupation">
+                                <option value="">Select</option>
+                                <option value="N.S">N.S</option>
+                                <option value="Worker">Worker</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="edit-occupation_description" class="form-label h6">Occupation Description</label>
+                            <input type="text" class="form-control" name="edit-occupation_description" id="edit-occupation_description" placeholder="Describe occupation">
+                        </div>
+                    </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Update User</button>

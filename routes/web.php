@@ -107,7 +107,7 @@ AccountController::class, 'activate_account'])->name('account.activate');
 Route::delete('/users/{user}', function (User $user) {
     $user->delete();
     // return response()->json(['message' => 'User deleted successfully'], 200);
-    return redirect()->route('active_attendance_session');
+    return redirect()->back()->with('message', 'User deleted successfully');
 })->name('user.delete');
 
 // USER ACCOUNT COMPONENTS
@@ -117,6 +117,8 @@ Route::delete('/users/{user}', function (User $user) {
 
 // Hello route
 Route::get('/hello', function (Request $request) {
+
+    return Attendance::active_sessions();
 
     $attendance = Attendance::active_sessions()->first();
     return $attendance->attendees->count();
