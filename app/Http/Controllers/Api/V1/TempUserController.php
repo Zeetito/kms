@@ -41,4 +41,9 @@ class TempUserController extends Controller
         return redirect()->route('add.zone.user.view', ['zone' => Zone::find($request->zone_id)]) ->with('success', 'Temp User added successfully');
 
     }
+
+    public function index() {
+        return view('user.temp-user.temp-user', ['users' => TempUser::all()]);
+        //  return redirect()->route('temp.users', ['users' => TempUser::all()]);
+    }
 }

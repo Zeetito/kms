@@ -88,6 +88,7 @@ Route::post('/submit-attendance', [AttendanceController::class, 'submit_attendan
 // TEMP USER
 // Create a Temp User
 Route::post('/temp-user' , [TempUserController::class, 'store'])->name('add.temp.user');
+Route::get('/temp-user' , [TempUserController::class, 'index'])->name('temp.users');
 
 
 
