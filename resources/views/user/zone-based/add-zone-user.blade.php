@@ -31,7 +31,10 @@
                 <th>Gender</th>
                 <th>Active Contact</th>
                 <th>Residence</th>
+                <th>Room</th>
+                <th>Status</th>
                 <th>Email</th>
+                <th>Year</th>
                 <th>Baptised</th>
                 <th>Actions</th>
             </tr>
@@ -55,11 +58,14 @@
                 <td>{{ $user->gender == 'm' ? 'Male' : 'Female' }}</td>
                 <td>{{ $user->active_contact }}</td>
                 <td>{{ $user->residence_note() ? $user->residence_note()['name'] ?? $user->residence_note()['custom_name']  : "N/A" }}</td>
-                <td>{{ $user->email ?? "N/A" }}</td>
-                <td>{{ $user->is_baptised == 1 ? 'Yes' : 'No' ?? "N/A" }}</td>
+                <td>{{ $user->room ?? "n/a" }}</td>
+                <td>{{ $user->status }}</td>
+                <td>{{ $user->email ?? "n/a" }}</td>
+                <td>{{ $user->year ?? "n/a" }}</td>
+                <td>{{ $user->is_baptised == 1 ? 'Yes' : 'No' ?? "n/a" }}</td>
                 <td>
                     {{-- Edit Button --}}
-                    <button class="btn btn-sm btn-primary edit-user-btn" 
+                    <button class="btn btn-sm btn-primary edit-user-btn"
                         data-bs-toggle="modal" data-bs-target="#editUserModal"
                         data-id="{{ $user->id }}"
                         data-firstname="{{ $user->firstname }}"
@@ -68,21 +74,20 @@
                         data-baptised="{{ $user->is_baptised }}"
                         data-contact="{{ $user->active_contact }}"
                         data-email="{{ $user->email }}"
+                        data-room="{{ $user->room }}"
+                        data-residence="{{ optional($user->residence())->id ?? '' }}"
                         data-is_custom_residence="{{ $has_cutom_residence ? '1' : '0' }}"
-                        data-residence="{{ $user->residence()->id ?? '' }}"
-                        {{-- data-is_custom_residence="{{ $user->residence_note() && !empty($user->residence_note()['is_custom']) ? '1' : '0' }}" --}}
                         data-custom_residence_name="{{ $residence_note['custom_name'] ?? '' }}"
                         data-custom_residence_description="{{ $residence_note['custom_description'] ?? '' }}"
-                            {{-- //////////////// --}}
-                            data-status="{{ $user->status ?? null}}"
-                            data-year="{{ $user->year ?? null}}"
-                            data-program="{{ $user->program_id ?? null }}"
-                            data-occupation="{{ $user->occupation  ?? null}}"
-                            data-occupation_description="{{ $user->occupation_description ?? null}}"
+                        data-status="{{ $user->status ?? '' }}"
+                        data-year="{{ $user->year ?? '' }}"
+                        data-program="{{ $user->program_id ?? '' }}"
+                        data-occupation="{{ $user->occupation ?? '' }}"
+                        {{-- data-occupation_description="{{ $user->occupation_description ?? '' }}" --}}
                         >
-                            
                         <i class="bi bi-pencil-fill"></i>
                     </button>
+
 
 
                     @if($attendance_session != null)
@@ -293,16 +298,22 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+
+                {{-- Hidden user ID --}}
+                <input type="hidden" name="user_id" id="edit-user-id">
+
                 {{-- Firstname --}}
                 <div class="mb-3">
                     <label>FirstName</label>
                     <input type="text" name="firstname" id="edit-firstname" class="form-control" required>
                 </div>
+
                 {{-- Lastname --}}
                 <div class="mb-3">
                     <label>LastName</label>
                     <input type="text" name="lastname" id="edit-lastname" class="form-control" required>
                 </div>
+
                 {{-- Gender --}}
                 <div class="mb-3">
                     <label for="gender" class="form-label h6">Gender</label>
@@ -313,132 +324,116 @@
                 </div>
 
                 {{-- Baptismal Status --}}
-                 <div class="mb-3">
+                <div class="mb-3">
                     <label for="is_baptised" class="form-label h6">Is Baptised?</label>
                     <select class="form-select" id="edit-is_baptised" name="is_baptised" required>
                         <option value="">Select</option>
-                        <option value=1>Yes</option>
-                        <option value=0>No</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
                     </select>
                 </div>
 
-                 {{-- Active Contact --}}
+                {{-- Active Contact --}}
                 <div class="mb-3">
-                    <label for="active_contact" class="form-label h6 ">Active Contact</label>
-                    <input type="text" class="form-control" id="edit-active_contact" name="active_contact" placeholder="Active Contact" required>
+                    <label for="active_contact" class="form-label h6">Active Contact</label>
+                    <input type="text" class="form-control" id="edit-active_contact" name="active_contact" required>
                 </div>
-
-                <input type="hidden" name="user_id" id="edit-user-id">
 
                 {{-- Email --}}
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="email" name="email" id="edit-email" class="form-control" >
+                    <input type="email" name="email" id="edit-email" class="form-control">
                 </div>
 
-               {{-- Residence --}}
+                {{-- Residence --}}
                 <div class="mb-3" id="edit-main_residence">
-
-                    <label for="edit-residence" class="form-label h6">
-                        Residence
-                    </label>
-
-
-                    <select class="form-select" id="edit-residence" name="edit-residence" >
+                    <label for="edit-residence" class="form-label h6">Residence</label>
+                    <select class="form-select" id="edit-residence" name="edit-residence">
                         @foreach($zone->residences as $residence)
-                        <option value="{{ $residence->id }}">{{ $residence->name }}</option>
+                            <option value="{{ $residence->id }}">{{ $residence->name }}</option>
                         @endforeach
                     </select>
-
-                    
                 </div>
-                @php
-                    $residenceNote = $user->residence_note();
-                @endphp
 
-                {{-- Custom residence Radio Button --}}
+                {{-- Custom residence checkbox --}}
                 <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence"  {{ $residenceNote && $residenceNote['is_custom'] == true ? 'checked' : '' }}>
-                    <label class="form-check-label" for="edit-is_custom_residence">
-                        Can't Find Residence?
-                    </label>
+                    <input class="form-check-input" type="checkbox" name="edit-is_custom_residence" id="edit-is_custom_residence">
+                    <label class="form-check-label" for="edit-is_custom_residence">Can't Find Residence?</label>
                 </div>
 
-
-                <br>
-
-                {{-- Custom Residence Details --}}
-                <div id="edit-custom_residence_details" style="display: {{ ($residenceNote && $residenceNote['is_custom'] == true) ? 'block' : 'none' }};">
-
-
-                    {{-- Residence Name --}}
+                {{-- Custom residence fields --}}
+                <div id="edit-custom_residence_details" style="display: none;">
                     <div class="mb-3">
-                        <label for="edit-custom_residence_name" class="form-label h6">Custom Residence Name</label>
-                        <input type="text" class="form-control" id="edit-custom_residence_name" name="edit-custom_residence_name" placeholder="Enter Residence Name" required>
+                        <label class="form-label h6">Custom Residence Name</label>
+                        <input type="text" class="form-control" id="edit-custom_residence_name" name="edit-custom_residence_name" placeholder="Enter Residence Name">
                     </div>
 
-                    {{-- custom residence zone --}}
-                        <input type="text" class="form-control" id="edit-custom_residence_zone" name="edit-custom_residence_zone" placeholder="Enter Residence Zone" value="{{$zone->id}}"  hidden>
+                    <input type="hidden" id="edit-custom_residence_zone" name="edit-custom_residence_zone" value="{{ $zone->id }}">
 
-                    {{-- Residence Description --}}
                     <div class="mb-3">
-                        <label for="edit-custom_residence_description" class="form-label h6">Custom Residence Description</label>
-                        <input type="text" class="form-control" id="edit-custom_residence_description" name="edit-custom_residence_description" placeholder="How can one locate the Residence ?" required>
+                        <label class="form-label h6">Custom Residence Description</label>
+                        <input type="text" class="form-control" id="edit-custom_residence_description" name="edit-custom_residence_description" placeholder="How can one locate the Residence?">
                     </div>
-            </div>
+                </div>
 
-            {{-- Status Dropdown --}}
-                    {{-- <div class="mb-3">
-                        <label for="edit-status" class="form-label h6">Status</label>
-                        <select class="form-select" name="edit-status" id="edit-status" required>
+                {{-- Room --}}
+                <div class="mb-3">
+                    <label class="form-label h6">Room</label>
+                    <input type="text" class="form-control" id="edit-room" name="edit-room" placeholder="Eg. 16 A">
+                </div>
+
+                {{-- Status --}}
+                <div class="mb-3">
+                    <label class="form-label h6">Status</label>
+                    <select class="form-select" name="status" id="edit-status" required>
+                        <option value="">Select</option>
+                        <option value="student">Student</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                {{-- Student fields --}}
+                <div id="student-fields" style="display: none;">
+                    <div class="mb-3">
+                        <label class="form-label h6">Year</label>
+                        <select class="form-select" name="edit-year" id="edit-year">
                             <option value="">Select</option>
-                            <option value="student">Student</option>
-                            <option value="other">Other</option>
+                            @for($i = 1; $i <= 8; $i++)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                            @endfor
+                        </select>
+                    </div>
+
+                    {{-- <div class="mb-3">
+                        <label class="form-label h6">Program</label>
+                        <select class="form-select" name="program" id="edit-program">
+                            <option value="">Select a program</option>
+                            @foreach(App\Models\Program::all() as $program)
+                                <option value="{{ $program->id }}">{{ $program->name }}</option>
+                            @endforeach
                         </select>
                     </div> --}}
+                </div>
 
-                    {{-- Student Fields --}}
-                    <div id="student-fields" style="display: none;">
-                        <div class="mb-3">
-                            <label for="edit-year" class="form-label h6">Year</label>
-                            <select class="form-select" name="edit-year" id="edit-year">
-                                <option value="">Select</option>
-                                @for($i = 1; $i <= 6; $i++)
-                                    <option value="{{ $i }}">{{ $i }}</option>
-                                @endfor
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="edit-program" class="form-label h6">Program</label>
-                            <select class="form-select" name="edit-program" id="edit-program">
-                                <option value="">Select a program</option>
-                                @foreach(App\Models\Program::all() as $program)
-                                    <option value="{{ $program->id }}">{{ $program->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
+                {{-- Other fields --}}
+                <div id="other-fields" style="display: none;">
+                    <div class="mb-3">
+                        <label class="form-label h6">Occupation</label>
+                        <select class="form-select" name="occupation" id="edit-occupation">
+                            <option value="">Select</option>
+                            <option value="ns">N.S</option>
+                            <option value="worker">Worker</option>
+                            <option value="other">Other</option>
+                        </select>
                     </div>
 
-                    {{-- Other Fields --}}
-                    <div id="other-fields" style="display: none;">
-                        <div class="mb-3">
-                            <label for="edit-occupation" class="form-label h6">Occupation</label>
-                            <select class="form-select" name="edit-occupation" id="edit-occupation">
-                                <option value="">Select</option>
-                                <option value="N.S">N.S</option>
-                                <option value="Worker">Worker</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
+                    {{-- <div class="mb-3">
+                        <label class="form-label h6">Occupation Description</label>
+                        <input type="text" class="form-control" name="occupation_description" id="edit-occupation_description" placeholder="Describe occupation">
+                    </div> --}}
+                </div>
 
-                        <div class="mb-3">
-                            <label for="edit-occupation_description" class="form-label h6">Occupation Description</label>
-                            <input type="text" class="form-control" name="edit-occupation_description" id="edit-occupation_description" placeholder="Describe occupation">
-                        </div>
-                    </div>
-
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Update User</button>
@@ -446,6 +441,8 @@
         </form>
     </div>
 </div>
+
+
 
 <!-- Delete User Modal -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">

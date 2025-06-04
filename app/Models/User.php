@@ -108,22 +108,64 @@ class User extends Authenticatable
         public function getStatusAttribute(){
             // Check for student
             if($this->is_student){
-                return "student";
-    
-            // Check for NsPersonelle or Worker
-            }elseif($this->is_worker != 0){
-                // Check if Ns or Worker
-                if($this->is_worker == 1){
-                    return "Worker";
-                }else{
-                    return "Ns Personnel";
-                }
-            }elseif($this->is_member == 0 && $this->is_knust_affiliate == 1){
-                return "Alumni";
-            }else{
+                return "Student";    
+            }
+
+            if($this->is_worker == 1){
+                return "Worker";
+            }
+
+            if($this->is_worker == 2){
+                return "Ns Personnel";
+            }
+
+            if ($this->is_member == 3){
                 return "Other";
             }
+
+            return "n/a";
+            
         }
+
+        // Get User Year Attribute
+        public function getYearAttribute(){
+          $program_note = $this->program_note();
+          if(isset($program_note['student_year'])){
+            return $program_note['student_year'];
+          }else{
+            return null;
+          }
+        }
+
+        // Get User Room Attribute
+        public function getRoomAttribute(){
+          $residence_note = $this->residence_note();
+          if(isset($residence_note['room'])){
+            return $residence_note['room'];
+          }else{
+            return null;
+          }
+        }
+
+        // public function getStatusAttribute(){
+        //     // Check for student
+        //     if($this->is_student){
+        //         return "student";
+    
+        //     // Check for NsPersonelle or Worker
+        //     }elseif($this->is_worker != 0){
+        //         // Check if Ns or Worker
+        //         if($this->is_worker == 1){
+        //             return "Worker";
+        //         }else{
+        //             return "Ns Personnel";
+        //         }
+        //     }elseif($this->is_member == 0 && $this->is_knust_affiliate == 1){
+        //         return "Alumni";
+        //     }else{
+        //         return "Other";
+        //     }
+        // }
 
         // Get fullname attribute
         public function getFullnameAttribute(){

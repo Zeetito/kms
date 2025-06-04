@@ -1,5 +1,4 @@
-$(document).ready(function() {
-    
+$(document).ready(function () {
     updateCheckIcons();
 
     // Initialize DataTables
@@ -16,9 +15,7 @@ $(document).ready(function() {
             searchPlaceholder: "Search users...",
             search: "",
         },
-        columnDefs: [
-            { orderable: false, targets: -1 }
-        ],
+        columnDefs: [{ orderable: false, targets: -1 }],
     });
 
     $('#TablePrint').DataTable({
@@ -28,12 +25,11 @@ $(document).ready(function() {
         buttons: ['excelHtml5', 'pdfHtml5', 'print'],
     });
 
-    // Single Edit User Modal Handler
-    $('.edit-user-btn').click(function() {
-
-
+    // Edit User Modal
+    $('.edit-user-btn').click(function () {
         const userId = $(this).data('id');
         $('#editUserForm').attr('action', `/edit-zone-user/${userId}`);
+        $('#edit-user-id').val(userId);
         $('#edit-firstname').val($(this).data('firstname'));
         $('#edit-lastname').val($(this).data('lastname'));
         $('#edit-gender').val($(this).data('gender'));
@@ -41,33 +37,42 @@ $(document).ready(function() {
         $('#edit-active_contact').val($(this).data('contact'));
         $('#edit-email').val($(this).data('email'));
         $('#edit-residence').val($(this).data('residence'));
+        $('#edit-room').val($(this).data('room'));
 
-        // 🆕 Handle Custom Residence
         const isCustom = $(this).data('is_custom_residence') == 1;
-        $('#edit-is_custom_residence').prop('checked', isCustom).trigger('change'); // triggers show/hide
+        $('#edit-is_custom_residence').prop('checked', isCustom).trigger('change');
         $('#edit-custom_residence_name').val($(this).data('custom_residence_name'));
         $('#edit-custom_residence_description').val($(this).data('custom_residence_description'));
 
-            // ✅ Program and Year (if using them)
-            $('#edit-program').val($(this).data('program')).trigger('change.select2');
-            $('#edit-year').val($(this).data('year'));
-            $('#edit-status').val($(this).data('status')).trigger('change');
-            $('#edit-occupation').val($(this).data('occupation'));
-            $('#edit-occupation_description').val($(this).data('occupation_description'));
+        const status = $(this).data('status');
+        if (status) {
+            $('#edit-status').val(status.toLowerCase()).trigger('change');
+        } else {
+            $('#edit-status').val('').trigger('change');
+        }
+
+        $('#edit-year').val($(this).data('year'));
+        $('#edit-program').val($(this).data('program')).trigger('change.select2');
+        $('#edit-occupation').val($(this).data('occupation'));
+        $('#edit-occupation_description').val($(this).data('occupation_description'));
     });
 
+    // Reset form on modal close
+    $('#editUserModal').on('hidden.bs.modal', function () {
+        $('#editUserForm')[0].reset();
+        $('#edit-is_custom_residence').prop('checked', false).trigger('change');
+    });
 
-        $('#edit-program').select2({
-            theme: 'bootstrap-5',
-            placeholder: "Select a program",
-            allowClear: true
-        });
+    // Program dropdown
+    $('#edit-program').select2({
+        theme: 'bootstrap-5',
+        placeholder: "Select a program",
+        allowClear: true
+    });
 
-    // Changing the Status of a Student
+    // Toggle student/other fields
     $('#edit-status').change(function () {
         const value = $(this).val();
-
-        // Hide all conditional fields first
         $('#student-fields, #other-fields').hide();
         $('#edit-year, #edit-program, #edit-occupation, #edit-occupation_description').prop('required', false);
 
@@ -80,23 +85,31 @@ $(document).ready(function() {
         }
     });
 
-
-
-
-
-    // Delete User Modal Handler
-    $('.delete-user-btn').on('click', function (e) {
-        e.preventDefault(); // prevent accidental form submission
-        const userId = $(this).data('id');
-
-        console.log('Delete button clicked. ID:', userId); // Debugging
-
-        $('#deleteUserForm').attr('action', `/users/${userId}`);
-        $('#deleteUserModal').modal('show'); // manually show modal (fallback)
+    // Toggle custom residence
+    $('#edit-is_custom_residence, #is_custom_residence').change(function () {
+        let prefix = $(this).attr('id') === 'edit-is_custom_residence' ? 'edit-' : '';
+        if ($(this).is(':checked')) {
+            $(`#${prefix}main_residence`).hide();
+            $(`#${prefix}custom_residence_details`).show();
+            $(`#${prefix}custom_residence_name, #${prefix}custom_residence_description`).prop('required', true);
+            $(`#${prefix}residence`).prop('required', false);
+        } else {
+            $(`#${prefix}main_residence`).show();
+            $(`#${prefix}custom_residence_details`).hide();
+            $(`#${prefix}custom_residence_name, #${prefix}custom_residence_description`).prop('required', false);
+            $(`#${prefix}residence`).prop('required', true);
+        }
     });
 
+    // Delete user
+    $('.delete-user-btn').on('click', function () {
+        const userId = $(this).data('id');
+        $('#deleteUserForm').attr('action', `/users/${userId}`);
+        const modal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+        modal.show();
+    });
 
-    // Check Attendance Modal Handler
+    // Attendance check
     $('.check-attendance-btn').click(function () {
         const userId = $(this).data('id');
         $('#checkAttendanceForm').attr('action', `/check-zone-user/${userId}`);
@@ -104,7 +117,6 @@ $(document).ready(function() {
         $('#checkAttendanceForm').data('user-id', userId);
     });
 
-    // Mark Attendance
     $('#markAttendanceBtn').click(function () {
         const userId = $('#checkAttendanceForm').data('user-id');
         let cached = JSON.parse(localStorage.getItem('marked_users_id')) || {};
@@ -126,22 +138,6 @@ $(document).ready(function() {
 
         updateCheckIcons();
         $('#checkAttendanceModal').modal('hide');
-    });
-
-    // Custom Residence handlers (Add & Edit)
-    $('#is_custom_residence, #edit-is_custom_residence').change(function() {
-        let prefix = $(this).attr('id') === 'edit-is_custom_residence' ? 'edit-' : '';
-        if($(this).is(':checked')) {
-            $(`#${prefix}main_residence`).hide();
-            $(`#${prefix}custom_residence_details`).show();
-            $(`#${prefix}custom_residence_name, #${prefix}custom_residence_description`).prop('required', true);
-            $(`#${prefix}residence`).prop('required', false);
-        } else {
-            $(`#${prefix}main_residence`).show();
-            $(`#${prefix}custom_residence_details`).hide();
-            $(`#${prefix}custom_residence_name, #${prefix}custom_residence_description`).prop('required', false);
-            $(`#${prefix}residence`).prop('required', true);
-        }
     });
 
     $('#submitAttendanceModal').on('show.bs.modal', function () {

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Zone;
 use App\Models\Semester;
 use App\Models\Residence;
+use App\Models\UserProgram;
 use Illuminate\Http\Request;
 use App\Models\UserResidence;
 use Illuminate\Support\Facades\Log;
@@ -161,6 +162,7 @@ class ZoneController extends Controller
     // Edit Zone User
     public function editZoneUser(Request $request, User $user)
     {
+        // return $request;
         $validator = Validator::make($request->all(), [
             'firstname' => 'required|string|max:255',
             'lastname' => 'nullable|string|max:255',
@@ -186,16 +188,12 @@ class ZoneController extends Controller
         #Retrieve Residence
         $residence = Residence::find($request-> input('edit-residence'));
 
-        // return $request->all();
-
-    //     Log::info($request->all());
-
 
     //     // Save User Residence Instance
         $user_residence = UserResidence::where('user_id', $user->id)->where('academic_year_id', Semester::active_semester()->academic_year_id)->first();
 
     //    // Check if the user has a Custom residence
-        if($request->input('edit-is_custom_residence')){
+        if($request->filled('edit-is_custom_residence')) {
             $user_residence = $user_residence ?? new UserResidence;
             $user_residence->user_id = $user->id;
             $user_residence->residence_id = null;
@@ -215,6 +213,77 @@ class ZoneController extends Controller
             $user_residence->save();
 
         }
+
+        // Update Room Number if Provided
+        if($request->input('edit-room') != null){
+            $user_residence->room = $request->input('edit-room');
+            $user_residence->save();
+        }
+
+        // Update User Staus if Provided
+        if($request->input('status') != null){
+            if($request->input('status') == 'student'){
+                $user->is_student = true;
+                $user->is_knust_affiliate = true;
+
+                // Update the Student Year And Program
+                if($request->input('edit-year')){
+                    // Check if Program was provided...
+                    if($request->input('edit-program') != null){
+
+                    }else{
+                        // Update or Create A Custom User Program Relation with null name desc.
+                        UserProgram::updateOrCreate(
+                            [
+                                'user_id' => $user->id,
+                                'academic_year_id' => Semester::active_semester()->academic_year_id,
+                            ],
+                            [
+                                'year' => $request->input('edit-year'),
+                            ]
+                        );
+
+                    }
+                }else{
+                    // Set Year To Null
+                    UserProgram::updateOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'academic_year_id' => Semester::active_semester()->academic_year_id,
+                        ],
+                        [
+                            'year' => null,
+                        ]
+                    );
+                }
+
+
+            }else{
+                $user->is_student = false;
+                $user->is_knust_affiliate = false;
+
+                // Check working status
+                if($request->input('occupation') != null){
+                    if($request->input('occupation') == 'worker'){
+                        $user->is_worker = 1;
+                    }
+
+                    if($request->input('occupation') == 'ns'){
+                        $user->is_worker = 2;
+                    }
+
+                    if($request->input('occupation') == 'other'){
+                        $user->is_worker = 3;
+                    }
+
+                }
+
+                // Delete User Program is it exists
+                UserProgram::where('user_id', $user->id)->where('academic_year_id', Semester::active_semester()->academic_year_id)->delete();
+            }
+            $user->save();
+        }
+
 
         # Return to the add user view
         return redirect()->route('add.zone.user.view', ['zone' => $residence->zone ?? $user->zone_note()['id'] ?? Zone::find(17)]) ->with('success', 'User updated successfully');
