@@ -15,7 +15,7 @@ class ProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            // 'user_id' => $this->id,
+            'id' => $this->id,
             'firstname' => $this->firstname,
             'othername' => $this->othername,
             'lastname' => $this->lastname,
@@ -27,6 +27,8 @@ class ProfileResource extends JsonResource
             'dob' => $this->dob,
 
             'contacts' => $this->contacts,
+            'active_contact' => $this->active_contact,
+
 
             'status' => $this->status,
             // 'role' => $this->role,
@@ -35,6 +37,8 @@ class ProfileResource extends JsonResource
 
             'residence' => $this->residence_note(),
             'zone' => $this->zone_note(),
+
+            'status' => $this->status,
 
             'program' => $this->program_note(),
             'college' => $this->college_note(),

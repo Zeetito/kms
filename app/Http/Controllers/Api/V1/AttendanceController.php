@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Meeting;
+use App\Models\Semester;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Models\AttendanceUser;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AttendanceResource;
 
 class AttendanceController extends Controller
 {
@@ -13,12 +17,47 @@ class AttendanceController extends Controller
 
     // Get all attendances for the semester
     public function index(Request $request) {
-        return response()->json(Attendance::all());
+        return response()->json([
+            'data' => AttendanceResource::collection(Attendance::all()),
+            'status' => 'success'
+        ],200);
     }
 
     // Show
     public function show(Request $request, Attendance $attendance){
         return response()->json($attendance);
+    }
+
+    // Store
+    public function store(Request $request) {
+        // Get Meeting Title
+        $title = $request->input('title');
+        $venue = $request->input('venue') ?? 'Unity Hall Basement';
+        
+        # Create Meeting
+        $meeting = Meeting::create([
+            'meeting_type_id' => 1,
+            'program_name' => $title,
+            'start_date' => now(),
+            'venue' => $venue,
+            'location' => $venue,
+            'semester_id' => Semester::getActiveSemester()->id
+        ]);
+
+        Attendance::where('is_active', true)->update(['is_active' => false]);
+
+        # Create Attendance
+        $attendance = Attendance::create([
+            'meeting_id' => $meeting->id,
+            'is_active' => true,
+            'user_id' => 1,
+        ]);
+
+        return response()->json([
+            'data' => $attendance,
+            'status' => 'success'
+        ],200);
+
     }
 
     // Check attendance for ative session
@@ -57,7 +96,7 @@ class AttendanceController extends Controller
             return back()->with('error', 'Invalid data submitted.');
         }
 
-        $attendance = Attendance::active_sessions()->first();
+        $attendance = Attendance::where('is_active', true)->first();
         if (!$attendance) {
             return back()->with('error', 'No active attendance session found.');
         }
@@ -83,6 +122,70 @@ class AttendanceController extends Controller
         }
 
         return back()->with('success', 'Attendance submitted successfully.');
+    }
+
+    // Submit Attendance Record
+    public function submit_attendance_record(Request $request){
+        
+        // Set max execution time to 5 mins
+        set_time_limit(300);
+        
+        
+        $userIds =  is_array($request->input('user_ids')) ? $request->input('user_ids') : json_decode($request->input('user_ids'), true);
+        
+        if (!is_array($userIds)) {
+            return back()->with('error', 'Invalid data submitted.');
+        }
+        
+        $attendance = Attendance::where('is_active', true)->first();
+        if (!$attendance) {
+            return back()->with('error', 'No active attendance session found.');
+        }
+        // Log::info([
+        //     'attendance' => $attendance
+        // ]);
+        // return "heyyeyey";
+
+        $existing = AttendanceUser::where('attendance_id', $attendance->id)
+            ->whereIn('user_id', $userIds)
+            ->pluck('user_id')
+            ->toArray();
+
+        $newIds = array_diff($userIds, $existing); // Remove duplicates
+
+        foreach ($newIds as $id) {
+            $instance = new AttendanceUser;
+            $instance->user_id = $id;
+            $instance->is_present = true;
+            $instance->attendance_id = $attendance->id;
+
+            try {
+                $instance->save();
+            } catch (\Exception $e) {
+                return back()->with('error', 'Error submitting attendance: ' . $e->getMessage());
+            }
+        }
+
+        $attendees_id = $attendance->users()->pluck('user_id')->toArray();
+
+        return response()->json([
+            'attendees_id' => $attendees_id,  
+            'message' => 'Attendance submitted successfully.',
+            'status' => 'success'
+        ]);
+    }
+
+    Public function fetch_active_attendance_attendees(Request $request){
+        $attendance = Attendance::active_sessions()->first();
+        if (!$attendance) {
+            return back()->with('error', 'No active attendance session found.');
+        }
+        $attendees_id = $attendance->users()->pluck('user_id')->toArray();
+        return response()->json([
+            'attendees_id' => $attendees_id,  
+            // 'message' => 'Attendance submitted successfully.',
+            'status' => 'success'
+        ]);
     }
 
 }

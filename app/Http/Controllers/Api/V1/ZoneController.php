@@ -189,10 +189,10 @@ class ZoneController extends Controller
         $residence = Residence::find($request-> input('edit-residence'));
 
 
-    //     // Save User Residence Instance
-        $user_residence = UserResidence::where('user_id', $user->id)->where('academic_year_id', Semester::active_semester()->academic_year_id)->first();
+        //     // Save User Residence Instance
+            $user_residence = UserResidence::where('user_id', $user->id)->where('academic_year_id', Semester::active_semester()->academic_year_id)->first();
 
-    //    // Check if the user has a Custom residence
+        //    // Check if the user has a Custom residence
         if($request->filled('edit-is_custom_residence')) {
             $user_residence = $user_residence ?? new UserResidence;
             $user_residence->user_id = $user->id;

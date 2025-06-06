@@ -8,6 +8,7 @@ use App\Models\UserProgram;
 use Illuminate\Http\Request;
 use App\Models\UserResidence;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProfileResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use App\Jobs\UserRegisteredNotificationJob;
@@ -20,6 +21,11 @@ class UserController extends Controller
     public function index(){
         $users = User::orderByDesc('firstname')->get();
         return response()->json($users);
+    }
+
+    // Get User Details
+    public function usersDetails(Request $request){
+        return ProfileResource::collection(User::all());
     }
 
     // Show User

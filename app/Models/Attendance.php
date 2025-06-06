@@ -25,7 +25,7 @@ class Attendance extends Model
     // RELATIONSHIPS
     public function meeting()
     {
-        return $this->belongsTo(Meeting::class);
+        return $this->belongsTo(Meeting::class, 'meeting_id');
     }
 
     public function users()

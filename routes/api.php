@@ -82,6 +82,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     // Show
     Route::get('/attendances/{attendance}', [AttendanceController::class, 'show']);
 
+    // App Create attendnace 
+    Route::post('/attendances', [AttendanceController::class, 'store'])
+    // ->middleware('auth:sanctum')
+    ;
+
     // Attendance User
     // Mark user for a particular attendance session
     Route::post('/attendances/{meeting}/user', [AttendanceUserController::class, 'store'])
@@ -115,6 +120,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::get('/attendances/{attendance}/guests', [AttendanceUserController::class, 'guests'])
     ->middleware('auth:sanctum');
     ;
+
+    // --
+    // Submit Attednance
+    // Submit Attendance
+    Route::post('/submit-attendance-record', [AttendanceController::class, 'submit_attendance_record']);
+
+    // Fetch Active Attendance Attendees
+    Route::get('/fetch-active-attendance-attendees', [AttendanceController::class, 'fetch_active_attendance_attendees']);
+
 
 
 // SEMESTER USER
@@ -791,6 +805,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::middleware('auth:sanctum')->get('/user/{user}/profile', function (User $user) {
             return $user->profile();
         });
+
+        // Get All Users Details
+        Route::get('/users/details', [UserController::class, 'usersDetails'])
+        ;
 
         // Update User profile
         Route::post('/user/{user}/profile', [ProfileController::class, 'update'])
