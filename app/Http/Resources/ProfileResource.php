@@ -22,7 +22,7 @@ class ProfileResource extends JsonResource
             'gender' => $this->gender,
             'email' => $this->email,
             'profile_pic_path' => $this->profile_pic()->path ?? null,
-            'is_baptised' => $this->is_baptised,
+            'is_baptised' => $this->is_baptised == 1 ? true : false,
 
             'dob' => $this->dob,
 
