@@ -25,7 +25,11 @@ class UserController extends Controller
 
     // Get User Details
     public function usersDetails(Request $request){
-        return ProfileResource::collection(User::all());
+        // return ProfileResource::collection(User::all());
+        return response()->json([
+            'data' => ProfileResource::collection(User::all()),
+            'status' => 'success',
+        ],200);
     }
 
     // Show User
