@@ -131,7 +131,7 @@ class User extends Authenticatable
         public function getYearAttribute(){
           $program_note = $this->program_note();
           if(isset($program_note['student_year'])){
-            return $program_note['student_year'];
+             return (int) $program_note['student_year'];
           }else{
             return null;
           }
