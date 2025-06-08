@@ -853,17 +853,17 @@ Route::get('/hello', function (Request $request) {
 
     // Add temp users
 
-    $tempUsers = TempUser::where('created' >= Carbon::now()->subDays(10))->get();
+    $tempUsers = TempUser::where('created_at', '>=', Carbon::now()->subDays(10))->get();
 
-    foreach($tempUsers as $tempUser){
+    foreach ($tempUsers as $tempUser) {
         $user = User::create([
             'firstname' => $tempUser->name,
             'lastname' => $tempUser->name,
-            'acitve_contact' => $tempUser->contact,
+            'active_contact' => $tempUser->contact,
+            'password' => bcrypt('password')
         ]);
     }
-
-    return "done !!!";
+        return "done !!!";
 
     return auth()->user();
     return App\Models\User::find(6)->name;
@@ -871,4 +871,4 @@ Route::get('/hello', function (Request $request) {
     return App\Models\User::find(1)->residence();
     // return getAcademicYearId();
     return 'hello';
-})->middleware('auth:sanctum');
+});
