@@ -24,11 +24,11 @@ class UserResource extends JsonResource
             'contacts' => $this->contacts,
             'active_contact' => $this->active_contact,
             
-            'is_alumni' => $this->is_alumni,
-            'is_member' => $this->is_member,
-            'is_baptised' => $this->is_baptised,
-            'is_worker' => $this->is_worker,
-            'is_student' => $this->is_student,
+            'is_alumni' => $this->is_alumni == 1 ? true : false,
+            'is_member' => $this->is_member == 1 ? true : false,
+            'is_baptised' => $this->is_baptised == 1 ? true : false,
+            'is_worker' => $this->is_worker == 1 ? true : false,
+            'is_student' => $this->is_student == 1 ? true : false,
             'is_knust_affiliate' => $this->is_knust_affiliate,
             'local_congregation' => $this->local_congregation,
 
