@@ -851,7 +851,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // hello route
 Route::get('/hello', function (Request $request) {
 
-    // Add temp users
+     // Add temp users
 
     $tempUsers = TempUser::where('created_at', '>=', Carbon::now()->subDays(10))->get();
 
@@ -863,12 +863,35 @@ Route::get('/hello', function (Request $request) {
             'password' => bcrypt('password')
         ]);
     }
-        return "done !!!";
+    //     return "done !!!";
 
-    return auth()->user();
-    return App\Models\User::find(6)->name;
-    return App\Models\User::find(1)->zone_id;
-    return App\Models\User::find(1)->residence();
-    // return getAcademicYearId();
-    return 'hello';
+
+
+    $users = User::where('id', '>', 443)->get();
+
+    foreach ($users as $user) {
+    // Skip if already cleaned
+    if (str_word_count($user->firstname) == 1 && str_word_count($user->lastname) == 1) {
+        continue;
+    }
+
+    // Split the full name
+    $parts = explode(' ', trim($user->firstname));
+
+    // At least two parts?
+    if (count($parts) >= 2) {
+        $user->firstname = $parts[0];                     // First word
+        $user->lastname = $parts[count($parts) - 1];      // Last word
+        $user->save();
+    }
+}
+
+   
+
+    // return auth()->user();
+    // return App\Models\User::find(6)->name;
+    // return App\Models\User::find(1)->zone_id;
+    // return App\Models\User::find(1)->residence();
+    // // return getAcademicYearId();
+    // return 'hello';
 });
