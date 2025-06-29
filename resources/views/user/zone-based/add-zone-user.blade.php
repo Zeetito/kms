@@ -23,7 +23,7 @@
     @endif --}}
 
     <!-- Users Table -->
-    <table id="usersTable" class="table table-bordered table-striped">
+    <table id="TablePrint" class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
                 <th>#</th>

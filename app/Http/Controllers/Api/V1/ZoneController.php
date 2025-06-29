@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\UserResidence;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProfileResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 
@@ -158,6 +159,58 @@ class ZoneController extends Controller
         return redirect()->route('add.zone.user.view', ['zone' => $residence->zone ?? Zone::find($request->custom_residence_zone) ?? Zone::find(17)]) ->with('success', 'User added successfully');
         
     }
+    public function apiAddZoneUser(Request $request)
+    {  
+        $validator = Validator::make($request->all(), [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'nullable|string|max:255',
+            'gender' => 'required|in:m,f',
+            'is_baptised' => 'int',
+            'active_contact' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255|unique:users,email',
+            'residence_id' => 'nullable|exists:residences,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = new User;
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->gender = $request->gender;
+        $user->active_contact = $request->active_contact;
+        $user->email = $request->email;
+        $user->is_baptised = $request->is_baptised == 1 ? true : false;
+        $user->is_active = true;
+        $user->is_member = true;
+        $user->password = bcrypt('password');
+        $user->save();
+
+        if ($request->custom_residence_name != null) {
+            $user_residence = new UserResidence;
+            $user_residence->user_id = $user->id;
+            $user_residence->residence_id = null;
+            $user_residence->custom_name = $request->custom_residence_name;
+            $user_residence->custom_description = $request->custom_residence_description;
+            $user_residence->custom_zone_id = $request->zone_id ?? 17;
+            $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
+            $user_residence->save();
+        } else {
+            $residence = Residence::find($request->residence_id);
+            $user_residence = new UserResidence;
+            $user_residence->user_id = $user->id;
+            $user_residence->residence_id = $residence->id;
+            $user_residence->academic_year_id = Semester::active_semester()->academic_year_id;
+            $user_residence->save();
+        }
+
+        return response()->json([
+            'success' => 'User added successfully',
+            'user_details' => new ProfileResource($user)
+        ], 200);
+    }
+
 
     // Edit Zone User
     public function editZoneUser(Request $request, User $user)

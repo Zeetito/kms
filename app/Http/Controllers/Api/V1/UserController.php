@@ -70,7 +70,7 @@ class UserController extends Controller
 
         if($user){
             // disptach the notification job
-            dispatch(new UserRegisteredNotificationJob($user))->onQueue('user_registered_notification');
+            // dispatch(new UserRegisteredNotificationJob($user))->onQueue('user_registered_notification');
             // $user->notify(new UserRegisteredNotification($user));
 
         }

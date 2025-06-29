@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\User;
 use App\Models\Meeting;
 use App\Models\Semester;
 use App\Models\Attendance;
@@ -186,6 +187,22 @@ class AttendanceController extends Controller
             // 'message' => 'Attendance submitted successfully.',
             'status' => 'success'
         ]);
+    }
+
+    Public function get_attendance_details(Request $request, Attendance $attendance){
+        $attendance = Attendance::find(5);
+        $attendees_id = $attendance->users()->pluck('user_id')->toArray();
+        $target_users_id = User::where('created_at', '<=', $attendance->created_at)->pluck('id')->toArray();
+        $absentees_id = array_diff($target_users_id, $attendees_id);
+        $response = response()->json([
+            'attendees_ids' => $attendees_id,  
+            'absentees_ids' => $absentees_id,  
+            // 'message' => 'Attendance submitted successfully.',
+            'status' => 'success'
+        ],200);
+
+
+        return $response;
     }
 
 }

@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\V1\CollegeController;
 use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ProgramController;
+use App\Http\Controllers\Api\V1\TempUserController;
 use App\Http\Controllers\Api\V1\ResidenceController;
 use App\Http\Controllers\Api\V1\AttendanceController;
 use App\Http\Controllers\Api\V1\OfficiatorController;
@@ -56,6 +57,12 @@ use App\Http\Controllers\Api\V1\OfficiatingRoleController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+    // TEMP USER
+    // Add Temp User
+    Route::post('/add-temp-user', [TempUserController::class, 'tempStore'])
+    // ->middleware('auth:sanctum')
+    ;
 
 // COLLEGE
     // Index
@@ -131,6 +138,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     // Fetch Active Attendance Attendees
     Route::get('/fetch-active-attendance-attendees', [AttendanceController::class, 'fetch_active_attendance_attendees']);
 
+    // Get Attendance Details
+    Route::get('/attendance-details/{attendance}', [AttendanceController::class, 'get_attendance_details']);
 
 
 // SEMESTER USER
@@ -273,6 +282,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 // ZONE
+
+    // Add Zone User
+    Route::post('/add-zone-user' , [ZoneController::class, 'apiAddZoneUser'])
+    // ->middleware('auth:sanctum')
+    ;
+
     // Index
     Route::get('/zones', [ZoneController::class, 'index'])
     // ->middleware('auth:sanctum')
@@ -317,12 +332,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     });
     
 // RESIDENCE
-    // Get residences
-    Route::middleware('auth:sanctum')->get('/residences', function () {
-        $residences = Residence::with('zone')->orderByDesc('name')->get();
-        return response()->json($residences);
-    });
+    // // Get residences
+    // Route::middleware('auth:sanctum')->get('/residences', function () {
+    //     // $residences = Residence::with('zone')->orderByDesc('name')->get();
+    //     return response()->json($residences);
+    // });
 
+    // Get Residence
+    Route::get('/residences', [ResidenceController::class, 'index'])
+    // ->middleware('auth:sanctum')
+    ;
     // Store Residence
     Route::post('/residences', [ResidenceController::class, 'store'])
     ->middleware('auth:sanctum')

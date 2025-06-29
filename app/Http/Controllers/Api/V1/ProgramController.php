@@ -7,6 +7,7 @@ use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProgramResource;
 use Illuminate\Support\Facades\Validator;
 
 class ProgramController extends Controller
@@ -16,7 +17,7 @@ class ProgramController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => Program::all()
+            'data' => ProgramResource::collection(Program::all()), 
         ]);
     }
 

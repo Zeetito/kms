@@ -5,10 +5,18 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\Residence;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ResidenceResource;
 use Illuminate\Support\Facades\Validator;
 
 class ResidenceController extends Controller
 {
+
+    public function index(){
+        return response()->json([
+            'data' => ResidenceResource::collection(Residence::all())
+        ],200);
+    }
+    
     // Store Residence
     public function store(Request $request)
     {
