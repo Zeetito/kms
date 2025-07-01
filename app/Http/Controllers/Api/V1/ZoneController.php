@@ -342,5 +342,105 @@ class ZoneController extends Controller
         return redirect()->route('add.zone.user.view', ['zone' => $residence->zone ?? $user->zone_note()['id'] ?? Zone::find(17)]) ->with('success', 'User updated successfully');
         
     }
+    public function apiEditZoneUser(Request $request, User $user)
+    {
+        $validator = Validator::make($request->all(), [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'nullable|string|max:255',
+            'gender' => 'required|in:m,f',
+            'is_baptised' => 'int',
+            'active_contact' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
+            'residence' => 'nullable|exists:residences,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Save main user fields
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->gender = $request->gender;
+        $user->active_contact = $request->active_contact;
+        $user->email = $request->email;
+        $user->is_baptised = $request->boolean('is_baptised');
+        $user->save();
+
+        // Process info payload
+        $info = json_decode($request->info, true);
+        $status = $info['status'] ?? null;
+        $year = $info['year'] ?? null;
+        $occupationType = $info['occupation_type'] ?? null;
+        $customResidenceName = $info['residence'] ?? null;
+
+        // Fetch existing user_residence record
+        $userResidence = UserResidence::where('user_id', $user->id)
+            ->where('academic_year_id', Semester::active_semester()->academic_year_id)
+            ->first();
+
+        if ($customResidenceName && $customResidenceName !== '') {
+            // It's a custom residence
+            $userResidence = $userResidence ?? new UserResidence;
+            $userResidence->user_id = $user->id;
+            $userResidence->residence_id = null;
+            $userResidence->custom_name = $customResidenceName;
+            $userResidence->custom_zone_id = $user->zone_id ?? 17;
+            $userResidence->academic_year_id = Semester::active_semester()->academic_year_id;
+            $userResidence->save();
+        } else {
+            // Normal residence from ID
+            if ($request->residence) {
+                $residence = Residence::find($request->residence);
+                $userResidence = $userResidence ?? new UserResidence;
+                $userResidence->user_id = $user->id;
+                $userResidence->residence_id = $residence->id;
+                $userResidence->custom_name = null;
+                $userResidence->custom_zone_id = null;
+                $userResidence->academic_year_id = Semester::active_semester()->academic_year_id;
+                $userResidence->save();
+            }
+        }
+
+        // Handle status logic
+        if ($status == 'student') {
+            $user->is_student = true;
+            $user->is_knust_affiliate = true;
+            $user->is_worker = 0;
+
+            UserProgram::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'academic_year_id' => Semester::active_semester()->academic_year_id,
+                ],
+                ['year' => $year]
+            );
+        } else if ($status == 'other') {
+            $user->is_student = false;
+            $user->is_knust_affiliate = false;
+
+            if ($occupationType == 'worker') {
+                $user->is_worker = 1;
+            } elseif ($occupationType == 'ns') {
+                $user->is_worker = 2;
+            } elseif ($occupationType == 'other') {
+                $user->is_worker = 3;
+            } else {
+                $user->is_worker = 0;
+            }
+
+            // Clear any student program
+            UserProgram::where('user_id', $user->id)
+                ->where('academic_year_id', Semester::active_semester()->academic_year_id)
+                ->delete();
+        }
+        $user->save();
+
+        return response()->json([
+            'success' => 'User Details Edited successfully',
+            'user_details' => new ProfileResource($user)
+        ], 200);
+    }
+
 
 }

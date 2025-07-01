@@ -287,6 +287,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::post('/add-zone-user' , [ZoneController::class, 'apiAddZoneUser'])
     // ->middleware('auth:sanctum')
     ;
+    // Edit Zone User
+    Route::post('/edit-zone-user/{user}' , [ZoneController::class, 'apiEditZoneUser'])
+    // ->middleware('auth:sanctum')
+    ;
 
     // Index
     Route::get('/zones', [ZoneController::class, 'index'])
