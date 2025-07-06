@@ -167,13 +167,13 @@ class AttendanceController extends Controller
             }
         }
 
-        $attendees_id = $attendance->users()->pluck('user_id')->toArray();
+        $attendees_id = $attendance->attendees()->pluck('user_id')->toArray();
 
         return response()->json([
             'attendees_id' => $attendees_id,  
             'message' => 'Attendance submitted successfully.',
             'status' => 'success'
-        ]);
+        ],200);
     }
 
     Public function fetch_active_attendance_attendees(Request $request){
@@ -181,28 +181,69 @@ class AttendanceController extends Controller
         if (!$attendance) {
             return back()->with('error', 'No active attendance session found.');
         }
-        $attendees_id = $attendance->users()->pluck('user_id')->toArray();
+        $attendees_id = $attendance->attendees()->pluck('user_id')->toArray();
         return response()->json([
             'attendees_id' => $attendees_id,  
             // 'message' => 'Attendance submitted successfully.',
             'status' => 'success'
-        ]);
+        ],200);
     }
 
     Public function get_attendance_details(Request $request, Attendance $attendance){
-        $attendance = Attendance::find(5);
-        $attendees_id = $attendance->users()->pluck('user_id')->toArray();
+        // $attendance = Attendance::find(5);
+        $attendees_id = $attendance->attendees()->pluck('user_id')->toArray();
         $target_users_id = User::where('created_at', '<=', $attendance->created_at)->pluck('id')->toArray();
         $absentees_id = array_diff($target_users_id, $attendees_id);
-        $response = response()->json([
+         $infos = AttendanceUser::where('attendance_id', $attendance->id)
+            // ->whereIn('user_id', $attendees_id)
+            ->pluck('info', 'user_id')
+            ->toArray();
+        return response()->json([
             'attendees_ids' => $attendees_id,  
             'absentees_ids' => $absentees_id,  
+            'infos' => $infos,
+
             // 'message' => 'Attendance submitted successfully.',
             'status' => 'success'
         ],200);
-
-
-        return $response;
     }
+
+    public function update_attendance_details(Request $request, Attendance $attendance)
+    {
+        $updates = $request->input('updates');
+
+        foreach ($updates as $update) {
+            AttendanceUser::updateOrCreate(
+                [
+                    'attendance_id' => $attendance->id,
+                    'user_id' => $update['user_id']
+                ],
+                [
+                    'is_present' => $update['status'] == 'present' ? true : false,
+                    'info' => $update['info'] ?? null,
+                    // 'marked_by' => auth()->id(),
+                ]
+            );
+        }
+
+        $attendees_id = $attendance->attendees()->pluck('user_id')->toArray();
+        $target_users_id = User::where('created_at', '<=', $attendance->created_at)->pluck('id')->toArray();
+        $absentees_id = array_diff($target_users_id, $attendees_id);
+
+        $infos = AttendanceUser::where('attendance_id', $attendance->id)
+            // ->whereIn('user_id', $attendees_id)
+            ->pluck('info', 'user_id')
+            ->toArray();
+
+        return response()->json([
+            'attendees_ids' => array_values($attendees_id),
+            'absentees_ids' => array_values($absentees_id),
+            'infos' => $infos,
+            'message' => 'Attendance updated successfully.',
+            'status' => 'success'
+        ], 200);
+    }
+
+
 
 }

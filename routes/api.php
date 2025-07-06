@@ -141,6 +141,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     // Get Attendance Details
     Route::get('/attendance-details/{attendance}', [AttendanceController::class, 'get_attendance_details']);
 
+    // Update Attendance Details
+    Route::post('/update_attendance_details/{attendance}', [AttendanceController::class, 'update_attendance_details']);
+
 
 // SEMESTER USER
     // Index
