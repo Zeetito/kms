@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 // use App\Models\Scopes\SemesterScope;
 use App\Models\Meeting;
+use App\Models\TempUser;
 use App\Models\Attendance;
 use App\Models\AttendanceUser;
 use App\Models\Scopes\SemesterScope;
@@ -59,6 +60,11 @@ class Attendance extends Model
         return $this->attendance_users()->where('user_id', null)->get();
     }
 
+    // tempUsers
+    public function temp_users(){
+        return $this->hasMany(TempUser::class, 'attendance_id');
+    }
+
     // FUNCTIONS
     // REgister absentees
     public function registerAbsentees(){
@@ -71,6 +77,8 @@ class Attendance extends Model
             $attendance_user->save();
         }
     }
+
+
 
     // Get Active Attendance Session
     public static function active_sessions(){

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\AttendanceUser;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TempUserResource;
 use App\Http\Resources\AttendanceResource;
 
 class AttendanceController extends Controller
@@ -169,9 +170,14 @@ class AttendanceController extends Controller
 
         $attendees_id = $attendance->attendees()->pluck('user_id')->toArray();
 
+        // Check for visitors
+        $visitors = $attendance->temp_users()->whereJsonContains('info->status', 'visitor')->get();
+
+
         return response()->json([
             'attendees_id' => $attendees_id,  
             'message' => 'Attendance submitted successfully.',
+            'visitors_details' => TempUserResource::collection($visitors),
             'status' => 'success'
         ],200);
     }
@@ -182,8 +188,14 @@ class AttendanceController extends Controller
             return back()->with('error', 'No active attendance session found.');
         }
         $attendees_id = $attendance->attendees()->pluck('user_id')->toArray();
+
+        // Check for visitors
+        $visitors = $attendance->temp_users()->whereJsonContains('info->status', 'visitor')->get();
+
+
         return response()->json([
             'attendees_id' => $attendees_id,  
+            'visitors_details' => TempUserResource::collection($visitors),
             // 'message' => 'Attendance submitted successfully.',
             'status' => 'success'
         ],200);

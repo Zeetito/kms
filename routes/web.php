@@ -10,6 +10,7 @@ use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\AttendanceUser;
 use Illuminate\Support\Facades\Route;
+use App\Http\Resources\TempUserResource;
 use App\Jobs\UserRegisteredNotificationJob;
 use App\Http\Controllers\Api\V1\ZoneController;
 use App\Http\Controllers\Auth\AccountController;
@@ -118,8 +119,10 @@ Route::delete('/users/{user}', function (User $user) {
 
 // Hello route
 Route::get('/hello', function (Request $request) {
+    return "ehee";
 
-    return Attendance::active_sessions();
+    // return TempUserResource::collection(Attendance::find(6)->temp_users()->whereJsonContains('info->status', 'visitor')->get());
+    // return Attendance::find(6)->temp_users()->whereJsonContains('info->status', 'visitor')->get();
 
     $attendance = Attendance::active_sessions()->first();
     return $attendance->attendees->count();

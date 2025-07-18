@@ -19,6 +19,10 @@ class TempUser extends Model
         'attendance_id',
     ];
 
+    // protected $casts = [
+    //     'info' => 'array',
+    // ];
+
     // RELATIONSHIPS
     public function zone()
     {

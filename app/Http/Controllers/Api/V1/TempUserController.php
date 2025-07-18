@@ -13,6 +13,7 @@ use App\Models\UserResidence;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProfileResource;
+use App\Http\Resources\TempUserResource;
 use Illuminate\Support\Facades\Validator;
 
 class TempUserController extends Controller
@@ -70,6 +71,8 @@ class TempUserController extends Controller
         ]);
 
 
+        Log::info('wosssop');
+
 
         if($tempUser){
 
@@ -83,7 +86,13 @@ class TempUserController extends Controller
             // ]);
 
             if($userInfo->status == 'visitor'){
-               'do some addition of visitors stuff here';
+              
+                // return Visitor Details
+                return response()->json([
+                    'status' => true,
+                    'visitor_details' => new TempUserResource($tempUser),
+                ], 200);
+
             }else{
                 // Create New user
                 $user = new User;

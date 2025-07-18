@@ -351,7 +351,7 @@ class ZoneController extends Controller
             'is_baptised' => 'int',
             'active_contact' => 'required|string|max:255',
             'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
-            'residence' => 'nullable|exists:residences,id',
+            'residence_id' => 'nullable|exists:residences,id',
         ]);
 
         if ($validator->fails()) {
@@ -372,38 +372,35 @@ class ZoneController extends Controller
         $status = $info['status'] ?? null;
         $year = $info['year'] ?? null;
         $occupationType = $info['occupation_type'] ?? null;
-        $customResidenceName = $info['residence'] ?? null;
 
-        // Fetch existing user_residence record
-        $userResidence = UserResidence::where('user_id', $user->id)
-            ->where('academic_year_id', Semester::active_semester()->academic_year_id)
-            ->first();
+        // Residence fields
+        $customName = $request->custom_residence_name;
+        $customDesc = $request->custom_residence_description;
+        $residenceId = $request->residence_id;
 
-        if ($customResidenceName && $customResidenceName !== '') {
-            // It's a custom residence
-            $userResidence = $userResidence ?? new UserResidence;
-            $userResidence->user_id = $user->id;
+        // Fetch or create UserResidence for current academic year
+        $userResidence = UserResidence::firstOrNew([
+            'user_id' => $user->id,
+            'academic_year_id' => Semester::active_semester()->academic_year_id,
+        ]);
+
+        if ($customName) {
+            // Custom residence case
             $userResidence->residence_id = null;
-            $userResidence->custom_name = $customResidenceName;
+            $userResidence->custom_name = $customName;
+            $userResidence->custom_description = $customDesc;
             $userResidence->custom_zone_id = $user->zone_id ?? 17;
-            $userResidence->academic_year_id = Semester::active_semester()->academic_year_id;
-            $userResidence->save();
-        } else {
-            // Normal residence from ID
-            if ($request->residence) {
-                $residence = Residence::find($request->residence);
-                $userResidence = $userResidence ?? new UserResidence;
-                $userResidence->user_id = $user->id;
-                $userResidence->residence_id = $residence->id;
-                $userResidence->custom_name = null;
-                $userResidence->custom_zone_id = null;
-                $userResidence->academic_year_id = Semester::active_semester()->academic_year_id;
-                $userResidence->save();
-            }
+        } elseif ($residenceId) {
+            // Regular residence case
+            $userResidence->residence_id = $residenceId;
+            $userResidence->custom_name = null;
+            $userResidence->custom_description = null;
+            $userResidence->custom_zone_id = null;
         }
+        $userResidence->save();
 
         // Handle status logic
-        if ($status == 'student') {
+        if ($status === 'student') {
             $user->is_student = true;
             $user->is_knust_affiliate = true;
             $user->is_worker = 0;
@@ -415,18 +412,22 @@ class ZoneController extends Controller
                 ],
                 ['year' => $year]
             );
-        } else if ($status == 'other') {
+        } elseif ($status === 'other') {
             $user->is_student = false;
             $user->is_knust_affiliate = false;
 
-            if ($occupationType == 'worker') {
-                $user->is_worker = 1;
-            } elseif ($occupationType == 'ns') {
-                $user->is_worker = 2;
-            } elseif ($occupationType == 'other') {
-                $user->is_worker = 3;
-            } else {
-                $user->is_worker = 0;
+            switch ($occupationType) {
+                case 'worker':
+                    $user->is_worker = 1;
+                    break;
+                case 'ns':
+                    $user->is_worker = 2;
+                    break;
+                case 'other':
+                    $user->is_worker = 3;
+                    break;
+                default:
+                    $user->is_worker = 0;
             }
 
             // Clear any student program
@@ -434,13 +435,15 @@ class ZoneController extends Controller
                 ->where('academic_year_id', Semester::active_semester()->academic_year_id)
                 ->delete();
         }
+
         $user->save();
 
         return response()->json([
             'success' => 'User Details Edited successfully',
-            'user_details' => new ProfileResource($user)
+            'user_details' => new ProfileResource($user),
         ], 200);
     }
+
 
 
 }
