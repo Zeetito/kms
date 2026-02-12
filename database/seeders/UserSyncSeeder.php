@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Http\Controllers\SystemConfigController;
+use App\Http\Controllers\Api\V1\SystemConfigController;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\Request;
 
-class UserSycnSeeder extends Seeder
+class UserSyncSeeder extends Seeder
 {
     /**
      * Run the database seeds.
