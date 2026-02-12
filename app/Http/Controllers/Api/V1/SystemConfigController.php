@@ -60,7 +60,7 @@ class SystemConfigController extends Controller
                     'status' => 'success',
                     'unregistered' => 0,
                     'lastSync' => 'No data found'
-                ]);
+                ], 200);
             }
 
             // 1. Find the index of the "synced" column from the header row (row 0)
@@ -100,7 +100,7 @@ class SystemConfigController extends Controller
                 'unregistered' => $unregisteredCount,
                 'lastSync' => $systemConfig->updated_at,
                 // 'sheetLink' => "https://docs.google.com/spreadsheets/d/$spreadsheetId/edit"
-            ]);
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
