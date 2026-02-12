@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\V1\SeenController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\ZoneController;
 use App\Http\Controllers\Api\V1\LoginController;
+use App\Http\Controllers\Api\V1\VisitController;
 use App\Http\Controllers\Api\V1\RecordController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\AccountController;
@@ -38,6 +39,7 @@ use App\Http\Controllers\Api\V1\UserProgramController;
 use App\Http\Controllers\Api\V1\AnnouncementController;
 use App\Http\Controllers\Api\V1\ReportRecordController;
 use App\Http\Controllers\Api\V1\SemesterUserController;
+use App\Http\Controllers\Api\V1\SystemConfigController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\UserResidenceController;
 use App\Http\Controllers\Api\V1\AttendanceUserController;
@@ -57,6 +59,67 @@ use App\Http\Controllers\Api\V1\OfficiatingRoleController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+    // MANAGE DATA
+    // Get the Members data Sheet link
+    Route::get('/members_data_sheet_link', [SystemConfigController::class, 'getMembersDataSheetLink'])
+        ->middleware('auth:sanctum')
+    ;
+        
+    // Get memebers Data Status
+    Route::get('/members_data_status', [SystemConfigController::class, 'getMembersDataStatus'])
+        ->middleware('auth:sanctum')
+    ;
+
+    // Sync Memebers data
+    Route::post('/sync_members_data', [SystemConfigController::class, 'syncMembersData'])
+        ->middleware('auth:sanctum')
+    ;
+
+
+    // VISIT
+    // Add Visit
+    Route::post('/visits', [VisitController::class, 'store'])
+        ->middleware('auth:sanctum')
+    ;
+
+    // Invite User 
+    Route::post('/visits/{visit}/invite', [VisitController::class, 'inviteUser'])
+        ->middleware('auth:sanctum')
+    ;
+
+    // Respond to Invite
+    Route::post('/respond_visits/{visit}', [VisitController::class, 'respond'])
+        ->middleware('auth:sanctum')
+    ;
+
+    // Add Visit Item
+    Route::post('/visit_items/{visit}', [VisitController::class, 'addVisitItem'])
+        ->middleware('auth:sanctum')
+    ;
+
+    // Update Visit Item
+    Route::put('/visit_items/{visitItem}', [VisitController::class, 'updateVisitItem'])
+        ->middleware('auth:sanctum')
+    ;
+
+    // Delete Visit Item
+    Route::delete('/visit_items/{visitItem}', [VisitController::class, 'deleteVisitItem'])
+        ->middleware('auth:sanctum')
+    ;
+
+    // Get all Visits
+    Route::get('/visits', [VisitController::class, 'index'])
+        ->middleware('auth:sanctum')
+    ;
+
+    // Get Visit items for a visit instance
+    Route::get('/visits/{visit}/items', [VisitController::class, 'getItems'])
+        ->middleware('auth:sanctum')
+    ;
+
+
+
 
     // TEMP USER
     // Add Temp User
@@ -862,7 +925,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         // AUTH
     // Login
     Route::post('/login', [LoginController::class, 'login'])
-    ->name('api.login')
+        ->name('api.login')
     ;
 
     // Logout
@@ -876,6 +939,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // hello route
 Route::get('/hello', function (Request $request) {
+
+    return "yeahhh we deyy man";
 
      // Add temp users
 

@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'lastname' => $this->lastname,
             'gender' => $this->gender,
             'email' => $this->email,
-            'contacts' => $this->contacts,
+            'contacts' => is_array($this->contacts) ? $this->contacts : [],
             'active_contact' => $this->active_contact,
             
             'is_alumni' => $this->is_alumni == 1 ? true : false,

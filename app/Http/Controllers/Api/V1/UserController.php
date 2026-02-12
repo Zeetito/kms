@@ -52,7 +52,7 @@ class UserController extends Controller
             'is_student' => 'required|boolean',
             'is_knust_affiliate' => 'required|boolean',
             'is_alumni' => 'required|boolean',
-            'dob' => 'required|date',
+            'dob' => 'nullable|date',
             'password' => 'required|string|min:6|confirmed'
         ]);
 
@@ -63,7 +63,7 @@ class UserController extends Controller
 
         $instance = $request->all();
 
-        $instance['local_congregation'] == $request->local_congregation ?? null;
+        $instance['local_congregation'] = $request->local_congregation ?? null;
 
         // Create the Primary User Instance
         $user = User::create($instance);
@@ -123,6 +123,10 @@ class UserController extends Controller
                     $user_program->custom_college_id = $program_details['custom_college_id'] ?? null;
                     $user_program->custom_span = $program_details['custom_span'] ?? null;
                 }
+
+                // updated and created at 
+                $user_program->created_at = now();
+                $user_program->updated_at = now();
 
                 $user_program->year = $program_details['year'] ?? null;
             }

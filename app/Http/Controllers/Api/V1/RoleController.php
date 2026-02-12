@@ -61,6 +61,7 @@ class RoleController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            
             $role = Role::findOrFail($id);
             
             $role->update($request->all());
