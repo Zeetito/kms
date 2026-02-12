@@ -147,7 +147,7 @@ class SystemConfigController extends Controller
 
             // Skip header (i=1), loop through rows
             for ($i = 1; $i < count($rows); $i++) {
-                    if($passed_count >= 10){
+                    if($passed_count >= 50){
                         break;
                     }
                 $row = $rows[$i];
