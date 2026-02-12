@@ -66,8 +66,11 @@ class SystemConfigController extends Controller
             }
 
             // 1. Find the index of the "synced" column from the header row (row 0)
-            $headers = $rows[0];
-            $syncedColumnIndex = array_search('synced', $headers);
+                $normalizedHeaders = array_map(function($h) { 
+                    return strtolower(trim($h)); 
+                }, $rows[0]);
+
+                $syncedIndex = array_search('synced', $normalizedHeaders);
 
             if ($syncedColumnIndex === false) {
                 return response()->json([
