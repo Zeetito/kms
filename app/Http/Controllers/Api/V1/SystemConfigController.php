@@ -114,7 +114,6 @@ class SystemConfigController extends Controller
     public function syncMembersData(Request $request)
     {
         $key = "members_data_sheet_link";
-
         $systemConfig = SystemConfig::where('key', $key)->first();
 
         try {
@@ -142,47 +141,36 @@ class SystemConfigController extends Controller
             }
 
             $pendingData = [];
-
+            $updateValues = [];
             $passed_count = 0;
 
-            // Skip header (i=1), loop through rows
             for ($i = 1; $i < count($rows); $i++) {
-                    if($passed_count >= 50){
-                        break;
-                    }
+                if ($passed_count >= 50) break;
+
                 $row = $rows[$i];
                 $syncedValue = isset($row[$syncedIndex]) ? strtolower(trim($row[$syncedIndex])) : '';
 
                 if ($syncedValue !== 'yes') {
-                    // Log::info('helllooo');
-                    // Create an associative array (Header Name => Cell Value)
                     $rowData = [];
                     foreach ($headers as $colIndex => $headerName) {
                         $rowData[$headerName] = $row[$colIndex] ?? null;
                     }
                     
-                    // Add the row index from the sheet (useful for updating later)
-                    // +1 because sheets are 1-indexed
-                    $rowData['sheet_row_index'] = $i + 1; 
+                    $rowNumber = $i + 1;
+                    $rowData['sheet_row_index'] = $rowNumber;
 
-                    // This Is Where We Add the User to the System
                     $user = User::where('email', $rowData['Email Address'])->first();
-
-                    // the column year is in the format "Year 1", "Year 2"etc we need the int
                     $year = substr($rowData['Current Year (2025/2026)'], 5);
-                        
 
-                    if(!$user){
-
+                    if (!$user) {
                         $status = $rowData['Status'];
-                        // check if the string "student or PostGraduate is in the string"
                         $isStudent = strpos($status, 'student') !== false || strpos($status, 'PostGraduate') !== false;
                         $isKnustAffiliate = false;
                         $isWorker = 0;
-                        if($status == 'Worker'){
+
+                        if ($status == 'Worker') {
                             $isWorker = 1;
-                            // if the word has Personnel in it set it to 2
-                        }else if( strpos($status, 'Personnel') !== false){
+                        } else if (strpos($status, 'Personnel') !== false) {
                             $isWorker = 2;
                             $isKnustAffiliate = true;
                         }
@@ -199,7 +187,7 @@ class SystemConfigController extends Controller
                             "custom_name" => $rowData['Program Of Study'],
                             "year" => $year,
                             "custom_college_id" => College::where('name', 'LIKE', '%' . $rowData['College '] . '%')->first()->id ?? null,
-                            ];
+                        ];
 
                         $requestData = [
                             "firstname" => $rowData['First Name'],
@@ -213,12 +201,9 @@ class SystemConfigController extends Controller
                                 "school_voda" => $rowData['Phone Contact (School Voda)'],
                             ],
                             "is_member" => true,
-
                             "is_student" => $isStudent,
                             "active_contact" => $rowData['Phone Contact (Call)'],
-
                             "is_worker" => $isWorker,
-
                             "is_knust_affiliate" => $isKnustAffiliate,
                             "is_alumni" => false,
                             "password" => 'password',
@@ -232,46 +217,37 @@ class SystemConfigController extends Controller
                         $newRequest = new Request();
                         $newRequest->replace($requestData);
 
-                        // Instantiate User Controller
                         $userController = new UserController;
-                        $response = $userController->register($newRequest);
+                        $regResponse = $userController->register($newRequest);
 
-                        
-                        // if response code is 200 then set the column on the sheet to yes
-                        if($response->getStatusCode() == 200){
-                            $columnLetter = "V"; 
-                            $rowNumber = $rowData['sheet_row_index'];
-                            $updateRange = "'Form Responses 1'!{$columnLetter}{$rowNumber}";
-
-                            // 2. Prepare the update data
-                            $body = new ValueRange([
+                        if ($regResponse->getStatusCode() == 200) {
+                            $updateValues[] = new \Google\Service\Sheets\ValueRange([
+                                'range' => "'Form Responses 1'!V{$rowNumber}",
                                 'values' => [['yes']]
                             ]);
-
-                            $params = ['valueInputOption' => 'RAW'];
-                            $service->spreadsheets_values->update($spreadsheetId, $updateRange, $body, $params);
                         }
-
                     }
                     
                     $pendingData[] = $rowData;
-
-                    // Edit the Row on the Sheet and make the synced column "yes"
-                    $passed_count += 1;
-
-                    
+                    $passed_count++;
                 }
-
             }
 
-            // update the config
+            if (!empty($updateValues)) {
+                $batchBody = new \Google\Service\Sheets\BatchUpdateValuesRequest([
+                    'valueInputOption' => 'RAW',
+                    'data' => $updateValues
+                ]);
+                $service->spreadsheets_values->batchUpdate($spreadsheetId, $batchBody);
+            }
+
             $systemConfig->updated_at = now();
             $systemConfig->save();
 
             return response()->json([
                 'status' => 'success',
                 'count' => count($pendingData),
-                'data' => $pendingData // You can now iterate this list to save to your DB
+                'data' => $pendingData
             ], 200);
 
         } catch (\Exception $e) {
