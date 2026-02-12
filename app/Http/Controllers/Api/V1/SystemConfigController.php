@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Google\Client;
+use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Controller;
+use App\Models\College;
+use App\Models\SystemConfig;
 use App\Models\User;
 use App\Models\Zone;
-use App\Models\College;
+use Exception;
+use Google\Client;
 use Google\Service\Sheets;
-use App\Models\SystemConfig;
+use Google\Service\Sheets\BatchUpdateValuesRequest;
+use Google\Service\Sheets\ValueRange;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
-use Google\Service\Sheets\ValueRange;
-use App\Http\Controllers\Api\V1\UserController;
 
 class SystemConfigController extends Controller
 {
@@ -84,7 +86,7 @@ class SystemConfigController extends Controller
                 // We check if the index exists in case a row is partially empty
                 $syncedValue = isset($row[$syncedColumnIndex]) ? strtolower(trim($row[$syncedColumnIndex])) : '';
 
-                if ($syncedValue !== 'yes') {
+                if ($syncedValue != 'yes') {
                     $unregisteredCount++;
                 }
             }
@@ -234,7 +236,7 @@ class SystemConfigController extends Controller
             }
 
             if (!empty($updateValues)) {
-                $batchBody = new \Google\Service\Sheets\BatchUpdateValuesRequest([
+                $batchBody = new BatchUpdateValuesRequest([
                     'valueInputOption' => 'RAW',
                     'data' => $updateValues
                 ]);
