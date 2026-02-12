@@ -272,7 +272,7 @@ class SystemConfigController extends Controller
                 'status' => 'success',
                 'count' => count($pendingData),
                 'data' => $pendingData // You can now iterate this list to save to your DB
-            ]);
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
