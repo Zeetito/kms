@@ -133,7 +133,7 @@ class SystemConfigController extends Controller
             $pendingRecords = DB::table('members_sheet_data')
                 ->where('synced', '!=', 'yes')
                 ->orWhereNull('synced')
-                ->limit(100)
+                ->limit(50)
                 ->get();
 
             if ($pendingRecords->isEmpty()) {
